@@ -6,6 +6,7 @@
     "chalk": "^4.1.2",
     "fast-glob": "^3.2.7",
     "ncp": "^2.0.0",
+    "ts-morph": "^12.2.0",
     "yargs": "^17.2.1"
   },
   "devDependencies": {
