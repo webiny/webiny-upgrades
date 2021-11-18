@@ -24,6 +24,13 @@ const response = data => {
         await require(scriptsPath)(argv.context);
         response({ type: "success", message: "", error: null });
     } catch (e) {
-        console.log({ type: "error", message: e.message, code: "ERROR" });
+        console.log({
+            type: "error",
+            message: e.message,
+            code: "ERROR",
+            data: {
+                stack: e.stack
+            }
+        });
     }
 })();
