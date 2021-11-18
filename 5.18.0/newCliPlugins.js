@@ -3,7 +3,7 @@ const fs = require("fs");
 const util = require("util");
 const ncpBase = require("ncp");
 const ncp = util.promisify(ncpBase.ncp);
-const { log } = require("@webiny/cli/utils");
+const { log } = require("../utils");
 
 module.exports = async context => {
     log.info(`Inserting new Admin Area and Website CLI plugins...`);

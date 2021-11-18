@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "bin": "./index.js",
   "dependencies": {
-    "@webiny/cli": "^5.17.3",
+    "chalk": "^4.1.2",
     "fast-glob": "^3.2.7",
     "ncp": "^2.0.0",
     "yargs": "^17.2.1"

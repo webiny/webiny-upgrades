@@ -1,5 +1,5 @@
 const glob = require("fast-glob");
-const { log } = require("@webiny/cli/utils");
+const { log } = require("../utils");
 
 const { createMorphProject, yarnInstall, prettierFormat } = require("../utils");
 

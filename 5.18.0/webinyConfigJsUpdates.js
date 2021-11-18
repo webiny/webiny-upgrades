@@ -1,7 +1,7 @@
 const glob = require("fast-glob");
 const path = require("path");
 const fs = require("fs");
-const { log } = require("@webiny/cli/utils");
+const { log } = require("../utils");
 
 module.exports = async context => {
     log.info(`Updating ${log.info.hl("webiny.config.js")} files...`);
