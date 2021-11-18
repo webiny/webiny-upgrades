@@ -20,16 +20,16 @@ module.exports = async context => {
 
         try {
             if (configPath.includes("/api/code/")) {
-                handleApiConfig({ configPath, context });
+                handleApiConfig({ configPath });
             } else if (configPath.includes("/apps/admin/")) {
-                handleAppsAdminConfig({ configPath, context });
+                handleAppsAdminConfig({ configPath });
                 continue;
             } else if (configPath.includes("/apps/website/")) {
-                handleAppsWebsiteConfig({ configPath, context });
+                handleAppsWebsiteConfig({ configPath });
                 continue;
             } else {
                 // Custom config files.
-                handleCustomConfig({ configPath, context });
+                handleCustomConfig({ configPath });
             }
 
             if (configPath.endsWith(".js")) {
@@ -47,7 +47,7 @@ module.exports = async context => {
     }
 };
 
-const handleApiConfig = ({ configPath, context }) => {
+const handleApiConfig = ({ configPath }) => {
     const dest = path.join(path.dirname(configPath), "webiny.config.ts");
     if (configPath.includes("/transform/")) {
         log.info(`Updating ${log.info.hl(dest)}.`);
@@ -81,7 +81,7 @@ const handleApiConfig = ({ configPath, context }) => {
     console.log();
 };
 
-const handleAppsAdminConfig = ({ configPath, context }) => {
+const handleAppsAdminConfig = ({ configPath }) => {
     const dest = path.join(path.dirname(configPath), "webiny.config.ts");
     log.info(`Updating ${log.info.hl(dest)}.`);
     log.warning(
@@ -98,7 +98,7 @@ const handleAppsAdminConfig = ({ configPath, context }) => {
     console.log();
 };
 
-const handleAppsWebsiteConfig = ({ configPath, context }) => {
+const handleAppsWebsiteConfig = ({ configPath }) => {
     const dest = path.join(path.dirname(configPath), "webiny.config.ts");
     log.info(`Updating ${log.info.hl(dest)}.`);
     log.warning(
@@ -115,7 +115,7 @@ const handleAppsWebsiteConfig = ({ configPath, context }) => {
     console.log();
 };
 
-const handleCustomConfig = ({ configPath, context }) => {
+const handleCustomConfig = ({ configPath }) => {
     const dest = path.join(path.dirname(configPath), "webiny.config.ts");
     // Detect type of config and replace it with the correct updated one.
     log.info(`Updating ${log.info.hl(dest)}.`);
@@ -142,7 +142,7 @@ const handleCustomConfig = ({ configPath, context }) => {
             return;
         }
 
-        context.error(`Could not update ${configPath}. Please update it manually.`);
+        log.error(`Could not update ${configPath}. Please update it manually.`);
         console.log();
         return;
     }
@@ -161,7 +161,7 @@ const handleCustomConfig = ({ configPath, context }) => {
         log.success("Config file successfully updated.");
         console.log();
     } else {
-        context.error(`Could not update ${configPath}. Please update it manually.`);
+        log.error(`Could not update ${configPath}. Please update it manually.`);
         console.log();
     }
 };
