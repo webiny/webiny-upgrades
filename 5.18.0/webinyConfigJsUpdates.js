@@ -15,7 +15,6 @@ module.exports = async context => {
 
     console.log();
 
-    const errors = [];
     for (let i = 0; i < configsPaths.length; i++) {
         const configPath = configsPaths[i];
 
@@ -35,14 +34,15 @@ module.exports = async context => {
 
             if (configPath.endsWith(".js")) {
                 log.warning(
-                    `Removing old ${log.warning.hl(
-                        configPath
-                    )} file (using ${log.warning.hl("webiny.config.ts")} now).`
+                    `Removing old ${log.warning.hl(configPath)} file (using ${log.warning.hl(
+                        "webiny.config.ts"
+                    )} now).`
                 );
                 fs.unlinkSync(configPath);
             }
         } catch (error) {
-            errors.push({ configPath, error });
+            log.error(`An error occurred while processing ${log.error.hl(configPath)}:`);
+            console.log(error);
         }
     }
 };
@@ -56,7 +56,7 @@ const handleApiConfig = ({ configPath, context }) => {
             dest
         );
         log.success("Config file successfully updated.");
-        console.log()
+        console.log();
         return;
     }
 
@@ -67,7 +67,7 @@ const handleApiConfig = ({ configPath, context }) => {
             dest
         );
         log.success("Config file successfully updated.");
-        console.log()
+        console.log();
         return;
     }
 
@@ -78,16 +78,16 @@ const handleApiConfig = ({ configPath, context }) => {
     );
 
     log.success("Config file successfully updated.");
-    console.log()
+    console.log();
 };
 
 const handleAppsAdminConfig = ({ configPath, context }) => {
     const dest = path.join(path.dirname(configPath), "webiny.config.ts");
     log.info(`Updating ${log.info.hl(dest)}.`);
     log.warning(
-        `Note that the ${log.warning.hl(
-            "start"
-        )} command will be renamed to ${log.warning.hl("watch")}.`
+        `Note that the ${log.warning.hl("start")} command will be renamed to ${log.warning.hl(
+            "watch"
+        )}.`
     );
     fs.copyFileSync(
         path.join(__dirname, "webinyConfigJsUpdates", "files", "admin.webiny.config.ts"),
@@ -95,17 +95,16 @@ const handleAppsAdminConfig = ({ configPath, context }) => {
     );
 
     log.success("Config file successfully updated.");
-    console.log()
-
+    console.log();
 };
 
 const handleAppsWebsiteConfig = ({ configPath, context }) => {
     const dest = path.join(path.dirname(configPath), "webiny.config.ts");
     log.info(`Updating ${log.info.hl(dest)}.`);
     log.warning(
-        `Note that the ${log.warning.hl(
-            "start"
-        )} command will be renamed to ${log.warning.hl("watch")}.`
+        `Note that the ${log.warning.hl("start")} command will be renamed to ${log.warning.hl(
+            "watch"
+        )}.`
     );
     fs.copyFileSync(
         path.join(__dirname, "webinyConfigJsUpdates", "files", "website.webiny.config.ts"),
@@ -113,7 +112,7 @@ const handleAppsWebsiteConfig = ({ configPath, context }) => {
     );
 
     log.success("Config file successfully updated.");
-    console.log()
+    console.log();
 };
 
 const handleCustomConfig = ({ configPath, context }) => {
@@ -139,7 +138,7 @@ const handleCustomConfig = ({ configPath, context }) => {
             fs.writeFileSync(dest, content);
 
             log.success("Config file successfully updated.");
-            console.log()
+            console.log();
             return;
         }
 
@@ -160,7 +159,7 @@ const handleCustomConfig = ({ configPath, context }) => {
     if (src) {
         fs.copyFileSync(src, dest);
         log.success("Config file successfully updated.");
-        console.log()
+        console.log();
     } else {
         context.error(`Could not update ${configPath}. Please update it manually.`);
         console.log();

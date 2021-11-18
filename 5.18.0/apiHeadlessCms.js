@@ -1,9 +1,8 @@
-// eslint-disable-next-line
 const tsMorph = require("ts-morph");
 const fs = require("fs");
 const path = require("path");
-
 const {
+    log,
     insertImportToSourceFile,
     removeImportFromSourceFile,
     removePluginFromCreateHandler,
@@ -16,6 +15,10 @@ const paths = {
     headlessCMS: "api/code/headlessCMS"
 };
 
+/**
+ * @param context
+ * @returns {{}}
+ */
 const files = context => {
     const files = {};
 
@@ -37,8 +40,8 @@ const files = context => {
 };
 
 /**
- * @param project {tsMorph.Project}
- * @param context {CliContext}
+ * @param project
+ * @param context
  */
 const upgradeGraphQL = (project, context) => {
     const checkPath = path.join(context.project.root, "api", "code", "graphql");
@@ -46,8 +49,7 @@ const upgradeGraphQL = (project, context) => {
         return;
     }
 
-    const { info } = context;
-    info(`Upgrading ${info.hl(paths.graphQL)}`);
+    log.info(`Upgrading ${log.info.hl(paths.graphQL)}`);
 
     const source = project.getSourceFile(files(context).graphQLIndex);
 
@@ -104,9 +106,10 @@ const upgradeGraphQL = (project, context) => {
         after: new RegExp("createAdminHeadlessCmsContext")
     });
 };
+
 /**
- * @param project {tsMorph.Project}
- * @param context {CliContext}
+ * @param project
+ * @param context
  */
 const upgradeHeadlessCMS = (project, context) => {
     const checkPath = path.join(context.project.root, "api", "code", "headlessCMS");
@@ -114,8 +117,7 @@ const upgradeHeadlessCMS = (project, context) => {
         return;
     }
 
-    const { info } = context;
-    info(`Upgrading ${info.hl(paths.headlessCMS)}`);
+    log.info(`Upgrading ${log.info.hl(paths.headlessCMS)}`);
 
     const source = project.getSourceFile(files(context).headlessCMSIndex);
 

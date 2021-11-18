@@ -21,7 +21,7 @@ const response = data => {
             });
         }
 
-        await require(scriptsPath)(argv.context);
+        await require(scriptsPath)(JSON.parse(argv.context));
         response({ type: "success", message: "", error: null });
     } catch (e) {
         console.log({

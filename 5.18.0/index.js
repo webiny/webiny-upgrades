@@ -10,8 +10,6 @@ const newCliPlugins = require("./newCliPlugins");
 module.exports = async context => {
     const start = new Date();
 
-    const { info } = context;
-
     const files = await glob([
         // add files here
         ...Object.values(apiHeadlessCms.files(context))
@@ -23,12 +21,12 @@ module.exports = async context => {
         /**
          * Upgrade the API Headless CMS files.
          */
-        info("Starting with API Headless CMS upgrade.");
+        log.info("Starting with API Headless CMS upgrade.");
 
         apiHeadlessCms.upgradeGraphQL(project, context);
         apiHeadlessCms.upgradeHeadlessCMS(project, context);
 
-        info("Writing changes...");
+        log.info("Writing changes...");
         await project.save();
         console.log();
     }
