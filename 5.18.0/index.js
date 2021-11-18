@@ -7,6 +7,7 @@ const apiHeadlessCms = require("./apiHeadlessCms");
 const webinyConfigJsUpdates = require("./webinyConfigJsUpdates");
 const newCliPlugins = require("./newCliPlugins");
 
+console.log('noiceeee')
 module.exports = async context => {
     const start = new Date();
 
