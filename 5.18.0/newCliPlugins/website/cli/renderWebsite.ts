@@ -14,14 +14,14 @@ export default {
         }
 
         if (args.inputs.build === false) {
-            log.info(`"--no-build" argument detected - skipping Website re-rendering.`);
+            context.info(`"--no-build" argument detected - skipping Website re-rendering.`);
             return;
         }
 
         // 2. Get exports from `site` stack, for `args.env` environment.
         const apiOutput = getStackOutput({ folder: "api", env: args.env });
 
-        log.info("Issuing a complete website render job...");
+        context.info("Issuing a complete website render job...");
 
         try {
             const lambdaClient = new LambdaClient({ region: apiOutput.region });
@@ -54,8 +54,8 @@ export default {
                 })
                 .promise();
 
-            log.success("Website re-render job successfully issued.");
-            log.info(
+            context.success("Website re-render job successfully issued.");
+            context.info(
                 "Please note that it can take a couple of minutes for the website to be fully updated."
             );
         } catch (e) {
