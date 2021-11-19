@@ -19,11 +19,11 @@ export default {
         }
 
         if (params.inputs.build === false) {
-            log.info(`"--no-build" argument detected - skipping React application upload.`);
+            context.info(`"--no-build" argument detected - skipping React application upload.`);
             return;
         }
 
-        log.info("Uploading React application...");
+        context.info("Uploading React application...");
 
         const buildFolderPath = path.join(__dirname, "..", "code", "build");
         if (!fs.existsSync(buildFolderPath)) {
@@ -40,21 +40,21 @@ export default {
             path: buildFolderPath,
             bucket: websiteOutput.appStorage,
             onFileUploadSuccess: ({ paths }) => {
-                log.success(paths.relative);
+                context.success(paths.relative);
             },
             onFileUploadError: ({ paths, error }) => {
                 context.error("Failed to upload " + context.error.hl(paths.relative));
                 console.log(error);
             },
             onFileUploadSkip: ({ paths }) => {
-                log.info(`Skipping ${log.info.hl(paths.relative)}, already exists.`);
+                context.info(`Skipping ${context.info.hl(paths.relative)}, already exists.`);
             }
         });
 
         const duration = (new Date().getTime() - start) / 1000 + "s";
 
-        log.success(
-            `React application successfully uploaded in ${log.success.hl(duration)}s.`
+        context.success(
+            `React application successfully uploaded in ${context.success.hl(duration)}s.`
         );
     }
 };
