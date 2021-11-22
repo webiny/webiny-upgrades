@@ -28,7 +28,11 @@ const response = data => {
             });
         }
 
-        await require(scriptsPath)(JSON.parse(argv.context));
+        await require(scriptsPath)({
+            project: {
+                root: path.dirname(argv.cwd || process.cwd())
+            }
+        });
 
         const duration = (new Date() - start) / 1000;
         log.success(`Upgrade completed in ${log.success.hl(duration)}s.`);
