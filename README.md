@@ -49,7 +49,19 @@ Let's say you have a Webiny project on which you'd like to test the new upgrade 
 You don't need to make a change and push it into the `webiny-upgrades` repository in order to test it. Via terminal, simply navigate to your Webiny project, and from there run the upgrade directly. For example:
 
 ```
-node ../webiny-upgrades/index.js 5.18.0
+node ../webiny-upgrades/index.js 5.50.0
 ```
 
 > Note that the `webiny-upgrades` folder contains a clone of this repo.
+
+Once you're done, it's still advised that you push the changes and do a complete end-to-end test with the Webiny CLI, for example:
+
+```
+yarn webiny upgrade --use-version 5.50.0-hot-fix
+```
+
+You can also run the upgrade command via the Webiny CLI from the cloned `webiny-js` repository:
+
+```
+node ../webiny-js/packages/cli/bin.js upgrade --use-version 5.50.0-hot-fix
+```
