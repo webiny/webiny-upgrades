@@ -6,6 +6,7 @@ const { createMorphProject, yarnInstall, prettierFormat } = require("../utils");
 const apiHeadlessCms = require("./apiHeadlessCms");
 const webinyConfigJsUpdates = require("./webinyConfigJsUpdates");
 const newCliPlugins = require("./newCliPlugins");
+const removeAdminUploadWithPulumi = require("./removeAdminUploadWithPulumi");
 
 module.exports = async context => {
     const files = await glob([
@@ -34,6 +35,10 @@ module.exports = async context => {
 
     // Generates new Webiny CLI (post-deploy) plugins for both Admin Area and Website React applications.
     await newCliPlugins(context);
+
+    // Admin Area was previously deployed via Pulumi, which is slow. Now we do it via a post-deploy plugin,
+    // which means we don't need the upload via Pulumi code anymore.
+    await removeAdminUploadWithPulumi(context);
 
     // Format updated files.
     await prettierFormat(files, context);
