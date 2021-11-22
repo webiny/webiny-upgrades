@@ -8,8 +8,6 @@ const webinyConfigJsUpdates = require("./webinyConfigJsUpdates");
 const newCliPlugins = require("./newCliPlugins");
 
 module.exports = async context => {
-    const start = new Date();
-
     const files = await glob([
         // add files here
         ...Object.values(apiHeadlessCms.files(context))
@@ -46,7 +44,4 @@ module.exports = async context => {
     await yarnInstall({
         context
     });
-
-    const duration = (new Date() - start) / 1000;
-    log.success(`Upgrade completed in ${log.success.hl(duration)}s.`);
 };

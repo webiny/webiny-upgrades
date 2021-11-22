@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const fs = require("fs");
 const path = require("path");
+const { log } = require("./utils");
 
 const response = data => {
     console.log(JSON.stringify(data));
@@ -8,6 +9,8 @@ const response = data => {
 };
 
 (async () => {
+    const start = new Date();
+
     try {
         const { argv } = require("yargs");
 
@@ -22,9 +25,16 @@ const response = data => {
         }
 
         await require(scriptsPath)(JSON.parse(argv.context));
+
+        const duration = (new Date() - start) / 1000;
+        log.success(`Upgrade completed in ${log.success.hl(duration)}s.`);
+
         response({ type: "success", message: "", error: null });
     } catch (e) {
-        console.log({
+        const duration = (new Date() - start) / 1000;
+        log.error(`Upgrade completed in ${log.error.hl(duration)}s.`);
+
+        response({
             type: "error",
             message: e.message,
             code: "ERROR",
