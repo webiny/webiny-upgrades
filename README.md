@@ -41,3 +41,15 @@ yarn webiny upgrade --use-version 5.50.0-hot-fix
 ```
 
 Once you've concluded the fix is ready to go live, simply delete the initial `5.50.0` folder and remove the `-hot-fix` suffix from the `5.50.0-hot-fix` folder name.
+
+## Local Testing
+
+Let's say you have a Webiny project on which you'd like to test the new upgrade script.
+
+You don't need to make a change and push it into the `webiny-upgrades` repository in order to test it. Via terminal, simply navigate to your Webiny project, and from there run the upgrade directly. For example:
+
+```node ../webiny-upgrades/index.js --context '{"project":{"name":"latest5174","root":"/Users/adrian/dev/latest5174"}}'```
+
+Note the `--context` argument. This is something the Webiny CLI's upgrade command also sends, so we need to send it here as well.
+
+> We'll see - maybe the `--context` argument is too much. Would a simple `--project-dir` argument be a better / simpler option? 🤔
