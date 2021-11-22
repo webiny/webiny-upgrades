@@ -5,8 +5,6 @@ const { log } = require("../utils");
 module.exports = async context => {
     log.info(`Updating Admin Area Pulumi code (${log.info.hl("apps/admin/pulumi/app")})...`);
 
-    console.log();
-
     const project = context.project;
 
     const pulumiIndexPath = path.join(project.root, "apps", "admin", "pulumi", "index.ts");
@@ -41,4 +39,6 @@ module.exports = async context => {
             );
         }
     }
+
+    console.log()
 };
