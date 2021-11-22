@@ -35,7 +35,7 @@ module.exports = async context => {
             );
             fs.copyFileSync(pulumiNewAppPath, pulumiAppPath);
             log.success(
-                `${log.success.hl(pulumiNewAppPath)} successfully updated.`
+                `${log.success.hl(pulumiAppPath)} successfully updated.`
             );
         }
     }
