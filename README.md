@@ -49,7 +49,7 @@ Let's say you have a Webiny project on which you'd like to test the new upgrade 
 You don't need to make a change and push it into the `webiny-upgrades` repository in order to test it. Via terminal, simply navigate to your Webiny project, and from there run the upgrade directly. For example:
 
 ```
-node ../webiny-upgrades/index.js 5.50.0
+node ../webiny-upgrades/index.js 5.50.0-hot-fix
 ```
 
 > Note that the `webiny-upgrades` folder contains a clone of this repo.
