@@ -16,7 +16,7 @@ const response = data => {
 
         const [version] = argv._;
         if (!version) {
-            throw new Error('--version argument missing. Please specify it.')
+            throw new Error("--version argument missing. Please specify it.");
         }
 
         const scriptsPath = path.join(__dirname, version, `index.js`);
@@ -30,7 +30,7 @@ const response = data => {
 
         await require(scriptsPath)({
             project: {
-                root: path.dirname(argv.cwd || process.cwd())
+                root: argv.cwd || process.cwd()
             }
         });
 
