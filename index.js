@@ -15,6 +15,10 @@ const response = data => {
         const { argv } = require("yargs");
 
         const [version] = argv._;
+        if (!version) {
+            throw new Error('--version argument missing. Please specify it.')
+        }
+
         const scriptsPath = path.join(__dirname, version, `index.js`);
         if (!fs.existsSync(scriptsPath)) {
             response({
