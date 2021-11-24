@@ -39,7 +39,7 @@ const response = data => {
         console.log();
 
         log.info("For more information about the upgrade, check out the following article:");
-        console.log(`https://www.webiny.com/docs/release-notes/${version}/upgrade-guide/`);
+        log.info(`https://www.webiny.com/docs/release-notes/${version}/upgrade-guide/`);
 
         response({ type: "success", message: "", error: null });
     } catch (e) {
