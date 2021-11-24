@@ -6,6 +6,7 @@ const { createMorphProject, yarnInstall, prettierFormat } = require("../utils");
 const apiHeadlessCms = require("./apiHeadlessCms");
 const webinyConfigJsUpdates = require("./webinyConfigJsUpdates");
 const newCliPlugins = require("./newCliPlugins");
+const pulumiCloudFrontTsFix = require("./pulumiCloudFrontTsFix");
 const removeAdminUploadWithPulumi = require("./removeAdminUploadWithPulumi");
 
 module.exports = async context => {
@@ -35,6 +36,9 @@ module.exports = async context => {
 
     // Generates new Webiny CLI (post-deploy) plugins for both Admin Area and Website React applications.
     await newCliPlugins(context);
+
+    // Fixes a TS issue in the api/pulumi/dev/elasticSearch.ts file.
+    await pulumiCloudFrontTsFix(context);
 
     // Admin Area was previously deployed via Pulumi, which is slow. Now we do it via a post-deploy plugin,
     // which means we don't need the upload via Pulumi code anymore.
