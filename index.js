@@ -37,6 +37,9 @@ const response = data => {
         const duration = (new Date() - start) / 1000;
         log.success(`Upgrade completed in ${log.success.hl(duration)}s.`);
 
+        log.info("For more information about the upgrade, check out the following article:")
+        console.log(`https://www.webiny.com/docs/release-notes/${version}/upgrade-guide/`)
+
         response({ type: "success", message: "", error: null });
     } catch (e) {
         const duration = (new Date() - start) / 1000;
