@@ -10,11 +10,30 @@ module.exports = async context => {
     console.log();
 
     const project = context.project;
+    const projectTsPath = path.join(project.root, "webiny.project.ts");
+
+    if (!fs.existsSync(projectTsPath)) {
+        log.warning(
+            `Skipping inserting new Admin Area and Website CLI plugins - ${log.warning.hl(
+                projectTsPath
+            )} does not exist.`
+        );
+        console.log();
+        return;
+    }
+
+    let projectTs = fs.readFileSync(projectTsPath, "utf8");
+
+    const apps = {
+        admin: fs.existsSync(path.join(project.root, "apps", "admin")),
+        website: fs.existsSync(path.join(project.root, "apps", "website"))
+    };
 
     const src = path.join(__dirname, "newCliPlugins", "admin", "cli");
     const dest = path.join(project.root, "apps", "admin", "cli");
     log.info(`Inserting new CLI plugins into ${log.info.hl(dest)}.`);
-    if (fs.existsSync(path.join(project.root, "apps", "admin"))) {
+
+    if (apps.admin) {
         await ncp(src, dest);
         log.success("CLI plugins successfully inserted.");
     } else {
@@ -31,16 +50,14 @@ module.exports = async context => {
     const src2 = path.join(__dirname, "newCliPlugins", "website", "cli");
     const dest2 = path.join(project.root, "apps", "website", "cli");
     log.info(`Inserting new CLI plugins into ${log.info.hl(dest2)}.`);
-    if (fs.existsSync(path.join(project.root, "apps", "website"))) {
+    if (apps.website) {
         await ncp(src2, dest2);
         log.success("CLI plugins successfully inserted.");
     } else {
         log.warning(
             `Skipping insertion of new CLI plugins into ${log.warning.hl(
                 dest2
-            )}, it seems that the ${log.warning.hl(
-                "Website"
-            )} project application doesn't exist.`
+            )}, it seems that the ${log.warning.hl("Website")} project application doesn't exist.`
         );
     }
 
@@ -49,42 +66,28 @@ module.exports = async context => {
     // Adjust root webiny.project.ts - update plugins.
     log.info(`Updating root ${log.info.hl(`webiny.project.ts`)} manifest file...`);
 
-    const projectTsPath = path.join(project.root, "webiny.project.ts");
-    if (fs.existsSync(projectTsPath)) {
-        let content = fs.readFileSync(projectTsPath, "utf8");
-        if (content.includes('import cliPageBuilder from "@webiny/api-page-builder/cli";')) {
-            content = content.replace(
-                'import cliPageBuilder from "@webiny/api-page-builder/cli";',
-                `// Admin Area and Website CLI plugins.
-import adminPlugins from "./apps/admin/cli";
-import websitePlugins from "./apps/website/cli";`
-            );
+    projectTs = projectTs.replace('import cliPageBuilder from "@webiny/api-page-builder/cli";', "");
 
-            content = content.replace(
-                "cliPageBuilder()",
-                `// Admin Area and Website CLI plugins.
-            adminPlugins,
-            websitePlugins`
-            );
+    projectTs = projectTs.replace(
+        'import cliWorkspaces from "@webiny/cli-plugin-workspaces";',
+        `import cliWorkspaces from "@webiny/cli-plugin-workspaces";
+// Admin Area and Website CLI plugins.
+${apps.admin ? 'import adminPlugins from "./apps/admin/cli";' : ""}
+${apps.website ? 'import websitePlugins from "./apps/website/cli";' : ""}`
+    );
 
-            fs.writeFileSync(projectTsPath, content);
-            log.success(
-                `Root ${log.success.hl(`webiny.project.ts`)} manifest file successfully updated.`
-            );
-        } else {
-            log.warning(
-                `Skipping update root ${log.info.hl(
-                    `webiny.project.ts`
-                )} manifest file. The code that was needed to be replaced does not exist.`
-            );
-        }
-    } else {
-        log.warning(
-            `Skipping update root ${log.info.hl(
-                `webiny.project.ts`
-            )} manifest file. The file does not exist.`
-        );
-    }
+    projectTs = projectTs.replace("cliPageBuilder(),", ``);
+
+    projectTs = projectTs.replace(
+        "cliWorkspaces(),",
+        `cliWorkspaces(),
+            // Admin Area and Website CLI plugins.
+            ${apps.admin ? "adminPlugins," : ""}
+            ${apps.website ? "websitePlugins," : ""}`
+    );
+
+    fs.writeFileSync(projectTsPath, projectTs);
+    log.success(`Root ${log.success.hl(`webiny.project.ts`)} manifest file successfully updated.`);
 
     console.log();
 };
