@@ -10,10 +10,9 @@ const response = data => {
 
 (async () => {
     const start = new Date();
+    const { argv } = require("yargs");
 
     try {
-        const { argv } = require("yargs");
-
         const [version] = argv._;
         if (!version) {
             throw new Error("--version argument missing. Please specify it.");
@@ -37,13 +36,23 @@ const response = data => {
         const duration = (new Date() - start) / 1000;
         log.success(`Upgrade completed in ${log.success.hl(duration)}s.`);
 
-        log.info("For more information about the upgrade, check out the following article:")
-        console.log(`https://www.webiny.com/docs/release-notes/${version}/upgrade-guide/`)
+        console.log();
+
+        log.info("For more information about the upgrade, check out the following article:");
+        console.log(`https://www.webiny.com/docs/release-notes/${version}/upgrade-guide/`);
 
         response({ type: "success", message: "", error: null });
     } catch (e) {
         const duration = (new Date() - start) / 1000;
         log.error(`Upgrade completed in ${log.error.hl(duration)}s.`);
+
+        const [version] = argv._;
+        if (version) {
+            console.log();
+
+            log.info("For more information about the upgrade, check out the following article:");
+            log.info(`https://www.webiny.com/docs/release-notes/${version}/upgrade-guide/`);
+        }
 
         response({
             type: "error",
