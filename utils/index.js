@@ -2,6 +2,7 @@
  * Note: imports and exports sorted alphabetically.
  */
 const addPluginToCreateHandler = require("./addPluginToCreateHandler");
+const addResolutionToRootPackageJson = require("./addResolutionToRootPackageJson");
 const addWorkspaceToRootPackageJson = require("./addWorkspaceToRootPackageJson");
 const createMorphProject = require("./createMorphProject");
 const createNamedExports = require("./createNamedExports");
@@ -18,6 +19,7 @@ const yarnUp = require("./yarnUp");
 
 module.exports = {
     addPluginToCreateHandler,
+    addResolutionToRootPackageJson,
     addWorkspaceToRootPackageJson,
     createMorphProject,
     createNamedExports,
