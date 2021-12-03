@@ -1,4 +1,3 @@
-const tsMorph = require("ts-morph");
 const fs = require("fs");
 const path = require("path");
 const {
@@ -6,9 +5,10 @@ const {
     insertImportToSourceFile,
     removeImportFromSourceFile,
     removePluginFromCreateHandler,
-    addPluginToCreateHandler,
-    addElasticsearchClient
+    addPluginToCreateHandler
 } = require("../utils");
+
+const addElasticsearchClient = require("./apiHeadlessCms/addElasticsearchClient");
 
 const paths = {
     graphQL: "api/code/graphql",
