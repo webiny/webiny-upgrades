@@ -11,7 +11,7 @@ module.exports = async context => {
     await addActionPlugin(context);
     
     // Remove pulumi cache
-	await removePulumiCache(context);
+    await removePulumiCache(context);
 
     /**
      * Install new packages.
