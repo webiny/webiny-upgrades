@@ -37,5 +37,5 @@ module.exports = async(context) => {
 		
 		return;
 	}
-	log.info("Successfully remove Pulumi CLI cache directory.");
+	log.info("Successfully removed Pulumi CLI cache directory.");
 };
