@@ -16,6 +16,7 @@ const removePluginFromCreateHandler = require("./removePluginFromCreateHandler")
 const removeWorkspaceToRootPackageJson = require("./removeWorkspaceToRootPackageJson");
 const yarnInstall = require("./yarnInstall");
 const yarnUp = require("./yarnUp");
+const removePulumiCache = require("./removePulumiCache");
 
 module.exports = {
     addPluginToCreateHandler,
@@ -32,5 +33,6 @@ module.exports = {
     removeImportFromSourceFile,
     removeWorkspaceToRootPackageJson,
     yarnInstall,
-    yarnUp
+    yarnUp,
+	removePulumiCache
 };
