@@ -24,9 +24,7 @@ module.exports = async context => {
                 "appStorage: app.bucket.id, appUrl: cloudfront"
             );
             fs.writeFileSync(pulumiIndexPath, pulumiIndex);
-            log.success(
-                `${log.success.hl(pulumiIndexPath)} successfully updated.`
-            );
+            log.success(`${log.success.hl(pulumiIndexPath)} successfully updated.`);
 
             const pulumiNewAppPath = path.join(
                 __dirname,
@@ -34,11 +32,9 @@ module.exports = async context => {
                 "newApp.ts"
             );
             fs.copyFileSync(pulumiNewAppPath, pulumiAppPath);
-            log.success(
-                `${log.success.hl(pulumiAppPath)} successfully updated.`
-            );
+            log.success(`${log.success.hl(pulumiAppPath)} successfully updated.`);
         }
     }
 
-    console.log()
+    console.log();
 };

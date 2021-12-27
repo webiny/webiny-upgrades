@@ -9,7 +9,7 @@ module.exports = async context => {
 
     // Adds a new "action" settings plugin for the Page Builder Editor.
     await addActionPlugin(context);
-    
+
     // Remove pulumi cache
     await removePulumiCache(context);
 

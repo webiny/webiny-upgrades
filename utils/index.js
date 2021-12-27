@@ -34,5 +34,5 @@ module.exports = {
     removeWorkspaceToRootPackageJson,
     yarnInstall,
     yarnUp,
-	removePulumiCache
+    removePulumiCache
 };

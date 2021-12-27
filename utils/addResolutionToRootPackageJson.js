@@ -14,7 +14,7 @@ module.exports = async (packageJsonPath, packagesToAdd) => {
         const escapedName = name.replace(/\\/g, "/");
         // Add it to resolutions packages if not already
         if (!rootPackageJson.resolutions[escapedName]) {
-            rootPackageJson.resolutions[escapedName] = version
+            rootPackageJson.resolutions[escapedName] = version;
         }
     }
 
