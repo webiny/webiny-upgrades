@@ -30,7 +30,7 @@ module.exports = async context => {
                 )} - the following import already exists:`
             );
             log.warning(ACTION_PLUGIN_IMPORT);
-            console.log()
+            console.log();
             return;
         }
 
@@ -57,7 +57,7 @@ ${ACTION_PLUGIN_IMPORT}`
                 )} plugin:`
             );
             log.warning(ACTION_PLUGIN_IMPORT);
-            console.log()
+            console.log();
             return;
         }
     } else {
@@ -66,7 +66,7 @@ ${ACTION_PLUGIN_IMPORT}`
                 editorPluginsPath
             )} - file does not exist.`
         );
-        console.log()
+        console.log();
         return;
     }
 
