@@ -17,9 +17,8 @@
     "ncp": "^2.0.0",
     "ts-morph": "^12.2.0",
     "write-json-file": "^4.0.0",
-    "yargs": "^17.2.1"
-  },
-  "devDependencies": {
+    "yargs": "^17.2.1",
     "prettier": "^2.5.1"
-  }
+  },
+  "devDependencies": {}
 }
