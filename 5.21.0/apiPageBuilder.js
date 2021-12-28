@@ -1,7 +1,6 @@
 const path = require("path");
 const fs = require("fs");
-const { log } = require("../utils");
-const loadJson = require("load-json-file");
+const { log, getIsElasticsearchProject } = require("../utils");
 
 const { upgradeElasticsearchGraphQL, upgradeGraphQL } = require("./pageBuilder/graphQl");
 const {
@@ -78,29 +77,6 @@ const getSource = (project, file) => {
     }
     log.debug("Skipping file, cannot find it.");
     return null;
-};
-/**
- * We will determine if GraphQL package.json file has elasticsearch package. If it does, it is elasticsearch project.
- */
-const getIsElasticsearchProject = context => {
-    const file = path.join(context.project.root, upgradePaths.apiGraphQL, "package.json");
-    if (fs.existsSync(file) === false) {
-        log.debug(`Missing file "${file}" to determine if project contains Elasticsearch.`);
-        process.exit(1);
-    }
-    let contents = null;
-    try {
-        contents = loadJson.sync(file);
-    } catch (ex) {
-        log.error(ex.message);
-    }
-
-    const { dependencies } = contents || {};
-    if (!dependencies || typeof dependencies !== "object") {
-        log.info("Could not determine if project contains Elasticsearch.");
-        process.exit(1);
-    }
-    return !!dependencies["@webiny/api-elasticsearch"];
 };
 
 const upgradeProject = (context, project, files) => {

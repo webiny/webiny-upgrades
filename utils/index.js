@@ -25,6 +25,8 @@ const {
     addPackagesToPeerDependencies
 } = require("./dependencies");
 
+const getIsElasticsearchProject = require("./isElasticsearchProject");
+
 module.exports = {
     addPluginToCreateHandler,
     addResolutionToRootPackageJson,
@@ -46,5 +48,6 @@ module.exports = {
     addElasticsearchClient,
     addPackagesToDependencies,
     addPackagesToDevDependencies,
-    addPackagesToPeerDependencies
+    addPackagesToPeerDependencies,
+    getIsElasticsearchProject
 };
