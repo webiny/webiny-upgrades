@@ -47,7 +47,7 @@ const upgradeElasticsearchUpdateSettings = ({ context, source, file }) => {
     addPackagesToDependencies(context, files.apiUpdateSettingsPackageJson, {
         "@webiny/db-dynamodb": null,
         "@webiny/handler-db": null,
-        "@webiny/api-elasticsearch": context.WEBINY_VERSION
+        "@webiny/api-elasticsearch": context.version
     });
     /**
      * Add client definitions
