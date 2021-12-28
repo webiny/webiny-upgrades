@@ -17,6 +17,15 @@ const removeWorkspaceToRootPackageJson = require("./removeWorkspaceToRootPackage
 const yarnInstall = require("./yarnInstall");
 const yarnUp = require("./yarnUp");
 const removePulumiCache = require("./removePulumiCache");
+const addDynamoDbDocumentClient = require("./addDynamoDbDocumentClient");
+const addElasticsearchClient = require("./addElasticsearchClient");
+const {
+    addPackagesToDependencies,
+    addPackagesToDevDependencies,
+    addPackagesToPeerDependencies
+} = require("./dependencies");
+
+const getIsElasticsearchProject = require("./isElasticsearchProject");
 
 module.exports = {
     addPluginToCreateHandler,
@@ -34,5 +43,11 @@ module.exports = {
     removeWorkspaceToRootPackageJson,
     yarnInstall,
     yarnUp,
-    removePulumiCache
+    removePulumiCache,
+    addDynamoDbDocumentClient,
+    addElasticsearchClient,
+    addPackagesToDependencies,
+    addPackagesToDevDependencies,
+    addPackagesToPeerDependencies,
+    getIsElasticsearchProject
 };

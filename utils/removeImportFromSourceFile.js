@@ -1,3 +1,5 @@
+const tsMorph = require("ts-morph");
+
 /**
  * @param source {tsMorph.SourceFile}
  * @param target {string}
