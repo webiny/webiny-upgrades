@@ -13,7 +13,6 @@ const response = data => {
     const { argv } = require("yargs");
 
     try {
-        console.log(argv);
         const [version] = argv._;
         if (!version) {
             throw new Error("--version argument missing. Please specify it.");
