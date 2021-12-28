@@ -1,6 +1,6 @@
 const path = require("path");
 const fs = require("fs");
-const { log } = require("../utils");
+const log = require("./log");
 const loadJson = require("load-json-file");
 /**
  * We will determine if GraphQL package.json file has elasticsearch package. If it does, it is elasticsearch project.

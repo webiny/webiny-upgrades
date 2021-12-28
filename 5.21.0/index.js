@@ -1,4 +1,4 @@
-const { yarnInstall, removePulumiCache, createMorphProject } = require("../utils");
+const { yarnInstall, createMorphProject } = require("../utils");
 
 const apiPageBuilder = require("./apiPageBuilder");
 const glob = require("fast-glob");
