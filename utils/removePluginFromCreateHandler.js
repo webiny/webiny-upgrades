@@ -1,3 +1,5 @@
+const tsMorph = require("ts-morph");
+
 const createNamedImports = require("./createNamedImports");
 const getCreateHandlerExpressions = require("./getCreateHandlerExpressions");
 

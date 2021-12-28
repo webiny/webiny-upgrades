@@ -1,4 +1,4 @@
-const { yarnInstall, removePulumiCache } = require("../utils");
+const { yarnInstall, removePulumiCache, createMorphProject } = require("../utils");
 
 const apiPageBuilder = require("./apiPageBuilder");
 const glob = require("fast-glob");
@@ -11,7 +11,11 @@ module.exports = async context => {
         ...Object.values(pageBuilderFiles)
         //
     ]);
-
+    const project = createMorphProject(files);
+    /**
+     * Upgrade the Page Builder related files.
+     */
+    apiPageBuilder.upgradeProject(context, project, files);
     /**
      * Install new packages.
      */

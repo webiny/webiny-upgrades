@@ -19,6 +19,11 @@ const yarnUp = require("./yarnUp");
 const removePulumiCache = require("./removePulumiCache");
 const addDynamoDbDocumentClient = require("./addDynamoDbDocumentClient");
 const addElasticsearchClient = require("./addElasticsearchClient");
+const {
+    addPackagesToDependencies,
+    addPackagesToDevDependencies,
+    addPackagesToPeerDependencies
+} = require("./dependencies");
 
 module.exports = {
     addPluginToCreateHandler,
@@ -38,5 +43,8 @@ module.exports = {
     yarnUp,
     removePulumiCache,
     addDynamoDbDocumentClient,
-    addElasticsearchClient
+    addElasticsearchClient,
+    addPackagesToDependencies,
+    addPackagesToDevDependencies,
+    addPackagesToPeerDependencies
 };

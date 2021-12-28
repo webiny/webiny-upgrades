@@ -11,12 +11,13 @@ const {
 
 /**
  *
+ * @param file {String}
  * @param files {Record<string, string>}
  * @param source {tsMorph.SourceFile}
  */
-const upgradeElasticsearchGraphQL = ({ files, source }) => {
+const upgradeElasticsearchGraphQL = ({ file, source }) => {
     if (!source) {
-        log.debug(`Skipping "${files.apiGraphQLIndex}", because source is not found.`);
+        log.debug(`Skipping "${file}", because source is not found.`);
         return;
     }
     /**
@@ -59,12 +60,13 @@ const upgradeElasticsearchGraphQL = ({ files, source }) => {
 
 /**
  *
+ * @param file {String}
  * @param files {Record<string, string>}
  * @param source {tsMorph.SourceFile}
  */
-const upgradeGraphQL = ({ files, source }) => {
+const upgradeGraphQL = ({ file, source }) => {
     if (!source) {
-        log.debug(`Skipping "${files.apiGraphQLIndex}", because source is not found.`);
+        log.debug(`Skipping "${file}", because source is not found.`);
         return;
     }
     /**

@@ -4,7 +4,8 @@ const {
     insertImportToSourceFile,
     log,
     removePluginFromCreateHandler,
-    addPluginToCreateHandler
+    addPluginToCreateHandler,
+    addElasticsearchClient
 } = require("../../utils");
 
 const {
@@ -16,12 +17,13 @@ const {
 
 /**
  *
+ * @param file {String}
  * @param files {Record<string, string>}
  * @param source {tsMorph.SourceFile}
  */
-const upgradeElasticsearchExportCombine = ({ files, source }) => {
+const upgradeElasticsearchImportExport = ({ file, source }) => {
     if (!source) {
-        log.debug(`Skipping "${files.apiExportCombineIndex}", because source is not found.`);
+        log.debug(`Skipping "${file}", because source is not found.`);
         return;
     }
     /**
@@ -32,6 +34,17 @@ const upgradeElasticsearchExportCombine = ({ files, source }) => {
      * Add new ones
      */
     addPageBuilderElasticsearchImports(source);
+
+    /**
+     * Modify existing page builder import/export storage operations.
+     */
+    insertImportToSourceFile({
+        source,
+        name: {
+            createStorageOperations: "createPageBuilderImportExportStorageOperations"
+        },
+        moduleSpecifier: "@webiny/api-page-builder-import-export-so-ddb"
+    });
     /**
      * Remove old plugin initializations.
      */
@@ -39,6 +52,11 @@ const upgradeElasticsearchExportCombine = ({ files, source }) => {
     removePluginFromCreateHandler(source, "handler", "pageBuilderDynamoDbElasticsearchPlugins()");
     removePluginFromCreateHandler(source, "handler", "pageBuilderImportExportPlugins(");
     removePluginFromCreateHandler(source, "handler", "elasticSearch(");
+
+    /**
+     * Add elasticsearch client if not existing
+     */
+    addElasticsearchClient(source);
 
     addPluginToCreateHandler({
         source,
@@ -84,10 +102,13 @@ const upgradeElasticsearchExportCombine = ({ files, source }) => {
  *
  * @param files {Record<string, string>}
  * @param source {tsMorph.SourceFile}
+ * @param file {String}
+ * @param context {CliContext}
+ * @param project {tsMorph.Project}
  */
-const upgradeExportCombine = ({ files, source }) => {
+const upgradeImportExport = ({ file, source }) => {
     if (!source) {
-        log.debug(`Skipping "${files.apiExportCombineIndex}", because source is not found.`);
+        log.debug(`Skipping "${file}", because source is not found.`);
         return;
     }
     /**
@@ -148,6 +169,6 @@ const upgradeExportCombine = ({ files, source }) => {
 };
 
 module.exports = {
-    upgradeElasticsearchExportCombine,
-    upgradeExportCombine
+    upgradeElasticsearchImportExport,
+    upgradeImportExport
 };

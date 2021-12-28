@@ -1,32 +1,17 @@
 const path = require("path");
 const fs = require("fs");
 const { log } = require("../utils");
+const loadJson = require("load-json-file");
 
 const { upgradeElasticsearchGraphQL, upgradeGraphQL } = require("./pageBuilder/graphQl");
 const {
-    upgradeElasticsearchExportCombine,
-    upgradeExportCombine
-} = require("./pageBuilder/exportCombine");
-const {
-    upgradeElasticsearchExportProcess,
-    upgradeExportProcess
-} = require("./pageBuilder/exportProcess");
-const {
-    upgradeElasticsearchImportCreate,
-    upgradeImportCreate
-} = require("./pageBuilder/importCreate");
-const {
-    upgradeElasticsearchImportProcess,
-    upgradeImportProcess
-} = require("./pageBuilder/importProcess");
+    upgradeElasticsearchImportExport,
+    upgradeImportExport
+} = require("./pageBuilder/importExport");
 const {
     upgradeElasticsearchUpdateSettings,
     upgradeUpdateSettings
-} = require("./pageBuilder/updateSettings");
-const {
-    upgradeElasticsearchUpdateSettingsPackages,
-    upgradeUpdateSettingsPackages
-} = require("./pageBuilder/updateSettingsPackages");
+} = require("./pageBuilder/settings");
 
 const upgradePaths = {
     apiGraphQL: "api/code/graphql",
@@ -91,11 +76,32 @@ const getSource = (project, file) => {
     } catch (ex) {
         log.debug(ex.message);
     }
-    log.debug("Skipping GraphQL index file, cannot find it.");
+    log.debug("Skipping file, cannot find it.");
     return null;
 };
+/**
+ * We will determine if GraphQL package.json file has elasticsearch package. If it does, it is elasticsearch project.
+ */
+const getIsElasticsearchProject = context => {
+    const file = path.join(context.project.root, upgradePaths.apiGraphQL, "package.json");
+    if (fs.existsSync(file) === false) {
+        log.debug(`Missing file "${file}" to determine if project contains Elasticsearch.`);
+        process.exit(1);
+    }
+    let contents = null;
+    try {
+        contents = loadJson.sync(file);
+    } catch (ex) {
+        log.error(ex.message);
+    }
 
-const getIsElasticsearchProject = context => {};
+    const { dependencies } = contents || {};
+    if (!dependencies || typeof dependencies !== "object") {
+        log.info("Could not determine if project contains Elasticsearch.");
+        process.exit(1);
+    }
+    return !!dependencies["@webiny/api-elasticsearch"];
+};
 
 const upgradeProject = (context, project, files) => {
     const isElasticsearchProject = getIsElasticsearchProject(context);
@@ -109,42 +115,43 @@ const upgradeProject = (context, project, files) => {
             context,
             project,
             files: upgradeFiles,
+            file: upgradeFiles.apiGraphQLIndex,
             source: getSource(project, files.apiGraphQLIndex)
         });
-        upgradeElasticsearchExportCombine({
+        upgradeElasticsearchImportExport({
             context,
             project,
             files: upgradeFiles,
+            file: upgradeFiles.apiExportCombineIndex,
             source: getSource(project, files.apiExportCombineIndex)
         });
-        upgradeElasticsearchExportProcess({
+        upgradeElasticsearchImportExport({
             context,
             project,
             files: upgradeFiles,
+            file: upgradeFiles.apiExportProcessIndex,
             source: getSource(project, files.apiExportProcessIndex)
         });
-        upgradeElasticsearchImportCreate({
+        upgradeElasticsearchImportExport({
             context,
             project,
             files: upgradeFiles,
+            file: upgradeFiles.apiImportCreateIndex,
             source: getSource(project, files.apiImportCreateIndex)
         });
-        upgradeElasticsearchImportProcess({
+        upgradeElasticsearchImportExport({
             context,
             project,
             files: upgradeFiles,
+            file: upgradeFiles.apiImportProcessIndex,
             source: getSource(project, files.apiImportProcessIndex)
         });
         upgradeElasticsearchUpdateSettings({
             context,
             project,
             files: upgradeFiles,
+            file: upgradeFiles.apiUpdateSettingsIndex,
             source: getSource(project, files.apiUpdateSettingsIndex)
-        });
-        upgradeElasticsearchUpdateSettingsPackages({
-            context,
-            project,
-            files: upgradeFiles
         });
         return;
     }
@@ -155,40 +162,48 @@ const upgradeProject = (context, project, files) => {
     upgradeGraphQL({
         context,
         project,
-        files
+        files: upgradeFiles,
+        file: upgradeFiles.apiGraphQLIndex,
+        source: getSource(project, files.apiGraphQLIndex)
     });
-    upgradeExportCombine({
+    upgradeImportExport({
         context,
         project,
-        files
+        files: upgradeFiles,
+        file: upgradeFiles.apiExportCombineIndex,
+        source: getSource(project, files.apiExportCombineIndex)
     });
-    upgradeExportProcess({
+    upgradeImportExport({
         context,
         project,
-        files
+        files: upgradeFiles,
+        file: upgradeFiles.apiExportProcessIndex,
+        source: getSource(project, files.apiExportProcessIndex)
     });
-    upgradeImportCreate({
+    upgradeImportExport({
         context,
         project,
-        files
+        files: upgradeFiles,
+        file: upgradeFiles.apiImportCreateIndex,
+        source: getSource(project, files.apiImportCreateIndex)
     });
-    upgradeImportProcess({
+    upgradeImportExport({
         context,
         project,
-        files
+        files: upgradeFiles,
+        file: upgradeFiles.apiImportProcessIndex,
+        source: getSource(project, files.apiImportProcessIndex)
     });
     upgradeUpdateSettings({
         context,
         project,
-        files
-    });
-    upgradeUpdateSettingsPackages({
-        context,
-        project,
-        files
+        files: upgradeFiles,
+        file: upgradeFiles.apiUpdateSettingsIndex,
+        source: getSource(project, files.apiUpdateSettingsIndex)
     });
 };
 
 module.exports = {
-    getFiles
+    getFiles,
+    upgradeProject
 };
