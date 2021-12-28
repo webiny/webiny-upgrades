@@ -80,7 +80,7 @@ const getSource = (project, file) => {
 };
 
 const upgradeProject = (context, project, files) => {
-    const isElasticsearchProject = getIsElasticsearchProject(context);
+    const isElasticsearchProject = getIsElasticsearchProject(context, upgradePaths.apiGraphQL);
 
     /**
      *
