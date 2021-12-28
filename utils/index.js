@@ -17,6 +17,8 @@ const removeWorkspaceToRootPackageJson = require("./removeWorkspaceToRootPackage
 const yarnInstall = require("./yarnInstall");
 const yarnUp = require("./yarnUp");
 const removePulumiCache = require("./removePulumiCache");
+const addDynamoDbDocumentClient = require("./addDynamoDbDocumentClient");
+const addElasticsearchClient = require("./addElasticsearchClient");
 
 module.exports = {
     addPluginToCreateHandler,
@@ -34,5 +36,7 @@ module.exports = {
     removeWorkspaceToRootPackageJson,
     yarnInstall,
     yarnUp,
-    removePulumiCache
+    removePulumiCache,
+    addDynamoDbDocumentClient,
+    addElasticsearchClient
 };
