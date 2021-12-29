@@ -23,7 +23,7 @@ const {
  */
 const upgradeElasticsearchImportExport = ({ file, source }) => {
     if (!source) {
-        log.debug(`Skipping "${file}", because source is not found.`);
+        log.debug(`Skipping "${file}". File not found.`);
         return;
     }
     /**
@@ -34,24 +34,13 @@ const upgradeElasticsearchImportExport = ({ file, source }) => {
      * Add new ones
      */
     addPageBuilderElasticsearchImports(source);
-
-    /**
-     * Modify existing page builder import/export storage operations.
-     */
-    insertImportToSourceFile({
-        source,
-        name: {
-            createStorageOperations: "createPageBuilderImportExportStorageOperations"
-        },
-        moduleSpecifier: "@webiny/api-page-builder-import-export-so-ddb"
-    });
     /**
      * Remove old plugin initializations.
      */
-    removePluginFromCreateHandler(source, "handler", "pageBuilderPlugins()");
-    removePluginFromCreateHandler(source, "handler", "pageBuilderDynamoDbElasticsearchPlugins()");
-    removePluginFromCreateHandler(source, "handler", "pageBuilderImportExportPlugins(");
-    removePluginFromCreateHandler(source, "handler", "elasticSearch(");
+    removePluginFromCreateHandler(source, "handler", "pageBuilderPlugins");
+    removePluginFromCreateHandler(source, "handler", "pageBuilderDynamoDbElasticsearchPlugins");
+    removePluginFromCreateHandler(source, "handler", "pageBuilderImportExportPlugins");
+    removePluginFromCreateHandler(source, "handler", "elasticSearch");
 
     /**
      * Add elasticsearch client if not existing
@@ -108,7 +97,7 @@ const upgradeElasticsearchImportExport = ({ file, source }) => {
  */
 const upgradeImportExport = ({ file, source }) => {
     if (!source) {
-        log.debug(`Skipping "${file}", because source is not found.`);
+        log.debug(`Skipping "${file}". File not found.`);
         return;
     }
     /**
@@ -119,16 +108,6 @@ const upgradeImportExport = ({ file, source }) => {
      * Add new ones
      */
     addPageBuilderDynamoDbImports(source);
-    /**
-     * Modify existing page builder import/export storage operations.
-     */
-    insertImportToSourceFile({
-        source,
-        name: {
-            createStorageOperations: "createPageBuilderImportExportStorageOperations"
-        },
-        moduleSpecifier: "@webiny/api-page-builder-import-export-so-ddb"
-    });
     /**
      * Remove old plugin initializations.
      */

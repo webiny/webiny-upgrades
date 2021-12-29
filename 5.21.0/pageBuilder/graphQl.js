@@ -17,7 +17,7 @@ const {
  */
 const upgradeElasticsearchGraphQL = ({ file, source }) => {
     if (!source) {
-        log.debug(`Skipping "${file}", because source is not found.`);
+        log.debug(`Skipping "${file}". File not found.`);
         return;
     }
     /**
@@ -34,6 +34,7 @@ const upgradeElasticsearchGraphQL = ({ file, source }) => {
      */
     removePluginFromCreateHandler(source, "handler", "pageBuilderPlugins()");
     removePluginFromCreateHandler(source, "handler", "pageBuilderDynamoDbElasticsearchPlugins()");
+    removePluginFromCreateHandler(source, "handler", "pageBuilderImportExportPlugins");
     /**
      * And add the new ones.
      */
@@ -56,6 +57,17 @@ const upgradeElasticsearchGraphQL = ({ file, source }) => {
         value: `createPageBuilderGraphQL()`,
         after: new RegExp("createPageBuilderContext")
     });
+
+    addPluginToCreateHandler({
+        source,
+        handler: "handler",
+        value: `pageBuilderImportExportPlugins({
+            storageOperations: createPageBuilderImportExportStorageOperations({
+                documentClient
+            })
+        })`,
+        after: new RegExp("createPageBuilderGraphQL")
+    });
 };
 
 /**
@@ -66,7 +78,7 @@ const upgradeElasticsearchGraphQL = ({ file, source }) => {
  */
 const upgradeGraphQL = ({ file, source }) => {
     if (!source) {
-        log.debug(`Skipping "${file}", because source is not found.`);
+        log.debug(`Skipping "${file}". File not found.`);
         return;
     }
     /**
@@ -83,6 +95,7 @@ const upgradeGraphQL = ({ file, source }) => {
      */
     removePluginFromCreateHandler(source, "handler", "pageBuilderPlugins()");
     removePluginFromCreateHandler(source, "handler", "pageBuilderDynamoDbPlugins()");
+    removePluginFromCreateHandler(source, "handler", "pageBuilderImportExportPlugins");
     /**
      * And add the new ones.
      */
@@ -102,6 +115,17 @@ const upgradeGraphQL = ({ file, source }) => {
         handler: "handler",
         value: `createPageBuilderGraphQL()`,
         after: new RegExp("createPageBuilderContext")
+    });
+
+    addPluginToCreateHandler({
+        source,
+        handler: "handler",
+        value: `pageBuilderImportExportPlugins({
+            storageOperations: createPageBuilderImportExportStorageOperations({
+                documentClient
+            })
+        })`,
+        after: new RegExp("createPageBuilderGraphQL")
     });
 };
 

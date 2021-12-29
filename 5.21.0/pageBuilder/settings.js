@@ -8,7 +8,8 @@ const {
     addDynamoDbDocumentClient,
     addElasticsearchClient,
     addPluginToCreateHandler,
-    addPackagesToDependencies
+    addPackagesToDependencies,
+    upgradeCreateHandlerToPlugins
 } = require("../../utils");
 /**
  *
@@ -18,16 +19,16 @@ const {
  * @param context {CliContext}
  * @param project {tsMorph.Project}
  */
-const upgradeElasticsearchUpdateSettings = ({ context, source, file }) => {
+const upgradeElasticsearchUpdateSettings = ({ context, source, files, file }) => {
     if (!source) {
-        log.debug(`Skipping "${file}", because source is not found.`);
+        log.debug(`Skipping "${file}". File not found.`);
         return;
     }
     /**
      * Remove unnecessary imports
      */
     removeImportFromSourceFile(source, "@webiny/handler-db");
-    removeImportFromSourceFile(source, "@webiny/@webiny/db-dynamodb");
+    removeImportFromSourceFile(source, "@webiny/db-dynamodb");
     removeImportFromSourceFile(source, "@webiny/api-page-builder-so-ddb-es");
     /**
      * Add new one
@@ -39,10 +40,14 @@ const upgradeElasticsearchUpdateSettings = ({ context, source, file }) => {
         },
         moduleSpecifier: "@webiny/api-page-builder-so-ddb-es"
     });
+    /**
+     * Upgrade the createHandler to contain object with plugins as initializer
+     */
+    upgradeCreateHandlerToPlugins(source, "handler");
 
     removePluginFromCreateHandler(source, "handler", "updateSettingsPlugins");
-    removePluginFromCreateHandler(source, "handler", "dbPlugins(");
-    removePluginFromCreateHandler(source, "handler", "pageBuilderDynamoDbElasticsearchPlugins()");
+    removePluginFromCreateHandler(source, "handler", "dbPlugins");
+    removePluginFromCreateHandler(source, "handler", "pageBuilderDynamoDbElasticsearchPlugins");
 
     addPackagesToDependencies(context, files.apiUpdateSettingsPackageJson, {
         "@webiny/db-dynamodb": null,
@@ -58,7 +63,7 @@ const upgradeElasticsearchUpdateSettings = ({ context, source, file }) => {
     addPluginToCreateHandler({
         source,
         handler: "handler",
-        value: "updateSettingsPlugins({storageOperations: createPageBuilderStorageOperations({documentClient,elasticsearchClient})})",
+        value: "updateSettingsPlugins({storageOperations: createPageBuilderStorageOperations({documentClient,elasticsearch:elasticsearchClient})})",
         after: new RegExp("logsPlugins")
     });
 };
@@ -71,9 +76,9 @@ const upgradeElasticsearchUpdateSettings = ({ context, source, file }) => {
  * @param context {CliContext}
  * @param project {tsMorph.Project}
  */
-const upgradeUpdateSettings = ({ source, file }) => {
+const upgradeUpdateSettings = ({ context, source, files, file }) => {
     if (!source) {
-        log.debug(`Skipping "${file}", because source is not found.`);
+        log.debug(`Skipping "${file}". File not found.`);
         return;
     }
     /**
@@ -83,6 +88,12 @@ const upgradeUpdateSettings = ({ source, file }) => {
     removeImportFromSourceFile(source, "@webiny/db-dynamodb");
     removeImportFromSourceFile(source, "@webiny/db-dynamodb/plugins");
     removeImportFromSourceFile(source, "@webiny/api-page-builder-so-ddb");
+
+    /**
+     * Upgrade the createHandler to contain object with plugins as initializer
+     */
+    upgradeCreateHandlerToPlugins(source, "handler");
+
     /**
      * Add new one
      */
@@ -95,9 +106,9 @@ const upgradeUpdateSettings = ({ source, file }) => {
     });
 
     removePluginFromCreateHandler(source, "handler", "updateSettingsPlugins");
-    removePluginFromCreateHandler(source, "handler", "dbPlugins(");
-    removePluginFromCreateHandler(source, "handler", "dynamoDbPlugins()");
-    removePluginFromCreateHandler(source, "handler", "pageBuilderDynamoDbPlugins()");
+    removePluginFromCreateHandler(source, "handler", "dbPlugins");
+    removePluginFromCreateHandler(source, "handler", "dynamoDbPlugins");
+    removePluginFromCreateHandler(source, "handler", "pageBuilderDynamoDbPlugins");
 
     addPackagesToDependencies(context, files.apiUpdateSettingsPackageJson, {
         "@webiny/db-dynamodb": null,

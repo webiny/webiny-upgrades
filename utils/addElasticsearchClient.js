@@ -2,7 +2,7 @@ const tsMorph = require("ts-morph");
 
 const insertImportToSourceFile = require("./insertImportToSourceFile");
 
-const declarationName = "elasticsearchClient;";
+const declarationName = "elasticsearchClient";
 /**
  * @param source {tsMorph.SourceFile}
  */
@@ -19,7 +19,7 @@ module.exports = source => {
 
     insertImportToSourceFile({
         source,
-        name: "createElasticsearchClient",
+        name: ["createElasticsearchClient"],
         moduleSpecifier: "@webiny/api-elasticsearch/client"
     });
 

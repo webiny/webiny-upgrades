@@ -1,4 +1,6 @@
 const tsMorph = require("ts-morph");
+
+const declarationName = "documentClient";
 /**
  * @param source {tsMorph.SourceFile}
  */
@@ -7,7 +9,7 @@ module.exports = source => {
      * If there is document client declaration, no need to proceed further.
      */
     const documentClient = source.getFirstDescendant(node => {
-        return tsMorph.Node.isVariableDeclaration(node) && node.getName() === "documentClient";
+        return tsMorph.Node.isVariableDeclaration(node) && node.getName() === declarationName;
     });
     if (documentClient) {
         return;
@@ -21,7 +23,7 @@ module.exports = source => {
         declarationKind: tsMorph.VariableDeclarationKind.Const,
         declarations: [
             {
-                name: "documentClient",
+                name: declarationName,
                 initializer:
                     "new DocumentClient({convertEmptyValues: true,region: process.env.AWS_REGION})"
             }

@@ -1,6 +1,8 @@
 const semverCoerce = require("semver/functions/coerce");
 const loadJson = require("load-json-file");
 const writeJson = require("write-json-file");
+const fs = require("fs");
+const log = require("./log");
 /**
  *
  * @param pkg {string}
@@ -51,17 +53,18 @@ const addPackagesToPeerDependencies = (context, targetPath, packages) => {
 const allowedPackageDependencyTypes = ["dependencies", "devDependencies", "peerDependencies"];
 const addPackagesToDeps = (type, context, targetPath, packages) => {
     if (!allowedPackageDependencyTypes.includes(type)) {
-        context.error(`Package dependency type "${type}" is not valid.`);
+        log.error(`Package dependency type "${type}" is not valid.`);
         return;
     }
-    const file = `${targetPath}/package.json`;
+    const file =
+        targetPath.match("/package.json") === null ? `${targetPath}/package.json` : targetPath;
     if (!fs.existsSync(file)) {
-        context.error(`There is no package.json file at path "${file}".`);
+        log.error(`There is no package.json file at path "${file}".`);
         return;
     }
     const json = loadJson.sync(file);
     if (!json) {
-        context.error(`There is no package.json file "${file}"`);
+        log.error(`There is no package.json file "${file}"`);
         return;
     }
     const dependencies = json[type] || {};
@@ -77,7 +80,7 @@ const addPackagesToDeps = (type, context, targetPath, packages) => {
             continue;
         }
         if (!validateVersion(pkg, version)) {
-            context.error(`Package "${pkg}" version is not a valid semver version: "${version}".`);
+            log.error(`Package "${pkg}" version is not a valid semver version: "${version}".`);
             continue;
         }
         dependencies[pkg] = version;

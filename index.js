@@ -2,6 +2,7 @@
 const fs = require("fs");
 const path = require("path");
 const { log } = require("./utils");
+const { argv } = require("yargs");
 
 const response = data => {
     console.log(JSON.stringify(data));
@@ -27,11 +28,14 @@ const response = data => {
             });
         }
 
-        await require(scriptsPath)({
+        const context = {
             project: {
                 root: argv.cwd || process.cwd()
-            }
-        });
+            },
+            version: "5.20.0"
+        };
+
+        await require(scriptsPath)(context);
 
         const duration = (new Date() - start) / 1000;
         log.success(`Upgrade completed in ${log.success.hl(duration)}s.`);
