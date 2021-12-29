@@ -15,6 +15,7 @@ const addPageBuilderImport = source => {
 const removePageBuilderDynamoDbImports = source => {
     removeImportFromSourceFile(source, "@webiny/api-page-builder/graphql");
     removeImportFromSourceFile(source, "@webiny/api-page-builder-so-ddb");
+    removeImportFromSourceFile(source, "@webiny/api-page-builder-import-export-so-ddb");
 };
 
 const addPageBuilderDynamoDbImports = source => {
@@ -32,6 +33,7 @@ const addPageBuilderDynamoDbImports = source => {
 const removePageBuilderElasticsearchImports = source => {
     removeImportFromSourceFile(source, "@webiny/api-page-builder/graphql");
     removeImportFromSourceFile(source, "@webiny/api-page-builder-so-ddb-es");
+    removeImportFromSourceFile(source, "@webiny/api-page-builder-import-export-so-ddb");
 };
 
 const addPageBuilderElasticsearchImports = source => {

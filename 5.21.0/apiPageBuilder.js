@@ -64,6 +64,7 @@ const getFiles = context => {
 
 const getSource = (project, file) => {
     if (!file) {
+        log.debug("File variable not sent.");
         return null;
     }
     let source = null;
@@ -87,47 +88,53 @@ const upgradeProject = (context, project, files) => {
      */
 
     if (isElasticsearchProject) {
+        log.debug("0");
         upgradeElasticsearchGraphQL({
             context,
             project,
             files: upgradeFiles,
             file: upgradeFiles.apiGraphQLIndex,
-            source: getSource(project, files.apiGraphQLIndex)
+            source: getSource(project, upgradeFiles.apiGraphQLIndex)
         });
+        log.debug("1");
         upgradeElasticsearchImportExport({
             context,
             project,
             files: upgradeFiles,
             file: upgradeFiles.apiExportCombineIndex,
-            source: getSource(project, files.apiExportCombineIndex)
+            source: getSource(project, upgradeFiles.apiExportCombineIndex)
         });
+        log.debug("2");
         upgradeElasticsearchImportExport({
             context,
             project,
             files: upgradeFiles,
             file: upgradeFiles.apiExportProcessIndex,
-            source: getSource(project, files.apiExportProcessIndex)
+            source: getSource(project, upgradeFiles.apiExportProcessIndex)
         });
+        log.debug("3");
         upgradeElasticsearchImportExport({
             context,
             project,
             files: upgradeFiles,
             file: upgradeFiles.apiImportCreateIndex,
-            source: getSource(project, files.apiImportCreateIndex)
+            source: getSource(project, upgradeFiles.apiImportCreateIndex)
         });
+        log.debug("4");
         upgradeElasticsearchImportExport({
             context,
             project,
             files: upgradeFiles,
             file: upgradeFiles.apiImportProcessIndex,
-            source: getSource(project, files.apiImportProcessIndex)
+            source: getSource(project, upgradeFiles.apiImportProcessIndex)
         });
+        log.debug("5");
         upgradeElasticsearchUpdateSettings({
             context,
             project,
             files: upgradeFiles,
             file: upgradeFiles.apiUpdateSettingsIndex,
-            source: getSource(project, files.apiUpdateSettingsIndex)
+            source: getSource(project, upgradeFiles.apiUpdateSettingsIndex)
         });
         return;
     }
@@ -140,42 +147,42 @@ const upgradeProject = (context, project, files) => {
         project,
         files: upgradeFiles,
         file: upgradeFiles.apiGraphQLIndex,
-        source: getSource(project, files.apiGraphQLIndex)
+        source: getSource(project, upgradeFiles.apiGraphQLIndex)
     });
     upgradeImportExport({
         context,
         project,
         files: upgradeFiles,
         file: upgradeFiles.apiExportCombineIndex,
-        source: getSource(project, files.apiExportCombineIndex)
+        source: getSource(project, upgradeFiles.apiExportCombineIndex)
     });
     upgradeImportExport({
         context,
         project,
         files: upgradeFiles,
         file: upgradeFiles.apiExportProcessIndex,
-        source: getSource(project, files.apiExportProcessIndex)
+        source: getSource(project, upgradeFiles.apiExportProcessIndex)
     });
     upgradeImportExport({
         context,
         project,
         files: upgradeFiles,
         file: upgradeFiles.apiImportCreateIndex,
-        source: getSource(project, files.apiImportCreateIndex)
+        source: getSource(project, upgradeFiles.apiImportCreateIndex)
     });
     upgradeImportExport({
         context,
         project,
         files: upgradeFiles,
         file: upgradeFiles.apiImportProcessIndex,
-        source: getSource(project, files.apiImportProcessIndex)
+        source: getSource(project, upgradeFiles.apiImportProcessIndex)
     });
     upgradeUpdateSettings({
         context,
         project,
         files: upgradeFiles,
         file: upgradeFiles.apiUpdateSettingsIndex,
-        source: getSource(project, files.apiUpdateSettingsIndex)
+        source: getSource(project, upgradeFiles.apiUpdateSettingsIndex)
     });
 };
 

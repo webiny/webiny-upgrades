@@ -18,16 +18,16 @@ const {
  * @param context {CliContext}
  * @param project {tsMorph.Project}
  */
-const upgradeElasticsearchUpdateSettings = ({ context, source, file }) => {
+const upgradeElasticsearchUpdateSettings = ({ context, source, files, file }) => {
     if (!source) {
-        log.debug(`Skipping "${file}", because source is not found.`);
+        log.debug(`Skipping "${file}". File not found.`);
         return;
     }
     /**
      * Remove unnecessary imports
      */
     removeImportFromSourceFile(source, "@webiny/handler-db");
-    removeImportFromSourceFile(source, "@webiny/@webiny/db-dynamodb");
+    removeImportFromSourceFile(source, "@webiny/db-dynamodb");
     removeImportFromSourceFile(source, "@webiny/api-page-builder-so-ddb-es");
     /**
      * Add new one
@@ -71,9 +71,9 @@ const upgradeElasticsearchUpdateSettings = ({ context, source, file }) => {
  * @param context {CliContext}
  * @param project {tsMorph.Project}
  */
-const upgradeUpdateSettings = ({ source, file }) => {
+const upgradeUpdateSettings = ({ source, files, file }) => {
     if (!source) {
-        log.debug(`Skipping "${file}", because source is not found.`);
+        log.debug(`Skipping "${file}". File not found.`);
         return;
     }
     /**

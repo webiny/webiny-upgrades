@@ -16,6 +16,8 @@ module.exports = async context => {
      * Upgrade the Page Builder related files.
      */
     apiPageBuilder.upgradeProject(context, project, files);
+
+    await project.save();
     /**
      * Install new packages.
      */

@@ -17,7 +17,7 @@ const {
  */
 const upgradeElasticsearchGraphQL = ({ file, source }) => {
     if (!source) {
-        log.debug(`Skipping "${file}", because source is not found.`);
+        log.debug(`Skipping "${file}". File not found.`);
         return;
     }
     /**
@@ -66,7 +66,7 @@ const upgradeElasticsearchGraphQL = ({ file, source }) => {
  */
 const upgradeGraphQL = ({ file, source }) => {
     if (!source) {
-        log.debug(`Skipping "${file}", because source is not found.`);
+        log.debug(`Skipping "${file}". File not found.`);
         return;
     }
     /**
