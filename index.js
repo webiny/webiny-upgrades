@@ -32,7 +32,7 @@ const response = data => {
             project: {
                 root: argv.cwd || process.cwd()
             },
-            version: "5.20.0"
+            version
         };
 
         await require(scriptsPath)(context);
