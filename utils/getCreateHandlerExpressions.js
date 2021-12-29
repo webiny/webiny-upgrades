@@ -3,7 +3,7 @@ const tsMorph = require("ts-morph");
 /**
  *
  * @param source {tsMorph.SourceFile}
- * @param handler {tsMorph.Node}
+ * @param handler {String}
  * @return {{handlerDeclaration: VariableDeclaration, createHandlerExpression: tsMorph.Node, plugins: tsMorph.Node, arrayExpression: tsMorph.ArrayLiteralExpression}}
  */
 const getCreateHandlerExpressions = (source, handler) => {

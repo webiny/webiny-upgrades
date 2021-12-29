@@ -8,7 +8,8 @@ const {
     addDynamoDbDocumentClient,
     addElasticsearchClient,
     addPluginToCreateHandler,
-    addPackagesToDependencies
+    addPackagesToDependencies,
+    upgradeCreateHandlerToPlugins
 } = require("../../utils");
 /**
  *
@@ -39,10 +40,14 @@ const upgradeElasticsearchUpdateSettings = ({ context, source, files, file }) =>
         },
         moduleSpecifier: "@webiny/api-page-builder-so-ddb-es"
     });
+    /**
+     * Upgrade the createHandler to contain object with plugins as initializer
+     */
+    upgradeCreateHandlerToPlugins(source, "handler");
 
     removePluginFromCreateHandler(source, "handler", "updateSettingsPlugins");
-    removePluginFromCreateHandler(source, "handler", "dbPlugins(");
-    removePluginFromCreateHandler(source, "handler", "pageBuilderDynamoDbElasticsearchPlugins()");
+    removePluginFromCreateHandler(source, "handler", "dbPlugins");
+    removePluginFromCreateHandler(source, "handler", "pageBuilderDynamoDbElasticsearchPlugins");
 
     addPackagesToDependencies(context, files.apiUpdateSettingsPackageJson, {
         "@webiny/db-dynamodb": null,
@@ -58,7 +63,7 @@ const upgradeElasticsearchUpdateSettings = ({ context, source, files, file }) =>
     addPluginToCreateHandler({
         source,
         handler: "handler",
-        value: "updateSettingsPlugins({storageOperations: createPageBuilderStorageOperations({documentClient,elasticsearchClient})})",
+        value: "updateSettingsPlugins({storageOperations: createPageBuilderStorageOperations({documentClient,elasticsearch:elasticsearchClient})})",
         after: new RegExp("logsPlugins")
     });
 };

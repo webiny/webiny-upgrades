@@ -26,6 +26,7 @@ const {
 } = require("./dependencies");
 
 const getIsElasticsearchProject = require("./isElasticsearchProject");
+const upgradeCreateHandlerToPlugins = require("./upgradeCreateHandlerToPlugins");
 
 module.exports = {
     addPluginToCreateHandler,
@@ -49,5 +50,6 @@ module.exports = {
     addPackagesToDependencies,
     addPackagesToDevDependencies,
     addPackagesToPeerDependencies,
-    getIsElasticsearchProject
+    getIsElasticsearchProject,
+    upgradeCreateHandlerToPlugins
 };

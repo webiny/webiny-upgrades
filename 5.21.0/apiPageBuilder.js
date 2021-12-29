@@ -57,7 +57,7 @@ const getFiles = context => {
             log.debug(`No file "${file}". Skipping...`);
             continue;
         }
-        output[key] = target;
+        output[key] = file;
     }
     return output;
 };
@@ -88,7 +88,6 @@ const upgradeProject = (context, project, files) => {
      */
 
     if (isElasticsearchProject) {
-        log.debug("0");
         upgradeElasticsearchGraphQL({
             context,
             project,
@@ -96,7 +95,6 @@ const upgradeProject = (context, project, files) => {
             file: upgradeFiles.apiGraphQLIndex,
             source: getSource(project, upgradeFiles.apiGraphQLIndex)
         });
-        log.debug("1");
         upgradeElasticsearchImportExport({
             context,
             project,
@@ -104,7 +102,6 @@ const upgradeProject = (context, project, files) => {
             file: upgradeFiles.apiExportCombineIndex,
             source: getSource(project, upgradeFiles.apiExportCombineIndex)
         });
-        log.debug("2");
         upgradeElasticsearchImportExport({
             context,
             project,
@@ -112,7 +109,6 @@ const upgradeProject = (context, project, files) => {
             file: upgradeFiles.apiExportProcessIndex,
             source: getSource(project, upgradeFiles.apiExportProcessIndex)
         });
-        log.debug("3");
         upgradeElasticsearchImportExport({
             context,
             project,
@@ -120,7 +116,6 @@ const upgradeProject = (context, project, files) => {
             file: upgradeFiles.apiImportCreateIndex,
             source: getSource(project, upgradeFiles.apiImportCreateIndex)
         });
-        log.debug("4");
         upgradeElasticsearchImportExport({
             context,
             project,
@@ -128,7 +123,6 @@ const upgradeProject = (context, project, files) => {
             file: upgradeFiles.apiImportProcessIndex,
             source: getSource(project, upgradeFiles.apiImportProcessIndex)
         });
-        log.debug("5");
         upgradeElasticsearchUpdateSettings({
             context,
             project,

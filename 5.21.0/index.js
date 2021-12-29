@@ -1,4 +1,4 @@
-const { yarnInstall, createMorphProject } = require("../utils");
+const { yarnInstall, createMorphProject, prettierFormat } = require("../utils");
 
 const apiPageBuilder = require("./apiPageBuilder");
 const glob = require("fast-glob");
@@ -18,6 +18,11 @@ module.exports = async context => {
     apiPageBuilder.upgradeProject(context, project, files);
 
     await project.save();
+
+    /**
+     * Format updated files.
+     */
+    await prettierFormat(files, context);
     /**
      * Install new packages.
      */

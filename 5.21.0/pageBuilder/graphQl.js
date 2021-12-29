@@ -34,6 +34,7 @@ const upgradeElasticsearchGraphQL = ({ file, source }) => {
      */
     removePluginFromCreateHandler(source, "handler", "pageBuilderPlugins()");
     removePluginFromCreateHandler(source, "handler", "pageBuilderDynamoDbElasticsearchPlugins()");
+    removePluginFromCreateHandler(source, "handler", "pageBuilderImportExportPlugins");
     /**
      * And add the new ones.
      */
@@ -55,6 +56,17 @@ const upgradeElasticsearchGraphQL = ({ file, source }) => {
         handler: "handler",
         value: `createPageBuilderGraphQL()`,
         after: new RegExp("createPageBuilderContext")
+    });
+
+    addPluginToCreateHandler({
+        source,
+        handler: "handler",
+        value: `pageBuilderImportExportPlugins({
+            storageOperations: createPageBuilderImportExportStorageOperations({
+                documentClient
+            })
+        })`,
+        after: new RegExp("createPageBuilderGraphQL")
     });
 };
 
@@ -83,6 +95,7 @@ const upgradeGraphQL = ({ file, source }) => {
      */
     removePluginFromCreateHandler(source, "handler", "pageBuilderPlugins()");
     removePluginFromCreateHandler(source, "handler", "pageBuilderDynamoDbPlugins()");
+    removePluginFromCreateHandler(source, "handler", "pageBuilderImportExportPlugins");
     /**
      * And add the new ones.
      */
@@ -102,6 +115,17 @@ const upgradeGraphQL = ({ file, source }) => {
         handler: "handler",
         value: `createPageBuilderGraphQL()`,
         after: new RegExp("createPageBuilderContext")
+    });
+
+    addPluginToCreateHandler({
+        source,
+        handler: "handler",
+        value: `pageBuilderImportExportPlugins({
+            storageOperations: createPageBuilderImportExportStorageOperations({
+                documentClient
+            })
+        })`,
+        after: new RegExp("createPageBuilderGraphQL")
     });
 };
 

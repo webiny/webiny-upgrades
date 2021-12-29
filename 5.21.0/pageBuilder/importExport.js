@@ -34,22 +34,11 @@ const upgradeElasticsearchImportExport = ({ file, source }) => {
      * Add new ones
      */
     addPageBuilderElasticsearchImports(source);
-
-    /**
-     * Modify existing page builder import/export storage operations.
-     */
-    insertImportToSourceFile({
-        source,
-        name: {
-            createStorageOperations: "createPageBuilderImportExportStorageOperations"
-        },
-        moduleSpecifier: "@webiny/api-page-builder-import-export-so-ddb"
-    });
     /**
      * Remove old plugin initializations.
      */
-    removePluginFromCreateHandler(source, "handler", "pageBuilderPlugins()");
-    removePluginFromCreateHandler(source, "handler", "pageBuilderDynamoDbElasticsearchPlugins()");
+    removePluginFromCreateHandler(source, "handler", "pageBuilderPlugins");
+    removePluginFromCreateHandler(source, "handler", "pageBuilderDynamoDbElasticsearchPlugins");
     removePluginFromCreateHandler(source, "handler", "pageBuilderImportExportPlugins");
     removePluginFromCreateHandler(source, "handler", "elasticSearch");
 
@@ -119,16 +108,6 @@ const upgradeImportExport = ({ file, source }) => {
      * Add new ones
      */
     addPageBuilderDynamoDbImports(source);
-    /**
-     * Modify existing page builder import/export storage operations.
-     */
-    insertImportToSourceFile({
-        source,
-        name: {
-            createStorageOperations: "createPageBuilderImportExportStorageOperations"
-        },
-        moduleSpecifier: "@webiny/api-page-builder-import-export-so-ddb"
-    });
     /**
      * Remove old plugin initializations.
      */

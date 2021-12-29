@@ -3,12 +3,20 @@ const { removeImportFromSourceFile, insertImportToSourceFile } = require("../../
 /**
  * @internal
  */
-const addPageBuilderImport = source => {
+const addCommonPageBuilderImports = source => {
     insertImportToSourceFile({
         source,
         name: ["createPageBuilderGraphQL", "createPageBuilderContext"],
         moduleSpecifier: "@webiny/api-page-builder/graphql",
         after: "@webiny/api-i18n-content/plugins"
+    });
+    insertImportToSourceFile({
+        source,
+        name: {
+            createStorageOperations: "createPageBuilderImportExportStorageOperations"
+        },
+        moduleSpecifier: "@webiny/api-page-builder-import-export-so-ddb",
+        after: "@webiny/api-page-builder-import-export/graphql"
     });
 };
 
@@ -19,7 +27,7 @@ const removePageBuilderDynamoDbImports = source => {
 };
 
 const addPageBuilderDynamoDbImports = source => {
-    addPageBuilderImport(source);
+    addCommonPageBuilderImports(source);
     insertImportToSourceFile({
         source,
         name: {
@@ -37,7 +45,7 @@ const removePageBuilderElasticsearchImports = source => {
 };
 
 const addPageBuilderElasticsearchImports = source => {
-    addPageBuilderImport(source);
+    addCommonPageBuilderImports(source);
     insertImportToSourceFile({
         source,
         name: {
