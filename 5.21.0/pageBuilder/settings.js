@@ -76,7 +76,7 @@ const upgradeElasticsearchUpdateSettings = ({ context, source, files, file }) =>
  * @param context {CliContext}
  * @param project {tsMorph.Project}
  */
-const upgradeUpdateSettings = ({ source, files, file }) => {
+const upgradeUpdateSettings = ({ context, source, files, file }) => {
     if (!source) {
         log.debug(`Skipping "${file}". File not found.`);
         return;
@@ -88,6 +88,12 @@ const upgradeUpdateSettings = ({ source, files, file }) => {
     removeImportFromSourceFile(source, "@webiny/db-dynamodb");
     removeImportFromSourceFile(source, "@webiny/db-dynamodb/plugins");
     removeImportFromSourceFile(source, "@webiny/api-page-builder-so-ddb");
+
+    /**
+     * Upgrade the createHandler to contain object with plugins as initializer
+     */
+    upgradeCreateHandlerToPlugins(source, "handler");
+
     /**
      * Add new one
      */
@@ -100,9 +106,9 @@ const upgradeUpdateSettings = ({ source, files, file }) => {
     });
 
     removePluginFromCreateHandler(source, "handler", "updateSettingsPlugins");
-    removePluginFromCreateHandler(source, "handler", "dbPlugins(");
-    removePluginFromCreateHandler(source, "handler", "dynamoDbPlugins()");
-    removePluginFromCreateHandler(source, "handler", "pageBuilderDynamoDbPlugins()");
+    removePluginFromCreateHandler(source, "handler", "dbPlugins");
+    removePluginFromCreateHandler(source, "handler", "dynamoDbPlugins");
+    removePluginFromCreateHandler(source, "handler", "pageBuilderDynamoDbPlugins");
 
     addPackagesToDependencies(context, files.apiUpdateSettingsPackageJson, {
         "@webiny/db-dynamodb": null,
