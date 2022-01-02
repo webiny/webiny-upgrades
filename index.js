@@ -2,7 +2,6 @@
 const fs = require("fs");
 const path = require("path");
 const { log } = require("./utils");
-const { argv } = require("yargs");
 
 const response = data => {
     console.log(JSON.stringify(data));
