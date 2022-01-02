@@ -62,6 +62,7 @@ $webiny-theme-typography-font-family: "Source Sans Pro";
 @import "~@webiny/app-serverless-cms/styles.scss";`;
 
 const dependencies = version => ({
+    "@apollo/react-components": null,
     "@webiny/app": null,
     "@webiny/app-file-manager": null,
     "@webiny/app-file-manager-s3": null,
