@@ -15,7 +15,7 @@ const response = data => {
     try {
         const [version] = argv._;
         if (!version) {
-            throw new Error("--version argument missing. Please specify it.");
+            throw new Error(`Missing positional "version" argument!`);
         }
 
         const scriptsPath = path.join(__dirname, version, `index.js`);

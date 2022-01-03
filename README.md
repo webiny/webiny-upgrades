@@ -60,6 +60,8 @@ Once you're done, it's still advised that you push the changes and do a complete
 yarn webiny upgrade --use-version 5.50.0-hot-fix
 ```
 
+> IMPORTANT: the version you pass to the Webiny CLI *must* match the upgrade folder name in this repo!
+
 You can also run the upgrade command via the Webiny CLI from a locally cloned `webiny-js` repository:
 
 ```
