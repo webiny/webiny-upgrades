@@ -3,7 +3,8 @@ const {
     removeExtendsFromInterface,
     insertImportToSourceFile,
     getExistingFiles,
-    getSourceFile
+    getSourceFile,
+    addPackagesToDependencies
 } = require("../utils");
 
 const upgradePaths = {
@@ -11,7 +12,8 @@ const upgradePaths = {
 };
 
 const upgradeFiles = {
-    apiGraphQLTypes: `${upgradePaths.apiGraphQL}/src/types.ts`
+    apiGraphQLTypes: `${upgradePaths.apiGraphQL}/src/types.ts`,
+    packageJson: `${upgradePaths.apiGraphQL}/package.json`
 };
 
 const upgradeProject = (context, project) => {
@@ -24,6 +26,9 @@ const upgradeProject = (context, project) => {
      */
     removeImportFromSourceFile(source, "@webiny/handler/types");
     removeExtendsFromInterface(source, "Context", "HandlerContext");
+    addPackagesToDependencies(context, upgradeFiles.packageJson, {
+        "@webiny/handler": null
+    });
     /**
      * Remove old @webiny/api-i18n-content/types
      */

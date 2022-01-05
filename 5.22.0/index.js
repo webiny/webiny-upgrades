@@ -41,7 +41,7 @@ module.exports = async context => {
     /**
      * Install new packages.
      */
-    //await yarnInstall({
-    //    context
-    //});
+    await yarnInstall({
+        context
+    });
 };

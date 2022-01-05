@@ -2,6 +2,7 @@ const {
     removeImportFromSourceFile,
     removeExtendsFromInterface,
     insertImportToSourceFile,
+    addPackagesToDependencies,
     getExistingFiles,
     getSourceFile
 } = require("../utils");
@@ -11,7 +12,8 @@ const upgradePaths = {
 };
 
 const upgradeFiles = {
-    apiHeadlessCmsTypes: `${upgradePaths.apiHeadlessCms}/src/types.ts`
+    apiHeadlessCmsTypes: `${upgradePaths.apiHeadlessCms}/src/types.ts`,
+    packageJson: `${upgradePaths.apiHeadlessCms}/package.json`
 };
 
 const upgradeProject = (context, project) => {
@@ -24,6 +26,10 @@ const upgradeProject = (context, project) => {
      */
     removeImportFromSourceFile(source, "@webiny/handler/types");
     removeExtendsFromInterface(source, "Context", "HandlerContext");
+    addPackagesToDependencies(context, upgradeFiles.packageJson, {
+        "@webiny/handler": null
+    });
+
     /**
      * Remove old @webiny/api-i18n-content/types
      */
