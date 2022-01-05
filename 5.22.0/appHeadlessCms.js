@@ -34,8 +34,11 @@ const upgradeProject = (context, project) => {
 
     addToExportDefaultArray({
         source,
-        target: "uniqueFieldValidator",
-        after: "objectFieldRenderer"
+        target: "uniqueFieldValidator()"
+    });
+    addToExportDefaultArray({
+        source,
+        target: "editorUniqueFieldValidator()"
     });
 };
 

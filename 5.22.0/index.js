@@ -20,12 +20,12 @@ module.exports = async context => {
     /**
      * Upgrade API GraphQL.
      */
-    //apiGraphQL.upgradeProject(context, project);
+    apiGraphQL.upgradeProject(context, project);
 
     /**
      * Upgrade API Headless CMS.
      */
-    //await apiHeadlessCms.upgradeProject(context, project);
+    await apiHeadlessCms.upgradeProject(context, project);
 
     /**
      * Upgrade APP Headless CMS.
