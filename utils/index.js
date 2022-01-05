@@ -27,6 +27,10 @@ const {
 
 const getIsElasticsearchProject = require("./isElasticsearchProject");
 const upgradeCreateHandlerToPlugins = require("./upgradeCreateHandlerToPlugins");
+const removeExtendsFromInterface = require("./removeExtendsFromInterface");
+
+const { getSourceFile, getExistingFiles } = require("./files");
+const addToExportDefaultArray = require("./addToExportDefaultArray");
 
 module.exports = {
     addPluginToCreateHandler,
@@ -51,5 +55,9 @@ module.exports = {
     addPackagesToDevDependencies,
     addPackagesToPeerDependencies,
     getIsElasticsearchProject,
-    upgradeCreateHandlerToPlugins
+    upgradeCreateHandlerToPlugins,
+    removeExtendsFromInterface,
+    getSourceFile,
+    getExistingFiles,
+    addToExportDefaultArray
 };
