@@ -5,7 +5,8 @@ const loadJson = require("load-json-file");
 /**
  * We will determine if GraphQL package.json file has elasticsearch package. If it does, it is elasticsearch project.
  */
-module.exports = (context, apiGraphQLPath) => {
+module.exports = (context, apiGraphQLPath = undefined) => {
+    apiGraphQLPath = apiGraphQLPath || "api/code/graphql";
     const file = path.join(context.project.root, apiGraphQLPath, "package.json");
     if (fs.existsSync(file) === false) {
         log.debug(`Missing file "${file}" to determine if project contains Elasticsearch.`);
