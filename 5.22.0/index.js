@@ -3,6 +3,7 @@ const { yarnInstall, createMorphProject, prettierFormat } = require("../utils");
 const apiGraphQL = require("./apiGraphQL");
 const apiHeadlessCms = require("./apiHeadlessCms");
 const appHeadlessCms = require("./appHeadlessCms");
+const apiPulumiVpc = require("./apiPulumiVpc");
 
 module.exports = async context => {
     const apiGraphQLFiles = apiGraphQL.getFiles(context);
@@ -31,6 +32,11 @@ module.exports = async context => {
      * Upgrade APP Headless CMS.
      */
     await appHeadlessCms.upgradeProject(context, project);
+
+    /**
+     * Upgrade Pulumi files in the user project.
+     */
+    await apiPulumiVpc.upgradeApiPulumi(context);
 
     await project.save();
 
