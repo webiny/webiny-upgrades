@@ -12,7 +12,7 @@ module.exports = async context => {
         ...Object.values(pageBuilderFiles),
         ...Object.values(adminAppFiles)
     ]);
-    
+
     const project = createMorphProject(files);
     /**
      * Upgrade the Page Builder related files.
