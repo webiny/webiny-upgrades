@@ -4,17 +4,20 @@ const apiGraphQL = require("./apiGraphQL");
 const apiHeadlessCms = require("./apiHeadlessCms");
 const appHeadlessCms = require("./appHeadlessCms");
 const apiPulumiVpc = require("./apiPulumiVpc");
+const appBabelReact = require("./appBabelReact");
 
 module.exports = async context => {
     const apiGraphQLFiles = apiGraphQL.getFiles(context);
     const apiHeadlessCmsFiles = apiHeadlessCms.getFiles(context);
     const appHeadlessCmsFiles = appHeadlessCms.getFiles(context);
+    const appBabelReactFiles = appBabelReact.getFiles(context);
 
     const files = await glob([
         // add files here
         ...Object.values(apiGraphQLFiles),
         ...Object.values(apiHeadlessCmsFiles),
-        ...Object.values(appHeadlessCmsFiles)
+        ...Object.values(appHeadlessCmsFiles),
+        ...Object.values(appBabelReactFiles)
     ]);
 
     const project = createMorphProject(files);
@@ -37,6 +40,11 @@ module.exports = async context => {
      * Upgrade Pulumi files in the user project.
      */
     await apiPulumiVpc.upgradeApiPulumi(context);
+
+    /**
+     * Remove the unnecessary plugin from plugins array in .babel.react.js
+     */
+    await appBabelReact.upgradeBabelReact(context, project);
 
     await project.save();
 
