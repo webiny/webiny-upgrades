@@ -34,12 +34,11 @@ const upgradeApiPulumi = context => {
 
     const copyToTarget = path.join(context.project.root, pulumiProdVpcProjectFile);
     if (!fs.existsSync(copyToTarget)) {
-        log.error(
+        log.warning(
             `The ${log.info.highlight("vpc.ts")} file of your ${log.info.highlight(
                 "prod"
-            )} environment was not found at ${log.info.highlight(copyToTarget)}.`
+            )} environment was not found at ${log.info.highlight(copyToTarget)}. Skipping.`
         );
-        log.info(`Location should be: ${copyToTarget}`);
         return;
     }
 

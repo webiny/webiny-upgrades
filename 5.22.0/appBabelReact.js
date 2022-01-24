@@ -30,7 +30,7 @@ const upgradeBabelReact = async (context, project) => {
      * If no node was found, just log error and exit.
      */
     if (!plugins) {
-        log.error(
+        log.info(
             `Look like you've already removed the "babel-plugin-named-asset-import" from your config. Skipping.`
         );
         return;
