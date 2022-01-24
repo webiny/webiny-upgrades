@@ -2,7 +2,7 @@ const { getExistingFiles, addPackagesToDependencies } = require("../utils");
 
 const upgradeFiles = {
     appsTheme: `apps/theme/package.json`,
-    appsWebsite: `apps/website/package.json`
+    appsWebsite: `apps/website/code/package.json`
 };
 
 const upgradeProject = (context) => {
