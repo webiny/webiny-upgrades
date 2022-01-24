@@ -22,26 +22,34 @@ const upgradeApiPulumi = context => {
         return;
     }
 
-    log.info(
-        `We will try to upgrade your projects "prod" environment vpc.ts file. If you had some custom changes in it, please add them again.`
-    );
+    log.info([
+        "/*********************************************************************************************************************************/",
+        `We will attempt to upgrade the ${log.info.highlight(
+            "vpc.ts"
+        )} configuration in your your project's ${log.info.highlight("prod")} environment!`,
+        `If you had some custom changes in it, please review and add them again.`,
+        "/**********************************************************************************************************************************/"
+    ]);
 
     const copyToTarget = path.join(context.project.root, pulumiProdVpcProjectFile);
     if (!fs.existsSync(copyToTarget)) {
         log.error(
-            `Could not determine the location of your project's api production environment "vpc.ts" location.`
+            `The ${log.info.highlight("vpc.ts")} file of your ${log.info.highlight(
+                "prod"
+            )} environment was not found at ${log.info.highlight(copyToTarget)}.`
         );
         log.info(`Location should be: ${copyToTarget}`);
         return;
     }
+
     const copyFromTarget = path.join(context.project.root, pulumiProdVpcNodeModulesFile);
+
     if (!fs.existsSync(copyFromTarget)) {
-        log.error(
-            `Could not determine the location of node_modules api production environment "vpc.ts" location.`
-        );
-        log.info(`Location should be: ${copyFromTarget}`);
+        log.error(`Source file for ${log.info.highlight("vpc.ts")} was not found!`);
+        log.info(`Are you sure you updated dependencies to version 5.22.0?`);
         return;
     }
+
     try {
         fs.copyFileSync(copyFromTarget, copyToTarget);
     } catch (ex) {

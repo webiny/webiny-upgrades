@@ -31,7 +31,7 @@ const upgradeBabelReact = async (context, project) => {
      */
     if (!plugins) {
         log.error(
-            `Could not find required value in your project ".babel.react.js" file. Skipping...`
+            `Look like you've already removed the "babel-plugin-named-asset-import" from your config. Skipping.`
         );
         return;
     }
