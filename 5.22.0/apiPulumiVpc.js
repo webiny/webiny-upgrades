@@ -24,11 +24,11 @@ const upgradeApiPulumi = context => {
 
     log.info(
         [
-            "!IMPORTANT!",
+            "\n\n!!!IMPORTANT!!!",
             `We will attempt to upgrade the ${log.info.highlight(
                 "vpc.ts"
-            )} configuration in your your project's ${log.info.highlight("prod")} environment!`,
-            `If you had some custom changes in it, please review and add them back after the upgrade has completed.`
+            )} configuration in your project's ${log.info.highlight("prod")} environment!`,
+            `If you had some custom changes in it, please review and add them back after the upgrade has completed.\n`
         ].join("\n")
     );
 
