@@ -22,14 +22,15 @@ const upgradeApiPulumi = context => {
         return;
     }
 
-    log.info([
-        "/*********************************************************************************************************************************/",
-        `We will attempt to upgrade the ${log.info.highlight(
-            "vpc.ts"
-        )} configuration in your your project's ${log.info.highlight("prod")} environment!`,
-        `If you had some custom changes in it, please review and add them again.`,
-        "/**********************************************************************************************************************************/"
-    ]);
+    log.info(
+        [
+            "!IMPORTANT!",
+            `We will attempt to upgrade the ${log.info.highlight(
+                "vpc.ts"
+            )} configuration in your your project's ${log.info.highlight("prod")} environment!`,
+            `If you had some custom changes in it, please review and add them back after the upgrade has completed.`
+        ].join("\n")
+    );
 
     const copyToTarget = path.join(context.project.root, pulumiProdVpcProjectFile);
     if (!fs.existsSync(copyToTarget)) {
