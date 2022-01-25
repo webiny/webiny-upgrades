@@ -1,6 +1,6 @@
 const glob = require("fast-glob");
 const { yarnInstall, createMorphProject, prettierFormat } = require("../utils");
-const apiGraphQL = require("./apiGraphQL");
+const apiGraphQL = require("./apiGraphQl");
 const apiHeadlessCms = require("./apiHeadlessCms");
 const appHeadlessCms = require("./appHeadlessCms");
 const apiPulumiVpc = require("./apiPulumiVpc");
