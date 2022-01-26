@@ -1,10 +1,15 @@
-const { getExistingFiles, addPackagesToDevDependencies } = require("../utils");
+const path = require("path");
+const {
+    getExistingFiles,
+    addPackagesToDevDependencies,
+    addResolutionToRootPackageJson
+} = require("../utils");
 
 const upgradeFiles = {
     packageJson: `package.json`
 };
 
-const upgradeProject = context => {
+const upgradeProject = async context => {
     addPackagesToDevDependencies(context, "package.json", {
         "@typescript-eslint/eslint-plugin": "^5.5.0",
         "@typescript-eslint/parser": "^5.5.0",
@@ -12,6 +17,10 @@ const upgradeProject = context => {
         eslint: "^8.4.1",
         "eslint-plugin-jest": "^25.3.0",
         "eslint-plugin-promise": "^5.2.0"
+    });
+
+    await addResolutionToRootPackageJson(path.join(process.cwd(), "package.json"), {
+        "@types/eslint": "8.2.1"
     });
 };
 
