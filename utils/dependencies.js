@@ -56,8 +56,9 @@ const addPackagesToDeps = (type, context, targetPath, packages) => {
         log.error(`Package dependency type "${type}" is not valid.`);
         return;
     }
+
     const file =
-        targetPath.match("/package.json") === null ? `${targetPath}/package.json` : targetPath;
+        targetPath.endsWith("package.json") === null ? `${targetPath}/package.json` : targetPath;
     if (!fs.existsSync(file)) {
         log.error(`There is no package.json file at path "${file}".`);
         return;

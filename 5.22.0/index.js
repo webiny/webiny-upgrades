@@ -6,6 +6,7 @@ const appHeadlessCms = require("./appHeadlessCms");
 const apiPulumiVpc = require("./apiPulumiVpc");
 const appBabelReact = require("./appBabelReact");
 const appThemeWebsite = require("./appThemeWebsite");
+const rootPackageJson = require("./rootPackageJson");
 
 module.exports = async context => {
     const apiGraphQLFiles = apiGraphQL.getFiles(context);
@@ -13,6 +14,7 @@ module.exports = async context => {
     const appHeadlessCmsFiles = appHeadlessCms.getFiles(context);
     const appBabelReactFiles = appBabelReact.getFiles(context);
     const appThemeWebsiteFiles = appThemeWebsite.getFiles(context);
+    const rootPackageJsonFiles = rootPackageJson.getFiles(context);
 
     const files = await glob([
         // add files here
@@ -20,7 +22,8 @@ module.exports = async context => {
         ...Object.values(apiHeadlessCmsFiles),
         ...Object.values(appHeadlessCmsFiles),
         ...Object.values(appBabelReactFiles),
-        ...Object.values(appThemeWebsiteFiles)
+        ...Object.values(appThemeWebsiteFiles),
+        ...Object.values(rootPackageJsonFiles)
     ]);
 
     const project = createMorphProject(files);
@@ -53,6 +56,7 @@ module.exports = async context => {
      * Update dependencies
      */
     await appThemeWebsite.upgradeProject(context);
+    await rootPackageJson.upgradeProject(context);
 
     await project.save();
 
