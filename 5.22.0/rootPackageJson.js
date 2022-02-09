@@ -15,6 +15,7 @@ const upgradeProject = async context => {
         "@typescript-eslint/parser": "^5.5.0",
         "babel-plugin-named-asset-import": null,
         eslint: "^8.4.1",
+        "eslint-plugin-import": "^2.25.4",
         "eslint-plugin-jest": "^25.3.0",
         "eslint-plugin-promise": "^5.2.0"
     });
