@@ -1,7 +1,7 @@
 const fs = require("fs");
 const glob = require("fast-glob");
 const path = require("path");
-import { log } from "../utils";
+const { log } = require("../utils");
 
 const pulumiPath = "api/pulumi/";
 
