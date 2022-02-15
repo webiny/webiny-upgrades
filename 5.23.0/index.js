@@ -10,7 +10,6 @@ module.exports = async context => {
         ...apiPulumiFiles
     ]);
 
-    //const project = createMorphProject(files);
     /**
      * Upgrade API Pulumi files.
      */
@@ -18,12 +17,6 @@ module.exports = async context => {
         files
     });
 
-    //await project.save();
-
-    /**
-     * Format updated files.
-     */
-    await prettierFormat(files, context);
     /**
      * Install new packages.
      */
