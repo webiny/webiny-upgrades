@@ -44,8 +44,12 @@ const upgradeProject = async (context, { files }) => {
         if (!matches) {
             return collection;
         }
+        const env = matches[1];
+        if (collection.includes(env) === true) {
+            return collection;
+        }
 
-        collection.push(matches[1]);
+        collection.push(env);
 
         return collection;
     }, []);
