@@ -61,13 +61,14 @@ const upgradeProject = async (context, { files }) => {
             `After the upgrade process is done, please verify that all Lambda definitions in your custom environments are set to "nodejs14.x". Previous it was "nodejs12.x".`
         );
     }
+    const nodejs12Re = new RegExp(/nodejs12\.x/g);
     /**
      * Replace the node target.
      */
     for (const file of files) {
         let contents = fs.readFileSync(file).toString();
 
-        contents = contents.replace(`"nodejs12.x"`, `"nodejs14.x"`, "g");
+        contents = contents.replace(nodejs12Re, `nodejs14.x`);
 
         fs.writeFileSync(file, contents);
     }
