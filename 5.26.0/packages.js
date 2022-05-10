@@ -1,29 +1,11 @@
 const path = require("path");
 const fs = require("fs");
 const { log } = require("../utils");
-const glob = require("fast-glob");
 
 const file = `tsconfig.build.json`;
 
 const logSkip = () => {
     log.info(`Skipping ${file} upgrade. Please upgrade it manually, if possible.`);
-};
-
-/**
- *
- * @param context {Object}
- * @return {Promise<string[]>}
- */
-const getFiles = async context => {
-    if (!context || !context.project || !context.project.root) {
-        log.error("Missing project root on the context.");
-        return [];
-    }
-    return glob(
-        [file].map(target => {
-            return path.join(context.project.root, target);
-        })
-    );
 };
 
 /**
@@ -40,33 +22,20 @@ const removeLibDom = async context => {
     }
     let tsconfig;
     try {
-        tsconfig = JSON.parse(fs.readFileSync(tsconfigFilePath).toString());
+        tsconfig = fs.readFileSync(tsconfigFilePath).toString();
     } catch (ex) {
         log.error(`Could not read ${tsconfigFilePath}.`);
         log.info(ex.message);
         logSkip();
         return;
     }
-    if (!tsconfig || Object.keys(tsconfig).length === 0) {
-        log.error(`No data in ${tsconfigFilePath}.`);
-        logSkip();
-        return;
-    } else if (!tsconfig.compilerOptions) {
-        log.error(`No compilerOptions in ${tsconfigFilePath}.`);
-        logSkip();
-        return;
-    } else if (
-        !tsconfig.compilerOptions.lib ||
-        Array.isArray(tsconfig.compilerOptions.lib) === false
-    ) {
-        log.error(`Missing compilerOptions.lib in ${tsconfigFilePath}`);
-        logSkip();
-        return;
-    }
-    tsconfig.compilerOptions.lib = ["esnext"];
+
+    log.info("Updating tsconfig...");
+    tsconfig = tsconfig.replace(`"lib": ["dom", "dom.iterable"]`, `"lib": ["esnext"]`);
+    log.info("...done");
 
     try {
-        fs.writeFileSync(tsconfigFilePath, JSON.stringify(tsconfig));
+        fs.writeFileSync(tsconfigFilePath, tsconfig);
     } catch (ex) {
         log.error(`Could not save ${tsconfigFilePath}`);
         log.info(ex.message);
@@ -75,6 +44,8 @@ const removeLibDom = async context => {
 };
 
 module.exports = {
-    getFiles,
+    getFiles: () => {
+        return [file];
+    },
     removeLibDom
 };

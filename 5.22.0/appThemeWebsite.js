@@ -5,7 +5,7 @@ const upgradeFiles = {
     appsWebsite: `apps/website/code/package.json`
 };
 
-const upgradeProject = (context) => {
+const upgradeProject = context => {
     addPackagesToDependencies(context, upgradeFiles.appsTheme, {
         graphql: "^15.8.0",
         "graphql-tag": "^2.12.6"

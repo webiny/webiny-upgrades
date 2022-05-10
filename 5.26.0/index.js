@@ -3,7 +3,7 @@ const { yarnInstall, prettierFormat } = require("../utils");
 const packages = require("./packages");
 
 module.exports = async context => {
-    const packageFiles = await packages.getFiles(context);
+    const packageFiles = await packages.getFiles();
 
     const files = await glob([
         // add files here
