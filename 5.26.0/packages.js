@@ -1,51 +1,124 @@
 const path = require("path");
 const fs = require("fs");
 const { log } = require("../utils");
+const json5 = require("json5");
 
-const file = `tsconfig.build.json`;
+const tsconfigFile = `tsconfig.build.json`;
+const packageJsonFile = `package.json`;
 
-const logSkip = () => {
+const logSkip = file => {
     log.info(`Skipping ${file} upgrade. Please upgrade it manually, if possible.`);
 };
 
+const readFile = file => {
+    if (fs.existsSync(file) === false) {
+        log.error(`Missing ${file}.`);
+        logSkip(file);
+        return null;
+    }
+
+    try {
+        return fs.readFileSync(file).toString();
+    } catch (ex) {
+        log.error(`Could not read ${file}.`);
+        log.info(ex.message);
+        logSkip();
+    }
+    return null;
+};
+
+const parseContent = (file, content) => {
+    if (!content) {
+        return null;
+    }
+    try {
+        return JSON.parse(content);
+    } catch {}
+    try {
+        return json5.parse(content);
+    } catch (ex) {
+        log.error(`Could not parse ${file}.`);
+        log.info(ex.message);
+        logSkip();
+    }
+    return null;
+};
+
+const writeFile = (file, parsed) => {
+    let stringified = {};
+    try {
+        stringified = JSON.stringify(parsed);
+    } catch {
+        stringified = json5.stringify(parsed);
+    }
+
+    try {
+        fs.writeFileSync(file, stringified);
+    } catch (ex) {
+        log.error(`Could not store ${file}`);
+        log.info(ex.message);
+        logSkip();
+    }
+};
+
+const updateTsConfig = (file, parsed) => {
+    if (!parsed) {
+        logSkip(file);
+        return;
+    }
+    if (!parsed.compilerOptions) {
+        log.error(`Missing compilerOptions in ${file}.`);
+        logSkip();
+        return;
+    }
+    log.info("Updating tsconfig...");
+
+    parsed.compilerOptions.target = "esnext";
+    parsed.compilerOptions.module = "esnext";
+    parsed.compilerOptions.lib = ["esnext"];
+    writeFile(file, parsed);
+    log.info("...done");
+};
+
+const updatePackageJson = (file, parsed) => {
+    if (!parsed) {
+        logSkip(file);
+        return;
+    }
+
+    log.info("Updating package.json...");
+
+    parsed.resolutions = {
+        ...(parsed.resolutions || {}),
+        typescript: "4.5.5"
+    };
+
+    writeFile(file, parsed);
+    log.info("...done");
+};
 /**
  *
  * @param context {Object}
  * @return {Promise<void>}
  */
 const removeLibDom = async context => {
-    const tsconfigFilePath = path.join(context.project.root, `${file}`);
-    if (fs.existsSync(tsconfigFilePath) === false) {
-        log.error(`Missing ${tsconfigFilePath}.`);
-        logSkip();
-        return;
-    }
-    let tsconfig;
-    try {
-        tsconfig = fs.readFileSync(tsconfigFilePath).toString();
-    } catch (ex) {
-        log.error(`Could not read ${tsconfigFilePath}.`);
-        log.info(ex.message);
-        logSkip();
-        return;
-    }
+    const tsconfigFilePath = path.join(context.project.root, `${tsconfigFile}`);
+    const packageJsonFilePath = path.join(context.project.root, `${packageJsonFile}`);
 
-    log.info("Updating tsconfig...");
-    tsconfig = tsconfig.replace(`"lib": ["dom", "dom.iterable"]`, `"lib": ["esnext"]`);
-    log.info("...done");
+    const tsconfigContent = readFile(tsconfigFilePath);
+    const packageJsonContent = readFile(packageJsonFilePath);
 
-    try {
-        fs.writeFileSync(tsconfigFilePath, tsconfig);
-    } catch (ex) {
-        log.error(`Could not save ${tsconfigFilePath}`);
-        log.info(ex.message);
-        logSkip();
-    }
+    const tsconfigParsed = parseContent(tsconfigFilePath, tsconfigContent);
+    const packageJsonParsed = parseContent(packageJsonFilePath, packageJsonContent);
+
+    updateTsConfig(tsconfigFilePath, tsconfigParsed);
+
+    updatePackageJson(packageJsonFilePath, packageJsonParsed);
 };
 
 module.exports = {
     getFiles: () => {
-        return [file];
+        return [tsconfigFile, packageJsonFile];
     },
     removeLibDom
 };
