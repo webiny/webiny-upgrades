@@ -1,6 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 const { log } = require("../utils");
+const json5 = require("json5");
 
 const file = `tsconfig.build.json`;
 
@@ -30,17 +31,37 @@ const removeLibDom = async context => {
         return;
     }
 
+    let parsed = {};
+    try {
+        parsed = json5.parse(tsconfig);
+    } catch (ex) {
+        log.error(`Could not parse ${tsconfigFilePath}.`);
+        log.info(ex.message);
+        logSkip();
+        return;
+    }
+
+    if (!parsed.compilerOptions) {
+        log.error(`Missing compilerOptions in ${tsconfigFilePath}.`);
+        logSkip();
+        return;
+    }
     log.info("Updating tsconfig...");
-    tsconfig = tsconfig.replace(`"lib": ["dom", "dom.iterable"]`, `"lib": ["esnext"]`);
-    log.info("...done");
+
+    parsed.compilerOptions.target = "esnext";
+    parsed.compilerOptions.module = "esnext";
+    parsed.compilerOptions.lib = ["esnext"];
+
+    const stringified = json5.stringify(parsed);
 
     try {
-        fs.writeFileSync(tsconfigFilePath, tsconfig);
+        fs.writeFileSync(tsconfigFilePath, stringified);
     } catch (ex) {
         log.error(`Could not save ${tsconfigFilePath}`);
         log.info(ex.message);
         logSkip();
     }
+    log.info("...done");
 };
 
 module.exports = {
