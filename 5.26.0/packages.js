@@ -72,7 +72,7 @@ const updateTsConfig = (file, parsed) => {
         logSkip();
         return;
     }
-    log.info("Updating tsconfig...");
+    log.info(`Updating tsconfig... ${file}`);
 
     parsed.compilerOptions.target = "esnext";
     parsed.compilerOptions.module = "esnext";
@@ -88,7 +88,7 @@ const updatePackageJson = (file, parsed) => {
         return;
     }
 
-    log.info("Updating package.json...");
+    log.info(`Updating package.json... ${file}`);
 
     parsed.resolutions = {
         ...(parsed.resolutions || {}),
@@ -114,6 +114,8 @@ const removeLibDom = async context => {
     const packageJsonParsed = parseContent(packageJsonFilePath, packageJsonContent);
 
     updateTsConfig(tsconfigFilePath, tsconfigParsed);
+
+    console.log("... moving to update package.json");
 
     updatePackageJson(packageJsonFilePath, packageJsonParsed);
 };
