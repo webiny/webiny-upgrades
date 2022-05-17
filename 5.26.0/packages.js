@@ -63,6 +63,7 @@ const writeFile = (file, parsed) => {
 
 const updateTsConfig = (file, parsed) => {
     if (!parsed) {
+        console.log("No parsed tsconfig.build.json content.");
         logSkip(file);
         return;
     }
@@ -82,6 +83,7 @@ const updateTsConfig = (file, parsed) => {
 
 const updatePackageJson = (file, parsed) => {
     if (!parsed) {
+        console.log("No parsed package.json content.");
         logSkip(file);
         return;
     }
