@@ -1,5 +1,5 @@
 const { log } = require("../utils");
-const path = require("path");
+const { join } = require("path");
 const fs = require("fs-extra");
 
 const copyFiles = async context => {
@@ -8,18 +8,20 @@ const copyFiles = async context => {
         return;
     }
 
-    const sourceDir = path.join(
+    const sourceDir = join(
         context.project.root,
         "node_modules/@webiny/cwp-template-aws/template/common/apps/website/code/src/components/Page"
     );
-    const destDir = path.join(context.project.root, "apps/website/code/src/components/Page");
+    const destDir = join(context.project.root, "apps/website/code/src/components/Page");
 
     const files = ["index.tsx", "graphql.ts"];
 
+    const rel = path => path.replace(context.project.root, "");
+
     for (const file of files) {
-        const sourceFile = path.join(sourceDir, file);
-        const destFile = path.join(context.project.root, destDir, file);
-        log.info(`Copying from "${sourceFile}" to "${destFile}"...`);
+        const sourceFile = join(sourceDir, file);
+        const destFile = join(destDir, file);
+        log.info(`Copying from "${rel(sourceFile)}" to "${rel(destFile)}"...`);
 
         fs.copySync(sourceFile, destFile, { overwrite: true });
     }
