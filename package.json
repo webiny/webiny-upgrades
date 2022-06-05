@@ -17,11 +17,10 @@
     "json5": "^2.2.1",
     "load-json-file": "^6.0.1",
     "ncp": "^2.0.0",
+    "prettier": "^2.5.1",
+    "semver": "^7.3.5",
     "ts-morph": "^12.2.0",
     "write-json-file": "^4.0.0",
-    "yargs": "^17.2.1",
-    "semver": "^7.3.5",
-    "prettier": "^2.5.1"
-  },
-  "devDependencies": {}
+    "yargs": "^17.2.1"
+  }
 }
