@@ -21,7 +21,7 @@ const copyFiles = async context => {
     for (const file of files) {
         const sourceFile = join(sourceDir, file);
         const destFile = join(destDir, file);
-        log.info(`Copying from "${rel(sourceFile)}" to "${rel(destFile)}"...`);
+        log.info(`Copying new file contents to "${rel(destFile)}"...`);
 
         fs.copySync(sourceFile, destFile, { overwrite: true });
     }
