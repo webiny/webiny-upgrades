@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "module": "esnext",
+    "lib": ["esnext"],
+    "esModuleInterop": true,
+    "declaration": false,
+    "noEmit": true,
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "paths": {},
+    "noImplicitAny": false,
+    /**
+     * Maybe switch to true at some point? There would need to be A LOT of error handling changes.
+     * https://www.typescriptlang.org/tsconfig#useUnknownInCatchVariables
+     */
+    "useUnknownInCatchVariables": false,
+    /**
+     * Setting to true will start producing TS errors that are inside libraries we use.
+     * https://www.typescriptlang.org/tsconfig#exactOptionalPropertyTypes
+     */
+    "exactOptionalPropertyTypes": false
+  },
+  "include": ["./**/*.ts"],
+  "exclude": ["node_modules"],
+  "ts-node": {
+    "files": false,
+    "typeCheck": false,
+    "transpileOnly": true,
+    "compilerOptions": {
+      "skipLibCheck": true,
+      "target": "es2016",
+      "module": "commonjs"
+    }
+  }
+}

@@ -31,6 +31,7 @@ const removeExtendsFromInterface = require("./removeExtendsFromInterface");
 
 const { getSourceFile, getExistingFiles } = require("./files");
 const addToExportDefaultArray = require("./addToExportDefaultArray");
+const getRequireFromSourceFile = require("./getRequireFromSourceFile");
 
 module.exports = {
     addPluginToCreateHandler,
@@ -59,5 +60,6 @@ module.exports = {
     removeExtendsFromInterface,
     getSourceFile,
     getExistingFiles,
-    addToExportDefaultArray
+    addToExportDefaultArray,
+    getRequireFromSourceFile
 };
