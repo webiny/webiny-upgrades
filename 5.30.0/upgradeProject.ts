@@ -4,9 +4,7 @@ import {
     getCreateHandlerExpressions,
     createMorphProject,
     prettierFormat,
-    yarnInstall,
-    getIsElasticsearchProject,
-    addPluginToCreateHandler
+    yarnInstall
 } from "../utils";
 import { Context } from "../types";
 import { SourceFile } from "ts-morph";
@@ -28,8 +26,6 @@ const replaceGraphQLIndexPlugins = (source: SourceFile): void => {
         "modelFieldToGraphQLPlugins: headlessCmsModelFieldToGraphQLPlugins()",
         ""
     );
-    text = text.replaceAll("elasticsearchDataGzipCompression(),", "");
-    text = text.replaceAll("elasticsearchDataGzipCompression()", "");
 
     arrayExpression.replaceWithText(text);
 };
@@ -47,8 +43,6 @@ const replaceHeadlessCMSIndexPlugins = (source: SourceFile): void => {
         "modelFieldToGraphQLPlugins: headlessCmsModelFieldToGraphQLPlugins()",
         ""
     );
-    text = text.replaceAll("elasticsearchDataGzipCompression(),", "");
-    text = text.replaceAll("elasticsearchDataGzipCompression()", "");
 
     arrayExpression.replaceWithText(text);
 };
@@ -67,7 +61,6 @@ export const upgradeProject = async (context: Context) => {
             source,
             "@webiny/api-headless-cms/content/plugins/graphqlFields"
         );
-        removeImportFromSourceFile(source, "@webiny/api-elasticsearch/plugins/GzipCompression");
     }
     /**
      * And modify the usages of imports.
@@ -81,8 +74,6 @@ export const upgradeProject = async (context: Context) => {
      */
     const headlessCMSIndexSource = project.getSourceFile(headlessCMSIndex);
     replaceHeadlessCMSIndexPlugins(headlessCMSIndexSource);
-
-    const isElasticsearch = getIsElasticsearchProject(context, "apps/api/graphql");
     /**
      * And in the end we add the new imports
      */
@@ -93,19 +84,6 @@ export const upgradeProject = async (context: Context) => {
             source,
             name: ["createHeadlessCmsGraphQL", "createHeadlessCmsContext"],
             moduleSpecifier: "@webiny/api-headless-cms"
-        });
-        if (!isElasticsearch) {
-            continue;
-        }
-        insertImportToSourceFile({
-            source,
-            name: ["createGzipCompression"],
-            moduleSpecifier: "@webiny/api-elasticsearch/plugins/GzipCompression"
-        });
-        addPluginToCreateHandler({
-            source,
-            handler: "handler",
-            value: "createGzipCompression()"
         });
     }
 
