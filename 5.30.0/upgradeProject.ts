@@ -1,17 +1,15 @@
 import {
     removeImportFromSourceFile,
     insertImportToSourceFile,
-    getRequireFromSourceFile,
-    getSourceFile,
-    addPackagesToDependencies,
-    removePluginFromCreateHandler,
     getCreateHandlerExpressions,
     createMorphProject,
     prettierFormat,
-    yarnInstall
+    yarnInstall,
+    getIsElasticsearchProject,
+    addPluginToCreateHandler
 } from "../utils";
 import { Context } from "../types";
-import { ArrayLiteralExpression, SourceFile } from "ts-morph";
+import { SourceFile } from "ts-morph";
 
 const graphQLIndex = "apps/api/graphql/src/index.ts";
 const headlessCMSIndex = "apps/api/headlessCMS/src/index.ts";
@@ -20,10 +18,18 @@ const files = [graphQLIndex, headlessCMSIndex];
 const replaceGraphQLIndexPlugins = (source: SourceFile): void => {
     const { arrayExpression } = getCreateHandlerExpressions(source, "handler");
     let text = arrayExpression.getText();
-    text = text.replace("createAdminHeadlessCmsContext", "createHeadlessCmsContext");
-    text = text.replace("createAdminHeadlessCmsGraphQL", "createHeadlessCmsGraphQL");
-    text = text.replace("modelFieldToGraphQLPlugins: headlessCmsModelFieldToGraphQLPlugins()", "");
-    text = text.replace("modelFieldToGraphQLPlugins: headlessCmsModelFieldToGraphQLPlugins(),", "");
+    text = text.replaceAll("createAdminHeadlessCmsContext", "createHeadlessCmsContext");
+    text = text.replaceAll("createAdminHeadlessCmsGraphQL", "createHeadlessCmsGraphQL");
+    text = text.replaceAll(
+        "modelFieldToGraphQLPlugins: headlessCmsModelFieldToGraphQLPlugins(),",
+        ""
+    );
+    text = text.replaceAll(
+        "modelFieldToGraphQLPlugins: headlessCmsModelFieldToGraphQLPlugins()",
+        ""
+    );
+    text = text.replaceAll("elasticsearchDataGzipCompression(),", "");
+    text = text.replaceAll("elasticsearchDataGzipCompression()", "");
 
     arrayExpression.replaceWithText(text);
 };
@@ -31,10 +37,18 @@ const replaceGraphQLIndexPlugins = (source: SourceFile): void => {
 const replaceHeadlessCMSIndexPlugins = (source: SourceFile): void => {
     const { arrayExpression } = getCreateHandlerExpressions(source, "handler");
     let text = arrayExpression.getText();
-    text = text.replace("createContentHeadlessCmsContext", "createHeadlessCmsContext");
-    text = text.replace("createContentHeadlessCmsGraphQL", "createHeadlessCmsGraphQL");
-    text = text.replace("modelFieldToGraphQLPlugins: headlessCmsModelFieldToGraphQLPlugins()", "");
-    text = text.replace("modelFieldToGraphQLPlugins: headlessCmsModelFieldToGraphQLPlugins(),", "");
+    text = text.replaceAll("createContentHeadlessCmsContext", "createHeadlessCmsContext");
+    text = text.replaceAll("createContentHeadlessCmsGraphQL", "createHeadlessCmsGraphQL");
+    text = text.replaceAll(
+        "modelFieldToGraphQLPlugins: headlessCmsModelFieldToGraphQLPlugins(),",
+        ""
+    );
+    text = text.replaceAll(
+        "modelFieldToGraphQLPlugins: headlessCmsModelFieldToGraphQLPlugins()",
+        ""
+    );
+    text = text.replaceAll("elasticsearchDataGzipCompression(),", "");
+    text = text.replaceAll("elasticsearchDataGzipCompression()", "");
 
     arrayExpression.replaceWithText(text);
 };
@@ -53,18 +67,7 @@ export const upgradeProject = async (context: Context) => {
             source,
             "@webiny/api-headless-cms/content/plugins/graphqlFields"
         );
-    }
-    /**
-     * Then we add the new ones
-     */
-    for (const file of files) {
-        const source = project.getSourceFile(file);
-
-        insertImportToSourceFile({
-            source,
-            name: ["createHeadlessCmsGraphQL", "createHeadlessCmsContext"],
-            moduleSpecifier: "@webiny/api-headless-cms"
-        });
+        removeImportFromSourceFile(source, "@webiny/api-elasticsearch/plugins/GzipCompression");
     }
     /**
      * And modify the usages of imports.
@@ -78,6 +81,33 @@ export const upgradeProject = async (context: Context) => {
      */
     const headlessCMSIndexSource = project.getSourceFile(headlessCMSIndex);
     replaceHeadlessCMSIndexPlugins(headlessCMSIndexSource);
+
+    const isElasticsearch = getIsElasticsearchProject(context, "apps/api/graphql");
+    /**
+     * And in the end we add the new imports
+     */
+    for (const file of files) {
+        const source = project.getSourceFile(file);
+
+        insertImportToSourceFile({
+            source,
+            name: ["createHeadlessCmsGraphQL", "createHeadlessCmsContext"],
+            moduleSpecifier: "@webiny/api-headless-cms"
+        });
+        if (!isElasticsearch) {
+            continue;
+        }
+        insertImportToSourceFile({
+            source,
+            name: ["createGzipCompression"],
+            moduleSpecifier: "@webiny/api-elasticsearch/plugins/GzipCompression"
+        });
+        addPluginToCreateHandler({
+            source,
+            handler: "handler",
+            value: "createGzipCompression()"
+        });
+    }
 
     // Save file changes.
     await project.save();

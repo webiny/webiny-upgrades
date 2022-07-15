@@ -9,5 +9,5 @@ require("ts-node").register({
 const { upgradeProject } = require("./upgradeProject");
 
 module.exports = async context => {
-    await upgradeProject(context)
+    await upgradeProject(context);
 };
