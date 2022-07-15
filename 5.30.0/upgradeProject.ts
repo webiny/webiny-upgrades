@@ -4,7 +4,9 @@ import {
     getCreateHandlerExpressions,
     createMorphProject,
     prettierFormat,
-    yarnInstall
+    yarnInstall,
+    isPre529Project,
+    addPluginToCreateHandler
 } from "../utils";
 import { Context } from "../types";
 import { SourceFile } from "ts-morph";
@@ -47,6 +49,63 @@ const replaceHeadlessCMSIndexPlugins = (source: SourceFile): void => {
     arrayExpression.replaceWithText(text);
 };
 
+const addApwToGraphQL = (context: Context, source: SourceFile): void => {
+    if (isPre529Project(context)) {
+        return;
+    }
+    insertImportToSourceFile({
+        source,
+        name: ["createApwPageBuilderContext", "createApwGraphQL"],
+        moduleSpecifier: "@webiny/api-apw"
+    });
+    insertImportToSourceFile({
+        source,
+        name: {
+            createStorageOperations: "createApwSaStorageOperations"
+        },
+        moduleSpecifier: "@webiny/api-apw"
+    });
+    addPluginToCreateHandler({
+        source,
+        handler: "handler",
+        value: `
+        createApwGraphQL(),
+        createApwPageBuilderContext({
+            storageOperations: createApwSaStorageOperations({ documentClient })
+        }),
+        `,
+        after: "createHeadlessCmsGraphQL"
+    });
+};
+
+const addApwToHeadlessCMS = (context: Context, source: SourceFile): void => {
+    if (isPre529Project(context)) {
+        return;
+    }
+    insertImportToSourceFile({
+        source,
+        name: ["createApwHeadlessCmsContext"],
+        moduleSpecifier: "@webiny/api-apw"
+    });
+    insertImportToSourceFile({
+        source,
+        name: {
+            createStorageOperations: "createApwSaStorageOperations"
+        },
+        moduleSpecifier: "@webiny/api-apw"
+    });
+    addPluginToCreateHandler({
+        source,
+        handler: "handler",
+        value: `
+        createApwHeadlessCmsContext({
+            storageOperations: createApwSaStorageOperations({ documentClient })
+        }),
+        `,
+        after: "createHeadlessCmsContext"
+    });
+};
+
 export const upgradeProject = async (context: Context) => {
     const project = createMorphProject(files);
 
@@ -86,6 +145,9 @@ export const upgradeProject = async (context: Context) => {
             moduleSpecifier: "@webiny/api-headless-cms"
         });
     }
+
+    addApwToGraphQL(context, graphQLIndexSource);
+    addApwToHeadlessCMS(context, headlessCMSIndexSource);
 
     // Save file changes.
     await project.save();
