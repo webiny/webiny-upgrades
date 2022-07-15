@@ -6,13 +6,16 @@ import {
     prettierFormat,
     yarnInstall,
     isPre529Project,
-    addPluginToCreateHandler
+    addPluginToCreateHandler,
+    addPackagesToDependencies
 } from "../utils";
 import { Context } from "../types";
 import { SourceFile } from "ts-morph";
 
-const graphQLIndex = "apps/api/graphql/src/index.ts";
-const headlessCMSIndex = "apps/api/headlessCMS/src/index.ts";
+const graphQLPath = "apps/api/graphql";
+const graphQLIndex = `${graphQLPath}/src/index.ts`;
+const headlessCMSPath = "apps/api/headlessCMS";
+const headlessCMSIndex = `${headlessCMSPath}/src/index.ts`;
 const files = [graphQLIndex, headlessCMSIndex];
 
 const replaceGraphQLIndexPlugins = (source: SourceFile): void => {
@@ -63,7 +66,7 @@ const addApwToGraphQL = (context: Context, source: SourceFile): void => {
         name: {
             createStorageOperations: "createApwSaStorageOperations"
         },
-        moduleSpecifier: "@webiny/api-apw"
+        moduleSpecifier: "@webiny/api-apw-scheduler-so-ddb"
     });
     addPluginToCreateHandler({
         source,
@@ -72,9 +75,13 @@ const addApwToGraphQL = (context: Context, source: SourceFile): void => {
         createApwGraphQL(),
         createApwPageBuilderContext({
             storageOperations: createApwSaStorageOperations({ documentClient })
-        }),
-        `,
+        })`,
         after: "createHeadlessCmsGraphQL"
+    });
+
+    addPackagesToDependencies(context, `${graphQLPath}/package.json`, {
+        "@webiny/api-apw": `${context.version}`,
+        "@webiny/api-apw-scheduler-so-ddb": `${context.version}`
     });
 };
 
@@ -92,7 +99,7 @@ const addApwToHeadlessCMS = (context: Context, source: SourceFile): void => {
         name: {
             createStorageOperations: "createApwSaStorageOperations"
         },
-        moduleSpecifier: "@webiny/api-apw"
+        moduleSpecifier: "@webiny/api-apw-scheduler-so-ddb"
     });
     addPluginToCreateHandler({
         source,
@@ -100,9 +107,12 @@ const addApwToHeadlessCMS = (context: Context, source: SourceFile): void => {
         value: `
         createApwHeadlessCmsContext({
             storageOperations: createApwSaStorageOperations({ documentClient })
-        }),
-        `,
+        })`,
         after: "createHeadlessCmsContext"
+    });
+    addPackagesToDependencies(context, `${headlessCMSPath}/package.json`, {
+        "@webiny/api-apw": `${context.version}`,
+        "@webiny/api-apw-scheduler-so-ddb": `${context.version}`
     });
 };
 
@@ -145,7 +155,9 @@ export const upgradeProject = async (context: Context) => {
             moduleSpecifier: "@webiny/api-headless-cms"
         });
     }
-
+    /**
+     * We are adding APW to the GraphQL and HeadlessCMS lambdas
+     */
     addApwToGraphQL(context, graphQLIndexSource);
     addApwToHeadlessCMS(context, headlessCMSIndexSource);
 
