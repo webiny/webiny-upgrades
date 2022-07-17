@@ -12,11 +12,20 @@ import {
 import { Context } from "../types";
 import { SourceFile } from "ts-morph";
 
-const graphQLPath = "apps/api/graphql";
-const graphQLIndex = `${graphQLPath}/src/index.ts`;
-const headlessCMSPath = "apps/api/headlessCMS";
-const headlessCMSIndex = `${headlessCMSPath}/src/index.ts`;
-const files = [graphQLIndex, headlessCMSIndex];
+const getGraphQLPath = context => {
+    if (isPre529Project(context)) {
+        return "api/code/graphql";
+    }
+    return "apps/api/graphql";
+};
+const graphQLIndex = `src/index.ts`;
+const getHeadlessCMSPath = context => {
+    if (isPre529Project(context)) {
+        return "api/code/headlessCMS";
+    }
+    return "apps/api/headlessCMS";
+};
+const headlessCMSIndex = `src/index.ts`;
 
 const replaceGraphQLIndexPlugins = (source: SourceFile): void => {
     const { arrayExpression } = getCreateHandlerExpressions(source, "handler");
@@ -79,7 +88,7 @@ const addApwToGraphQL = (context: Context, source: SourceFile): void => {
         after: "createHeadlessCmsGraphQL"
     });
 
-    addPackagesToDependencies(context, `${graphQLPath}/package.json`, {
+    addPackagesToDependencies(context, `${getGraphQLPath(context)}/package.json`, {
         "@webiny/api-apw": `${context.version}`,
         "@webiny/api-apw-scheduler-so-ddb": `${context.version}`
     });
@@ -110,13 +119,16 @@ const addApwToHeadlessCMS = (context: Context, source: SourceFile): void => {
         })`,
         after: "createHeadlessCmsContext"
     });
-    addPackagesToDependencies(context, `${headlessCMSPath}/package.json`, {
+    addPackagesToDependencies(context, `${getHeadlessCMSPath(context)}/package.json`, {
         "@webiny/api-apw": `${context.version}`,
         "@webiny/api-apw-scheduler-so-ddb": `${context.version}`
     });
 };
 
 export const upgradeProject = async (context: Context) => {
+    const graphQLIndexFile = `${getGraphQLPath(context)}/${graphQLIndex}`;
+    const headlessCMSIndexFile = `${getHeadlessCMSPath(context)}/${headlessCMSIndex}`;
+    const files = [graphQLIndexFile, headlessCMSIndexFile];
     const project = createMorphProject(files);
 
     /**
@@ -135,13 +147,13 @@ export const upgradeProject = async (context: Context) => {
      * And modify the usages of imports.
      * Fist in the GraphQL
      */
-    const graphQLIndexSource = project.getSourceFile(graphQLIndex);
+    const graphQLIndexSource = project.getSourceFile(graphQLIndexFile);
     replaceGraphQLIndexPlugins(graphQLIndexSource);
 
     /**
      * Then in the HeadlessCMS
      */
-    const headlessCMSIndexSource = project.getSourceFile(headlessCMSIndex);
+    const headlessCMSIndexSource = project.getSourceFile(headlessCMSIndexFile);
     replaceHeadlessCMSIndexPlugins(headlessCMSIndexSource);
     /**
      * And in the end we add the new imports

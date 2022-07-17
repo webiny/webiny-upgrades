@@ -8,7 +8,7 @@ const path = require("path");
  * @return {boolean}
  */
 const isPre529Project = context => {
-    return fs.existsSync(path.join(process.cwd(), "api"));
+    return fs.existsSync(path.join(context.project.root, "api"));
 };
 
 module.exports = {
