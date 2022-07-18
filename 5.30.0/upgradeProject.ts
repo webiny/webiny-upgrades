@@ -212,6 +212,13 @@ export const upgradeProject = async (context: Context) => {
     const editorPluginsSource = project.getSourceFile(editorPluginsFile);
     removeAppsAdminPlugins(editorPluginsSource);
 
+    /**
+     * Explicitly add TSLib to resolve non-conflicting version being used in RMWC
+     */
+    addPackagesToDependencies(context, `${getAppsAdminPath(context)}/package.json`, {
+        tslib: `2.4.0`
+    });
+
     // Save file changes.
     await project.save();
 
