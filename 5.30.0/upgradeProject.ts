@@ -125,16 +125,49 @@ const addApwToHeadlessCMS = (context: Context, source: SourceFile): void => {
     });
 };
 
+const getAppsAdminPath = context => {
+    if (isPre529Project(context)) {
+        return `apps/admin/code`;
+    }
+    return `apps/admin`;
+};
+
+const appsAdminPlugins = {
+    "@webiny/app-page-builder/editor/recoil/actions/plugins": "actionPlugins()",
+    "@webiny/app-page-builder/editor/plugins/background": "contentBackground",
+    "@webiny/app-page-builder/editor/plugins/blockEditing": "blockEditing",
+    "@webiny/app-page-builder/editor/plugins/breadcrumbs": "breadcrumbs",
+    "@webiny/app-page-builder/editor/plugins/defaultBar": "defaultBarPlugins",
+    "@webiny/app-page-builder/editor/plugins/elementActions/help": "help",
+    "@webiny/app-page-builder/editor/plugins/elementSettings/advanced": "advanced"
+};
+
+const removeAppsAdminPlugins = (source: SourceFile): void => {
+    for (const target in appsAdminPlugins) {
+        removeImportFromSourceFile(source, target);
+    }
+    let text = source.getText();
+    for (const t in appsAdminPlugins) {
+        const value = appsAdminPlugins[t];
+        text = text.replaceAll(`${value},`, "");
+        text = text.replaceAll(`${value}`, "");
+    }
+    source.replaceWithText(text);
+};
+
 export const upgradeProject = async (context: Context) => {
+    const editorPluginsFile = `${getAppsAdminPath(
+        context
+    )}/src/plugins/pageBuilder/editorPlugins.ts`;
     const graphQLIndexFile = `${getGraphQLPath(context)}/${graphQLIndex}`;
     const headlessCMSIndexFile = `${getHeadlessCMSPath(context)}/${headlessCMSIndex}`;
-    const files = [graphQLIndexFile, headlessCMSIndexFile];
+    const files = [graphQLIndexFile, headlessCMSIndexFile, editorPluginsFile];
     const project = createMorphProject(files);
 
     /**
      * First we are going to remove old imports
      */
-    for (const file of files) {
+    for (const file of [graphQLIndexFile, headlessCMSIndexFile]) {
         const source = project.getSourceFile(file);
 
         removeImportFromSourceFile(source, "@webiny/api-headless-cms");
@@ -158,7 +191,7 @@ export const upgradeProject = async (context: Context) => {
     /**
      * And in the end we add the new imports
      */
-    for (const file of files) {
+    for (const file of [graphQLIndexFile, headlessCMSIndexFile]) {
         const source = project.getSourceFile(file);
 
         insertImportToSourceFile({
@@ -172,6 +205,12 @@ export const upgradeProject = async (context: Context) => {
      */
     addApwToGraphQL(context, graphQLIndexSource);
     addApwToHeadlessCMS(context, headlessCMSIndexSource);
+
+    /**
+     * We need to remove some imports and plugins from apps/admin
+     */
+    const editorPluginsSource = project.getSourceFile(editorPluginsFile);
+    removeAppsAdminPlugins(editorPluginsSource);
 
     // Save file changes.
     await project.save();
