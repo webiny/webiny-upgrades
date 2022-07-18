@@ -30,16 +30,16 @@ const headlessCMSIndex = `src/index.ts`;
 const replaceGraphQLIndexPlugins = (source: SourceFile): void => {
     const { arrayExpression } = getCreateHandlerExpressions(source, "handler");
     let text = arrayExpression.getText();
-    text = text.replaceAll("createAdminHeadlessCmsContext", "createHeadlessCmsContext");
-    text = text.replaceAll("createAdminHeadlessCmsGraphQL", "createHeadlessCmsGraphQL");
-    text = text.replaceAll(
-        "modelFieldToGraphQLPlugins: headlessCmsModelFieldToGraphQLPlugins(),",
-        ""
+    text = text.replace(
+        new RegExp("createAdminHeadlessCmsContext", "g"),
+        "createHeadlessCmsContext"
     );
-    text = text.replaceAll(
-        "modelFieldToGraphQLPlugins: headlessCmsModelFieldToGraphQLPlugins()",
-        ""
+    text = text.replace(
+        new RegExp("createAdminHeadlessCmsGraphQL", "g"),
+        "createHeadlessCmsGraphQL"
     );
+    text = text.replace("modelFieldToGraphQLPlugins: headlessCmsModelFieldToGraphQLPlugins(),", "");
+    text = text.replace("modelFieldToGraphQLPlugins: headlessCmsModelFieldToGraphQLPlugins()", "");
 
     arrayExpression.replaceWithText(text);
 };
@@ -47,16 +47,16 @@ const replaceGraphQLIndexPlugins = (source: SourceFile): void => {
 const replaceHeadlessCMSIndexPlugins = (source: SourceFile): void => {
     const { arrayExpression } = getCreateHandlerExpressions(source, "handler");
     let text = arrayExpression.getText();
-    text = text.replaceAll("createContentHeadlessCmsContext", "createHeadlessCmsContext");
-    text = text.replaceAll("createContentHeadlessCmsGraphQL", "createHeadlessCmsGraphQL");
-    text = text.replaceAll(
-        "modelFieldToGraphQLPlugins: headlessCmsModelFieldToGraphQLPlugins(),",
-        ""
+    text = text.replace(
+        new RegExp("createContentHeadlessCmsContext", "g"),
+        "createHeadlessCmsContext"
     );
-    text = text.replaceAll(
-        "modelFieldToGraphQLPlugins: headlessCmsModelFieldToGraphQLPlugins()",
-        ""
+    text = text.replace(
+        new RegExp("createContentHeadlessCmsGraphQL", "g"),
+        "createHeadlessCmsGraphQL"
     );
+    text = text.replace("modelFieldToGraphQLPlugins: headlessCmsModelFieldToGraphQLPlugins(),", "");
+    text = text.replace("modelFieldToGraphQLPlugins: headlessCmsModelFieldToGraphQLPlugins()", "");
 
     arrayExpression.replaceWithText(text);
 };
@@ -149,8 +149,8 @@ const removeAppsAdminPlugins = (source: SourceFile): void => {
     let text = source.getText();
     for (const t in appsAdminPlugins) {
         const value = appsAdminPlugins[t];
-        text = text.replaceAll(`${value},`, "");
-        text = text.replaceAll(`${value}`, "");
+        text = text.replace(`${value},`, "");
+        text = text.replace(`${value}`, "");
     }
     source.replaceWithText(text);
 };
