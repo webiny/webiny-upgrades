@@ -22,17 +22,29 @@ const insertImportToSourceFile = ({ source, name, moduleSpecifier, after = null 
             declaration.setDefaultImport(defaultImport);
             return;
         }
+
         /**
-         * We check the existing imports so we dont add the same one.
+         * We check the existing imports, so we don't add the same one.
          */
         const existingNamedImports = declaration.getNamedImports().map(ni => {
             return ni.getText();
         });
-        declaration.addNamedImports(
-            namedImports.filter(ni => {
-                return existingNamedImports.includes(ni.name) === false;
-            })
-        );
+
+        // Create [name, alias] tuples
+        const existingImports = existingNamedImports.map(imp => imp.split(" as "));
+
+        const newImports = namedImports.filter(ni => {
+            // Make sure not a single existing import matches the new named import.
+            return existingImports.every(([name, alias]) => {
+                if (ni.alias) {
+                    return ni.name !== name && ni.alias !== alias;
+                }
+
+                return ni.name !== name;
+            });
+        });
+
+        declaration.addNamedImports(newImports);
         return;
     }
     /**

@@ -10,7 +10,7 @@ import {
     addPackagesToDependencies
 } from "../utils";
 import { Context } from "../types";
-import { SourceFile } from "ts-morph";
+import { SourceFile, Node } from "ts-morph";
 
 const getGraphQLPath = context => {
     if (isPre529Project(context)) {
@@ -77,16 +77,27 @@ const addApwToGraphQL = (context: Context, source: SourceFile): void => {
         },
         moduleSpecifier: "@webiny/api-apw-scheduler-so-ddb"
     });
-    addPluginToCreateHandler({
-        source,
-        handler: "handler",
-        value: `
+
+    const hasApw = source.getDescendants().find(node => {
+        if (!Node.isCallExpression(node)) {
+            return false;
+        }
+
+        return node.getExpression().getText() === "createApwGraphQL";
+    });
+
+    if (!hasApw) {
+        addPluginToCreateHandler({
+            source,
+            handler: "handler",
+            value: `
         createApwGraphQL(),
         createApwPageBuilderContext({
             storageOperations: createApwSaStorageOperations({ documentClient })
         })`,
-        after: "createHeadlessCmsGraphQL"
-    });
+            after: "createHeadlessCmsGraphQL"
+        });
+    }
 
     addPackagesToDependencies(context, `${getGraphQLPath(context)}/package.json`, {
         "@webiny/api-apw": `${context.version}`,
@@ -110,15 +121,27 @@ const addApwToHeadlessCMS = (context: Context, source: SourceFile): void => {
         },
         moduleSpecifier: "@webiny/api-apw-scheduler-so-ddb"
     });
-    addPluginToCreateHandler({
-        source,
-        handler: "handler",
-        value: `
+
+    const hasApw = source.getDescendants().find(node => {
+        if (!Node.isCallExpression(node)) {
+            return false;
+        }
+
+        return node.getExpression().getText() === "createApwHeadlessCmsContext";
+    });
+
+    if (!hasApw) {
+        addPluginToCreateHandler({
+            source,
+            handler: "handler",
+            value: `
         createApwHeadlessCmsContext({
             storageOperations: createApwSaStorageOperations({ documentClient })
         })`,
-        after: "createHeadlessCmsContext"
-    });
+            after: "createHeadlessCmsContext"
+        });
+    }
+
     addPackagesToDependencies(context, `${getHeadlessCMSPath(context)}/package.json`, {
         "@webiny/api-apw": `${context.version}`,
         "@webiny/api-apw-scheduler-so-ddb": `${context.version}`
@@ -144,7 +167,7 @@ const appsAdminPlugins = {
 
 const removeAppsAdminPlugins = (source: SourceFile): void => {
     for (const target in appsAdminPlugins) {
-        removeImportFromSourceFile(source, target);
+        removeImportFromSourceFile(source, target, { quiet: true });
     }
     let text = source.getText();
     for (const t in appsAdminPlugins) {
@@ -173,7 +196,8 @@ export const upgradeProject = async (context: Context) => {
         removeImportFromSourceFile(source, "@webiny/api-headless-cms");
         removeImportFromSourceFile(
             source,
-            "@webiny/api-headless-cms/content/plugins/graphqlFields"
+            "@webiny/api-headless-cms/content/plugins/graphqlFields",
+            { quiet: true }
         );
     }
     /**
