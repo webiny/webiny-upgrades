@@ -5,9 +5,7 @@ const target = "node_modules/@webiny/cwp-template-aws/template/common/types/reac
 
 const copyTypesToUserProject = async context => {
     if (!context.project || !context.project.root) {
-        log.error(
-            "Missing context.project or context.project.root to upgrade the React types."
-        );
+        log.error("Missing context.project or context.project.root to upgrade the React types.");
         return;
     }
 

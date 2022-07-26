@@ -1,6 +1,6 @@
 export interface Context {
-     version: string;
-     project: {
-         root: string;
-     }
+    version: string;
+    project: {
+        root: string;
+    };
 }

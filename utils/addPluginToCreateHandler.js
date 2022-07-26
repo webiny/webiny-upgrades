@@ -1,7 +1,7 @@
 const getCreateHandlerExpressions = require("./getCreateHandlerExpressions");
 
 /**
- * @param params {{source: tsMorph.SourceFile, handler: string, plugin: string, after: string|undefined|null}}
+ * @param params {{source: tsMorph.SourceFile, handler: string, value: string, after?: string|undefined|null}}
  */
 const addPluginToCreateHandler = params => {
     const { source, handler, value, after } = params;
