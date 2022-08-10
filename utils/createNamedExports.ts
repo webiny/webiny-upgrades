@@ -1,12 +1,14 @@
-/**
- * @param name {string | string[] | Record<string, string>}
- * @return {{name: string, alias: string | undefined}[]|undefined}
- */
-const createNamedImports = name => {
+interface NamedExport {
+    name: string;
+    alias?: string;
+}
+export const createNamedExports = (
+    name: string | string[] | Record<string, string>
+): NamedExport[] | undefined => {
     if (typeof name === "string") {
         return undefined;
     } else if (Array.isArray(name) === true) {
-        return name.map(n => ({
+        return (name as string[]).map(n => ({
             name: n
         }));
     }
@@ -17,5 +19,3 @@ const createNamedImports = name => {
         };
     });
 };
-
-module.exports = createNamedImports;

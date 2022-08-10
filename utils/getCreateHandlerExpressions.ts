@@ -1,12 +1,19 @@
-const tsMorph = require("ts-morph");
+import tsMorph, {
+    SourceFile,
+    VariableDeclaration,
+    CallExpression,
+    PropertyAssignment,
+    ArrayLiteralExpression,
+    Node
+} from "ts-morph";
 
-/**
- *
- * @param source {tsMorph.SourceFile}
- * @param handler {String}
- * @return {{handlerDeclaration: VariableDeclaration, createHandlerExpression: tsMorph.Node, plugins: tsMorph.Node, arrayExpression: tsMorph.ArrayLiteralExpression}}
- */
-const getCreateHandlerExpressions = (source, handler) => {
+interface ReturnType {
+    handlerDeclaration: VariableDeclaration | null;
+    createHandlerExpression: CallExpression | null;
+    plugins: PropertyAssignment | null;
+    arrayExpression: ArrayLiteralExpression | null;
+}
+export const getCreateHandlerExpressions = (source: SourceFile, handler: string): ReturnType => {
     /**
      * First, we need to find handler declaration to check if it actually is ok.
      */
@@ -25,10 +32,10 @@ const getCreateHandlerExpressions = (source, handler) => {
      *
      * @type {Node}
      */
-    const createHandlerExpression = handlerDeclaration.getFirstDescendant(
-        node =>
+    const createHandlerExpression = handlerDeclaration.getFirstDescendant<CallExpression>(
+        (node =>
             tsMorph.Node.isCallExpression(node) &&
-            node.getExpression().getText() === "createHandler"
+            node.getExpression().getText() === "createHandler") as any
     );
     if (!createHandlerExpression) {
         console.log(`Missing "createHandler" expression in the handler declaration "${handler}".`);
@@ -42,8 +49,8 @@ const getCreateHandlerExpressions = (source, handler) => {
     /**
      * And third check step is to determine if we need to upgrade the "createHandler".
      */
-    const plugins = createHandlerExpression.getFirstDescendant(
-        node => tsMorph.Node.isPropertyAssignment(node) && node.getName() === "plugins"
+    const plugins = createHandlerExpression.getFirstDescendant<PropertyAssignment>(
+        (node => tsMorph.Node.isPropertyAssignment(node) && node.getName() === "plugins") as any
     );
     if (!plugins) {
         return {
@@ -53,9 +60,8 @@ const getCreateHandlerExpressions = (source, handler) => {
             arrayExpression: null
         };
     }
-    const arrayExpression = plugins.getFirstDescendant(node =>
-        tsMorph.Node.isArrayLiteralExpression(node)
-    );
+    const arrayExpression = plugins.getFirstDescendant<ArrayLiteralExpression>((node =>
+        tsMorph.Node.isArrayLiteralExpression(node)) as any);
     return {
         handlerDeclaration,
         createHandlerExpression,
@@ -63,5 +69,3 @@ const getCreateHandlerExpressions = (source, handler) => {
         arrayExpression
     };
 };
-
-module.exports = getCreateHandlerExpressions;

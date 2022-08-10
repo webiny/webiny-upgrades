@@ -1,7 +1,10 @@
-const execa = require("execa");
-const log = require("./log");
+import execa from "execa";
+import log from "./log";
 
-const yarnUp = async ({ targetVersion }) => {
+interface Params {
+    targetVersion: string;
+}
+export const yarnUp = async ({ targetVersion }: Params): Promise<void> => {
     try {
         log.info(`Updating all package versions to ${targetVersion}...`);
         await execa(`yarn`, [`up`, `@webiny/*@${targetVersion}`], { cwd: process.cwd() });
@@ -16,5 +19,3 @@ const yarnUp = async ({ targetVersion }) => {
         }
     }
 };
-
-module.exports = yarnUp;

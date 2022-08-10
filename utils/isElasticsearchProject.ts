@@ -1,12 +1,13 @@
-const path = require("path");
-const fs = require("fs");
-const log = require("./log");
-const loadJson = require("load-json-file");
+import path from "path";
+import fs from "fs";
+import log from "./log";
+import loadJson from "load-json-file";
+import { Context } from "../types";
 /**
  * We will determine if GraphQL package.json file has elasticsearch package. If it does, it is elasticsearch project.
  */
-module.exports = (context, apiGraphQLPath = undefined) => {
-    apiGraphQLPath = apiGraphQLPath || "api/code/graphql";
+export const getIsElasticsearchProject = (context: Context, apiGraphQLPath: string): boolean => {
+    // apiGraphQLPath = apiGraphQLPath || "api/code/graphql";
     const file = path.join(context.project.root, apiGraphQLPath, "package.json");
     if (fs.existsSync(file) === false) {
         log.debug(`Missing file "${file}" to determine if project contains Elasticsearch.`);

@@ -1,9 +1,14 @@
-const getCreateHandlerExpressions = require("./getCreateHandlerExpressions");
+import { SourceFile } from "ts-morph";
+import { getCreateHandlerExpressions } from "./getCreateHandlerExpressions";
 
-/**
- * @param params {{source: tsMorph.SourceFile, handler: string, value: string, after?: string|undefined|null}}
- */
-const addPluginToCreateHandler = params => {
+interface Params {
+    source: SourceFile;
+    handler: string;
+    value: string;
+    after?: string | null | RegExp;
+}
+
+export const addPluginToCreateHandler = (params: Params): void => {
     const { source, handler, value, after } = params;
     const { plugins, arrayExpression } = getCreateHandlerExpressions(source, handler);
 
@@ -15,9 +20,7 @@ const addPluginToCreateHandler = params => {
         console.log(`Missing array literal expression in handler "${handler}".`);
         return;
     }
-    /**
-     * @type tsMorph.Expression[]
-     */
+
     const elements = arrayExpression.getElements();
     let index = elements.length;
     if (after) {
@@ -33,5 +36,3 @@ const addPluginToCreateHandler = params => {
     }
     arrayExpression.insertElement(index, value);
 };
-
-module.exports = addPluginToCreateHandler;

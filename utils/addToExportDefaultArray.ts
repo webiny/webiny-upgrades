@@ -1,11 +1,12 @@
-const tsMorph = require("ts-morph");
-const log = require("./log");
-/**
- *
- * @param source {tsMorph.SourceFile}
- * @param target {String}
- */
-const addToExportDefaultArray = ({ source, target }) => {
+import tsMorph, { ArrayLiteralExpression, SourceFile } from "ts-morph";
+import log from "./log";
+
+interface Params {
+    source: SourceFile;
+    target: string;
+}
+
+export const addToExportDefaultArray = ({ source, target }: Params): void => {
     if (!source) {
         return;
     }
@@ -20,9 +21,8 @@ const addToExportDefaultArray = ({ source, target }) => {
         if (item.isExportEquals() === true) {
             continue;
         }
-        const arrayLiteralExpression = item.getFirstDescendant(node =>
-            tsMorph.Node.isArrayLiteralExpression(node)
-        );
+        const arrayLiteralExpression = item.getFirstDescendant<ArrayLiteralExpression>((node =>
+            tsMorph.Node.isArrayLiteralExpression(node)) as any);
         if (!arrayLiteralExpression) {
             continue;
         }
@@ -34,5 +34,3 @@ const addToExportDefaultArray = ({ source, target }) => {
         arrayLiteralExpression.addElement(target);
     }
 };
-
-module.exports = addToExportDefaultArray;

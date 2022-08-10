@@ -1,15 +1,11 @@
-const tsMorph = require("ts-morph");
+import { SourceFile } from "ts-morph";
+import { getCreateHandlerExpressions } from "./getCreateHandlerExpressions";
 
-const createNamedImports = require("./createNamedImports");
-const getCreateHandlerExpressions = require("./getCreateHandlerExpressions");
-
-/**
- *
- * @param source {tsMorph.SourceFile}
- * @param handler {string}
- * @param targetPlugin {RegExp|string}
- */
-const removePluginFromCreateHandler = (source, handler, targetPlugin) => {
+export const removePluginFromCreateHandler = (
+    source: SourceFile,
+    handler: string,
+    targetPlugin: string | RegExp
+) => {
     const { plugins, arrayExpression } = getCreateHandlerExpressions(source, handler);
 
     if (!plugins) {
@@ -37,5 +33,3 @@ const removePluginFromCreateHandler = (source, handler, targetPlugin) => {
         arrayExpression.removeElement(index);
     }
 };
-
-module.exports = removePluginFromCreateHandler;

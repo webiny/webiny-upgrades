@@ -1,11 +1,10 @@
-const tsMorph = require("ts-morph");
+import { SourceFile } from "ts-morph";
 
-/**
- * @param source {tsMorph.SourceFile}
- * @param interfaceName {String}
- * @param target {String}
- */
-const removeExtendsFromInterface = (source, interfaceName, target) => {
+export const removeExtendsFromInterface = (
+    source: SourceFile,
+    interfaceName: string,
+    target: string
+): void => {
     if (!source) {
         return;
     }
@@ -23,5 +22,3 @@ const removeExtendsFromInterface = (source, interfaceName, target) => {
     }
     interfaceNode.removeExtends(index);
 };
-
-module.exports = removeExtendsFromInterface;

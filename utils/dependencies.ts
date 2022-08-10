@@ -1,16 +1,12 @@
-const semverCoerce = require("semver/functions/coerce");
-const loadJson = require("load-json-file");
-const writeJson = require("write-json-file");
-const fs = require("fs");
-const log = require("./log");
-/**
- *
- * @param pkg {string}
- * @param version {string}
- *
- * @return {boolean}
- */
-const validateVersion = (pkg, version) => {
+import { Context, Packages } from "../types";
+
+import semverCoerce from "semver/functions/coerce";
+import loadJson from "load-json-file";
+import writeJson from "write-json-file";
+import fs from "fs";
+import log from "./log";
+
+const validateVersion = (version: string) => {
     if (version === "latest") {
         return true;
     }
@@ -18,40 +14,41 @@ const validateVersion = (pkg, version) => {
     return !!coerced;
 };
 
-/**
- *
- * @param context {CliContext}
- * @param targetPath {string}
- * @param packages {object}
- */
-const addPackagesToDependencies = (context, targetPath, packages) => {
+export const addPackagesToDependencies = (
+    context: Context,
+    targetPath: string,
+    packages: Packages
+) => {
     addPackagesToDeps("dependencies", context, targetPath, packages);
 };
-/**
- * @param context {CliContext}
- * @param targetPath {string}
- * @param packages {object}
- */
-const addPackagesToDevDependencies = (context, targetPath, packages) => {
+
+export const addPackagesToDevDependencies = (
+    context: Context,
+    targetPath: string,
+    packages: Packages
+) => {
     addPackagesToDeps("devDependencies", context, targetPath, packages);
 };
-/**
- * @param context {CliContext}
- * @param targetPath {string}
- * @param packages {object}
- */
-const addPackagesToPeerDependencies = (context, targetPath, packages) => {
+
+export const addPackagesToPeerDependencies = (
+    context: Context,
+    targetPath: string,
+    packages: Packages
+) => {
     addPackagesToDeps("peerDependencies", context, targetPath, packages);
 };
-/**
- *
- * @param type {string}
- * @param context {CliContext}
- * @param targetPath {string}
- * @param packages {object}
- */
-const allowedPackageDependencyTypes = ["dependencies", "devDependencies", "peerDependencies"];
-const addPackagesToDeps = (type, context, targetPath, packages) => {
+
+const allowedPackageDependencyTypes: string[] = [
+    "dependencies",
+    "devDependencies",
+    "peerDependencies"
+];
+const addPackagesToDeps = (
+    type: string,
+    context: Context,
+    targetPath: string,
+    packages: Packages
+) => {
     if (!allowedPackageDependencyTypes.includes(type)) {
         log.error(`Package dependency type "${type}" is not valid.`);
         return;
@@ -80,7 +77,7 @@ const addPackagesToDeps = (type, context, targetPath, packages) => {
             delete dependencies[pkg];
             continue;
         }
-        if (!validateVersion(pkg, version)) {
+        if (!validateVersion(version)) {
             log.error(`Package "${pkg}" version is not a valid semver version: "${version}".`);
             continue;
         }
@@ -89,10 +86,4 @@ const addPackagesToDeps = (type, context, targetPath, packages) => {
     json[type] = dependencies;
 
     writeJson.sync(file, json);
-};
-
-module.exports = {
-    addPackagesToDependencies,
-    addPackagesToDevDependencies,
-    addPackagesToPeerDependencies
 };

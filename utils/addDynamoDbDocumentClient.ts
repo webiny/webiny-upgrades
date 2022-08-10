@@ -1,10 +1,8 @@
-const tsMorph = require("ts-morph");
+import tsMorph, { SourceFile } from "ts-morph";
 
 const declarationName = "documentClient";
-/**
- * @param source {tsMorph.SourceFile}
- */
-module.exports = source => {
+
+export const addDynamoDbDocumentClient = (source: SourceFile): void => {
     /**
      * If there is document client declaration, no need to proceed further.
      */

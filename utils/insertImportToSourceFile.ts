@@ -1,19 +1,22 @@
-const createNamedImports = require("./createNamedImports");
+import { SourceFile } from "ts-morph";
+import { createNamedImports } from "./createNamedImports";
 
-/**
- * It is possible to send:
- * - string - will produce default import
- * - string[] - will produce named imports
- * - Record<string, string> - will produce named imports with aliases
- *
- * @param source {tsMorph.SourceFile}
- * @param name {string|string[]|Record<string, string>}
- * @param moduleSpecifier {string}
- * @param after {string|null}
- */
-const insertImportToSourceFile = ({ source, name, moduleSpecifier, after = null }) => {
+interface Params {
+    source: SourceFile;
+    /**
+     * It is possible to send:
+     * - string - will produce default import
+     * - string[] - will produce named imports
+     * - Record<string, string> - will produce named imports with aliases
+     */
+    name: string | string[] | Record<string, string>;
+    moduleSpecifier: string;
+    after?: string | null;
+}
+export const insertImportToSourceFile = (params: Params): void => {
+    const { source, name, moduleSpecifier, after = null } = params;
     const namedImports = createNamedImports(name);
-    const defaultImport = namedImports === undefined ? name : undefined;
+    const defaultImport = namedImports === undefined ? (name as string) : undefined;
 
     const declaration = source.getImportDeclaration(moduleSpecifier);
 
@@ -71,5 +74,3 @@ const insertImportToSourceFile = ({ source, name, moduleSpecifier, after = null 
         moduleSpecifier
     });
 };
-
-module.exports = insertImportToSourceFile;

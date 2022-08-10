@@ -1,10 +1,10 @@
-const execa = require("execa");
-const log = require("./log");
+import execa from "execa";
+import log from "./log";
 
 /**
  * Run to install new packages in the project.
  */
-const yarnInstall = async () => {
+export const yarnInstall = async (): Promise<void> => {
     try {
         log.info("Installing new packages...");
         await execa("yarn", { cwd: process.cwd() });
@@ -18,5 +18,3 @@ const yarnInstall = async () => {
         }
     }
 };
-
-module.exports = yarnInstall;

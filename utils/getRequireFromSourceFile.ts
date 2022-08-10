@@ -1,13 +1,13 @@
-const tsMorph = require("ts-morph");
+import { Node, SourceFile, VariableStatement } from "ts-morph";
 
-/**
- * @param source {tsMorph.SourceFile}
- * @param target {string}
- */
-const getRequireFromSourceFile = (source, target, cb) => {
+export const getRequireFromSourceFile = (
+    source: SourceFile,
+    target: string,
+    cb: (stm: VariableStatement) => void
+) => {
     const requireStatement = source.getVariableStatement(node => {
         return !!node.getFirstDescendant(node => {
-            const isCallExp = tsMorph.Node.isCallExpression(node);
+            const isCallExp = Node.isCallExpression(node);
             if (isCallExp) {
                 return (
                     node.getExpression().getText() === "require" &&
@@ -25,5 +25,3 @@ const getRequireFromSourceFile = (source, target, cb) => {
 
     cb(requireStatement);
 };
-
-module.exports = getRequireFromSourceFile;

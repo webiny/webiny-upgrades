@@ -1,12 +1,12 @@
-const loadJson = require("load-json-file");
-const writeJson = require("write-json-file");
+import loadJson from "load-json-file";
+import { PackageJson } from "../types";
+import writeJson from "write-json-file";
 
-/**
- * @param packageJsonPath {String}
- * @param pathsToAdd {String[]}
- */
-module.exports = async (packageJsonPath, pathsToAdd) => {
-    const rootPackageJson = await loadJson(packageJsonPath);
+export const addWorkspaceToRootPackageJson = async (
+    packageJsonPath: string,
+    pathsToAdd: string[]
+): Promise<void> => {
+    const rootPackageJson = await loadJson<PackageJson>(packageJsonPath);
 
     pathsToAdd.forEach(pathToAdd => {
         // Ensure forward slashes are used.

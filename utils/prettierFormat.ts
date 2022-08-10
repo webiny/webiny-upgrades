@@ -1,9 +1,9 @@
-const path = require("path");
-const fs = require("fs");
-const prettier = require("prettier");
-const log = require("./log");
+import path from "path";
+import fs from "fs";
+import prettier from "prettier";
+import log from "./log";
 
-const prettierFormat = async files => {
+export const prettierFormat = async (files: string[]) => {
     try {
         log.info("Formatting updated code...");
         for (const file of files) {
@@ -27,5 +27,3 @@ const prettierFormat = async files => {
         }
     }
 };
-
-module.exports = prettierFormat;

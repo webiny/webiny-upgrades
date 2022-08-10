@@ -1,4 +1,4 @@
-const chalk = require("chalk");
+import chalk from "chalk";
 
 const getLogType = type => {
     switch (type) {
@@ -27,7 +27,7 @@ const webinyLog = (type, ...args) => {
     return console.log(prefix, first, ...rest);
 };
 
-const functions = {
+const functions: any = {
     log(...args) {
         webinyLog("log", ...args);
     },
@@ -53,8 +53,6 @@ const functions = {
     }
 };
 
-functions.log.highlight = chalk.highlight;
-functions.log.hl = chalk.highlight;
 functions.info.highlight = chalk.blueBright;
 functions.info.hl = chalk.blueBright;
 functions.success.highlight = chalk.green;
@@ -66,4 +64,4 @@ functions.warning.hl = chalk.yellow;
 functions.error.highlight = chalk.red;
 functions.error.hl = chalk.red;
 
-module.exports = functions;
+export default functions;

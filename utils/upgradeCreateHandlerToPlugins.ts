@@ -1,12 +1,11 @@
-const tsMorph = require("ts-morph");
-const getCreateHandlerExpressions = require("./getCreateHandlerExpressions");
-/**
- *
- * @param source {tsMorph.SourceFile}
- * @param handler {string}
- */
-module.exports = (source, handler) => {
-    const { createHandlerExpression, plugins } = getCreateHandlerExpressions(source, "handler");
+import { SourceFile } from "ts-morph";
+import { getCreateHandlerExpressions } from "./getCreateHandlerExpressions";
+
+export const upgradeCreateHandlerToPlugins = (
+    source: SourceFile,
+    handler: string = "handler"
+): void => {
+    const { createHandlerExpression, plugins } = getCreateHandlerExpressions(source, handler);
 
     if (plugins) {
         return;

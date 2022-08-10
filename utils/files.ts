@@ -1,16 +1,15 @@
-const tsMorph = require("ts-morph");
+import { Project, SourceFile } from "ts-morph";
 
-const path = require("path");
-const fs = require("fs");
-const { log } = require("./log");
-/**
- *
- * @param context {Object}
- * @param files {Record<string, string>}
- *
- * @return {Record<string, string>}
- */
-const getExistingFiles = (context, files) => {
+import path from "path";
+import fs from "fs";
+import log from "./log";
+import { Context } from "../types";
+
+interface Files {
+    [key: string]: string;
+}
+
+export const getExistingFiles = (context: Context, files: Files): Files => {
     const output = {};
     for (const key in files) {
         if (files.hasOwnProperty(key) === false) {
@@ -35,13 +34,8 @@ const getExistingFiles = (context, files) => {
     }
     return output;
 };
-/**
- *
- * @param project {tsMorph.Project}
- * @param file {String}
- * @return {tsMorph.SourceFile|null}
- */
-const getSourceFile = (project, file) => {
+
+export const getSourceFile = (project: Project, file: string): SourceFile | null => {
     if (!file) {
         log.debug("File variable not sent.");
         return null;
@@ -57,9 +51,4 @@ const getSourceFile = (project, file) => {
     }
     log.debug(`Skipping file "${file}", cannot find it.`);
     return null;
-};
-
-module.exports = {
-    getSourceFile,
-    getExistingFiles
 };

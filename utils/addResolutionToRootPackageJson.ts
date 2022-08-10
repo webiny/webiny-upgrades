@@ -1,12 +1,14 @@
-const loadJson = require("load-json-file");
-const writeJson = require("write-json-file");
+import loadJson from "load-json-file";
+import writeJson from "write-json-file";
 
-/**
- * @param packageJsonPath
- * @param packagesToAdd
- */
-module.exports = async (packageJsonPath, packagesToAdd) => {
-    const rootPackageJson = await loadJson(packageJsonPath);
+interface PackagesToAdd {
+    [key: string]: string | null;
+}
+export const addResolutionToRootPackageJson = async (
+    packageJsonPath: string,
+    packagesToAdd: PackagesToAdd
+): Promise<void> => {
+    const rootPackageJson = await loadJson<Record<string, any>>(packageJsonPath);
 
     for (const name in packagesToAdd) {
         // Ensure forward slashes are used.

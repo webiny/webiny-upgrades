@@ -1,12 +1,9 @@
-const tsMorph = require("ts-morph");
-
-const insertImportToSourceFile = require("./insertImportToSourceFile");
+import tsMorph, { SourceFile } from "ts-morph";
+import { insertImportToSourceFile } from "./insertImportToSourceFile";
 
 const declarationName = "elasticsearchClient";
-/**
- * @param source {tsMorph.SourceFile}
- */
-module.exports = source => {
+
+export const addElasticsearchClient = (source: SourceFile): void => {
     /**
      * If there is elasticsearch client declaration, no need to proceed further.
      */

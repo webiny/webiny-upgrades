@@ -1,12 +1,12 @@
-const loadJson = require("load-json-file");
-const writeJson = require("write-json-file");
+import loadJson from "load-json-file";
+import { PackageJson } from "../types";
+import writeJson from "write-json-file";
 
-/**
- * @param packageJsonPath {String}
- * @param pathsToRemove {String[]}
- */
-module.exports = async (packageJsonPath, pathsToRemove) => {
-    const rootPackageJson = await loadJson(packageJsonPath);
+export const removeWorkspaceToRootPackageJson = async (
+    packageJsonPath: string,
+    pathsToRemove: string[]
+): Promise<void> => {
+    const rootPackageJson = await loadJson<PackageJson>(packageJsonPath);
 
     pathsToRemove.forEach(pathToRemove => {
         // Remove it from workspaces packages if present

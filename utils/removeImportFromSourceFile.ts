@@ -1,11 +1,13 @@
-const tsMorph = require("ts-morph");
+import { SourceFile } from "ts-morph";
 
-/**
- * @param source {tsMorph.SourceFile}
- * @param target {string}
- * @param options
- */
-const removeImportFromSourceFile = (source, target, options = {}) => {
+interface Options {
+    quiet?: boolean;
+}
+export const removeImportFromSourceFile = (
+    source: SourceFile,
+    target: string,
+    options: Options = {}
+): void => {
     const importDeclaration = source.getImportDeclaration(target);
     if (!importDeclaration) {
         if (!options.quiet) {
@@ -15,5 +17,3 @@ const removeImportFromSourceFile = (source, target, options = {}) => {
     }
     importDeclaration.remove();
 };
-
-module.exports = removeImportFromSourceFile;
