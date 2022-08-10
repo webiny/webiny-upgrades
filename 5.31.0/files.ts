@@ -5,7 +5,8 @@ import {
     getGraphQLPath,
     getHeadlessCMSPath,
     getPageBuilderPath,
-    getPrerenderingServicePath
+    getPrerenderingServicePath,
+    getDynamoDbToElasticsearchPath
 } from "./paths";
 
 export interface FileDefinitionParams {
@@ -40,10 +41,14 @@ export const getAllFiles = (context: Context): string[] => {
         new FileDefinition({ path: "${pageBuilder}/importPages/combine/src/index.ts" }),
         new FileDefinition({ path: "${pageBuilder}/importPages/process/src/index.ts" }),
         new FileDefinition({ path: "${pageBuilder}/updateSettings/src/index.ts" }),
-        new FileDefinition({ path: "${prerenderingService}/flush/src/index.ts" }),
-        new FileDefinition({ path: "${prerenderingService}/render/src/index.ts" }),
-        new FileDefinition({ path: "${prerenderingService}/queue/add/src/index.ts" }),
-        new FileDefinition({ path: "${prerenderingService}/queue/process/src/index.ts" })
+        new FileDefinition({ path: "${prerenderingService}/flush/src/index.ts", pre529: true }),
+        new FileDefinition({ path: "${prerenderingService}/render/src/index.ts", pre529: true }),
+        new FileDefinition({ path: "${prerenderingService}/queue/add/src/index.ts", pre529: true }),
+        new FileDefinition({
+            path: "${prerenderingService}/queue/process/src/index.ts",
+            pre529: true
+        }),
+        new FileDefinition({ path: "${dynamoToElastic}/src/index.ts", pre529: true })
     ];
 
     const directories = {
@@ -51,7 +56,8 @@ export const getAllFiles = (context: Context): string[] => {
         "${graphql}": getGraphQLPath(context),
         "${headlessCms}": getHeadlessCMSPath(context),
         "${pageBuilder}": getPageBuilderPath(context),
-        "${prerenderingService}": getPrerenderingServicePath(context)
+        "${prerenderingService}": getPrerenderingServicePath(context),
+        "${dynamoToElastic}": getDynamoDbToElasticsearchPath(context)
     };
 
     const isPre529Project = getIsPre529Project(context);

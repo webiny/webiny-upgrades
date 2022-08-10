@@ -32,3 +32,10 @@ export const getPrerenderingServicePath = (context: Context) => {
     }
     return "apps/api/prerenderingService";
 };
+
+export const getDynamoDbToElasticsearchPath = context => {
+    if (isPre529Project(context)) {
+        return "api/code/dynamodbToElastic";
+    }
+    return "apps/api/dynamodbToElastic";
+};
