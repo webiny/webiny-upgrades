@@ -6,29 +6,29 @@ __metadata:
   cacheKey: 8
 
 "@babel/code-frame@npm:^7.0.0":
-  version: 7.16.7
-  resolution: "@babel/code-frame@npm:7.16.7"
+  version: 7.18.6
+  resolution: "@babel/code-frame@npm:7.18.6"
   dependencies:
-    "@babel/highlight": ^7.16.7
-  checksum: db2f7faa31bc2c9cf63197b481b30ea57147a5fc1a6fab60e5d6c02cdfbf6de8e17b5121f99917b3dabb5eeb572da078312e70697415940383efc140d4e0808b
+    "@babel/highlight": ^7.18.6
+  checksum: 195e2be3172d7684bf95cff69ae3b7a15a9841ea9d27d3c843662d50cdd7d6470fd9c8e64be84d031117e4a4083486effba39f9aef6bbb2c89f7f21bcfba33ba
   languageName: node
   linkType: hard
 
-"@babel/helper-validator-identifier@npm:^7.16.7":
-  version: 7.16.7
-  resolution: "@babel/helper-validator-identifier@npm:7.16.7"
-  checksum: dbb3db9d184343152520a209b5684f5e0ed416109cde82b428ca9c759c29b10c7450657785a8b5c5256aa74acc6da491c1f0cf6b784939f7931ef82982051b69
+"@babel/helper-validator-identifier@npm:^7.18.6":
+  version: 7.18.6
+  resolution: "@babel/helper-validator-identifier@npm:7.18.6"
+  checksum: e295254d616bbe26e48c196a198476ab4d42a73b90478c9842536cf910ead887f5af6b5c4df544d3052a25ccb3614866fa808dc1e3a5a4291acd444e243c0648
   languageName: node
   linkType: hard
 
-"@babel/highlight@npm:^7.16.7":
-  version: 7.17.12
-  resolution: "@babel/highlight@npm:7.17.12"
+"@babel/highlight@npm:^7.18.6":
+  version: 7.18.6
+  resolution: "@babel/highlight@npm:7.18.6"
   dependencies:
-    "@babel/helper-validator-identifier": ^7.16.7
+    "@babel/helper-validator-identifier": ^7.18.6
     chalk: ^2.0.0
     js-tokens: ^4.0.0
-  checksum: 841a11aa353113bcce662b47085085a379251bf8b09054e37e1e082da1bf0d59355a556192a6b5e9ee98e8ee6f1f2831ac42510633c5e7043e3744dda2d6b9d6
+  checksum: 92d8ee61549de5ff5120e945e774728e5ccd57fd3b2ed6eace020ec744823d4a98e242be1453d21764a30a14769ecd62170fba28539b211799bbaf232bbb2789
   languageName: node
   linkType: hard
 
@@ -770,7 +770,7 @@ __metadata:
     semver: ^7.3.5
     ts-morph: ^12.2.0
     ts-node: ^10.8.1
-    typescript: 4.5.5
+    typescript: 4.7.4
     write-json-file: ^4.0.0
     yargs: ^17.2.1
   bin:
@@ -911,8 +911,8 @@ __metadata:
   linkType: hard
 
 "ts-node@npm:^10.8.1":
-  version: 10.8.1
-  resolution: "ts-node@npm:10.8.1"
+  version: 10.9.1
+  resolution: "ts-node@npm:10.9.1"
   dependencies:
     "@cspotcode/source-map-support": ^0.8.0
     "@tsconfig/node10": ^1.0.7
@@ -944,7 +944,7 @@ __metadata:
     ts-node-script: dist/bin-script.js
     ts-node-transpile-only: dist/bin-transpile.js
     ts-script: dist/bin-script-deprecated.js
-  checksum: 7d1aa7aa3ae1c0459c4922ed0dbfbade442cfe0c25aebaf620cdf1774f112c8d7a9b14934cb6719274917f35b2c503ba87bcaf5e16a0d39ba0f68ce3e7728363
+  checksum: 090adff1302ab20bd3486e6b4799e90f97726ed39e02b39e566f8ab674fd5bd5f727f43615debbfc580d33c6d9d1c6b1b3ce7d8e3cca3e20530a145ffa232c35
   languageName: node
   linkType: hard
 
@@ -964,23 +964,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:4.5.5":
-  version: 4.5.5
-  resolution: "typescript@npm:4.5.5"
+"typescript@npm:4.7.4":
+  version: 4.7.4
+  resolution: "typescript@npm:4.7.4"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 506f4c919dc8aeaafa92068c997f1d213b9df4d9756d0fae1a1e7ab66b585ab3498050e236113a1c9e57ee08c21ec6814ca7a7f61378c058d79af50a4b1f5a5e
+  checksum: 5750181b1cd7e6482c4195825547e70f944114fb47e58e4aa7553e62f11b3f3173766aef9c281783edfd881f7b8299cf35e3ca8caebe73d8464528c907a164df
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@4.5.5#~builtin<compat/typescript>":
-  version: 4.5.5
-  resolution: "typescript@patch:typescript@npm%3A4.5.5#~builtin<compat/typescript>::version=4.5.5&hash=7ad353"
+"typescript@patch:typescript@4.7.4#~builtin<compat/typescript>":
+  version: 4.7.4
+  resolution: "typescript@patch:typescript@npm%3A4.7.4#~builtin<compat/typescript>::version=4.7.4&hash=7ad353"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 858c61fa63f7274ca4aaaffeced854d550bf416cff6e558c4884041b3311fb662f476f167cf5c9f8680c607239797e26a2ee0bcc6467fbc05bfcb218e1c6c671
+  checksum: 9096d8f6c16cb80ef3bf96fcbbd055bf1c4a43bd14f3b7be45a9fbe7ada46ec977f604d5feed3263b4f2aa7d4c7477ce5f9cd87de0d6feedec69a983f3a4f93e
   languageName: node
   linkType: hard
 
