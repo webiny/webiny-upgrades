@@ -48,7 +48,11 @@ export const getAllFiles = (context: Context): string[] => {
             path: "${prerenderingService}/queue/process/src/index.ts",
             pre529: true
         }),
-        new FileDefinition({ path: "${dynamoToElastic}/src/index.ts", pre529: true })
+        new FileDefinition({
+            path: "${dynamoToElastic}/src/index.ts",
+            pre529: true,
+            elasticsearch: true
+        })
     ];
 
     const directories = {
