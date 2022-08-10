@@ -1,4 +1,4 @@
-import tsMorph, {
+import {
     SourceFile,
     VariableDeclaration,
     CallExpression,
@@ -34,7 +34,7 @@ export const getCreateHandlerExpressions = (source: SourceFile, handler: string)
      */
     const createHandlerExpression = handlerDeclaration.getFirstDescendant<CallExpression>(
         (node =>
-            tsMorph.Node.isCallExpression(node) &&
+            Node.isCallExpression(node) &&
             node.getExpression().getText() === "createHandler") as any
     );
     if (!createHandlerExpression) {
@@ -50,7 +50,7 @@ export const getCreateHandlerExpressions = (source: SourceFile, handler: string)
      * And third check step is to determine if we need to upgrade the "createHandler".
      */
     const plugins = createHandlerExpression.getFirstDescendant<PropertyAssignment>(
-        (node => tsMorph.Node.isPropertyAssignment(node) && node.getName() === "plugins") as any
+        (node => Node.isPropertyAssignment(node) && node.getName() === "plugins") as any
     );
     if (!plugins) {
         return {
@@ -61,7 +61,7 @@ export const getCreateHandlerExpressions = (source: SourceFile, handler: string)
         };
     }
     const arrayExpression = plugins.getFirstDescendant<ArrayLiteralExpression>((node =>
-        tsMorph.Node.isArrayLiteralExpression(node)) as any);
+        Node.isArrayLiteralExpression(node)) as any);
     return {
         handlerDeclaration,
         createHandlerExpression,

@@ -1,4 +1,4 @@
-import tsMorph, { SourceFile } from "ts-morph";
+import { SourceFile, Node, VariableDeclarationKind } from "ts-morph";
 
 const declarationName = "documentClient";
 
@@ -7,7 +7,7 @@ export const addDynamoDbDocumentClient = (source: SourceFile): void => {
      * If there is document client declaration, no need to proceed further.
      */
     const documentClient = source.getFirstDescendant(node => {
-        return tsMorph.Node.isVariableDeclaration(node) && node.getName() === declarationName;
+        return Node.isVariableDeclaration(node) && node.getName() === declarationName;
     });
     if (documentClient) {
         return;
@@ -18,7 +18,7 @@ export const addDynamoDbDocumentClient = (source: SourceFile): void => {
     const last = lastImportDeclaration.getEndLineNumber();
 
     source.insertVariableStatement(last, {
-        declarationKind: tsMorph.VariableDeclarationKind.Const,
+        declarationKind: VariableDeclarationKind.Const,
         declarations: [
             {
                 name: declarationName,

@@ -1,4 +1,4 @@
-import tsMorph, { ArrayLiteralExpression, SourceFile } from "ts-morph";
+import { ArrayLiteralExpression, SourceFile, Node } from "ts-morph";
 import log from "./log";
 
 interface Params {
@@ -22,7 +22,7 @@ export const addToExportDefaultArray = ({ source, target }: Params): void => {
             continue;
         }
         const arrayLiteralExpression = item.getFirstDescendant<ArrayLiteralExpression>((node =>
-            tsMorph.Node.isArrayLiteralExpression(node)) as any);
+            Node.isArrayLiteralExpression(node)) as any);
         if (!arrayLiteralExpression) {
             continue;
         }

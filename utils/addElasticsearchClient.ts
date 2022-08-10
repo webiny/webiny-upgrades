@@ -1,4 +1,4 @@
-import tsMorph, { SourceFile } from "ts-morph";
+import { SourceFile, Node, VariableDeclarationKind } from "ts-morph";
 import { insertImportToSourceFile } from "./insertImportToSourceFile";
 
 const declarationName = "elasticsearchClient";
@@ -8,7 +8,7 @@ export const addElasticsearchClient = (source: SourceFile): void => {
      * If there is elasticsearch client declaration, no need to proceed further.
      */
     const elasticsearchClient = source.getFirstDescendant(node => {
-        return tsMorph.Node.isVariableDeclaration(node) && node.getName() === declarationName;
+        return Node.isVariableDeclaration(node) && node.getName() === declarationName;
     });
     if (elasticsearchClient) {
         return;
@@ -25,7 +25,7 @@ export const addElasticsearchClient = (source: SourceFile): void => {
     const last = lastImportDeclaration.getEndLineNumber();
 
     source.insertVariableStatement(last, {
-        declarationKind: tsMorph.VariableDeclarationKind.Const,
+        declarationKind: VariableDeclarationKind.Const,
         declarations: [
             {
                 name: declarationName,
