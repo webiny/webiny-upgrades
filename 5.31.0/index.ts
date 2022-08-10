@@ -1,22 +1,15 @@
 import { Context } from "../types";
-import { isPre529Project, createMorphProject, prettierFormat, yarnInstall } from "../utils";
+import { createMorphProject, prettierFormat, yarnInstall } from "../utils";
 
-const getGraphQLPath = (context: Context) => {
-    if (isPre529Project(context)) {
-        return "api/code/graphql";
-    }
-    return "apps/api/graphql";
-};
-const getHeadlessCMSPath = (context: Context) => {
-    if (isPre529Project(context)) {
-        return "api/code/headlessCMS";
-    }
-    return "apps/api/headlessCMS";
-};
+import { getAllFiles } from "./files";
 
 module.exports = async (context: Context) => {
-    const files: string[] = [];
+    const files = getAllFiles(context);
     const project = createMorphProject(files);
+
+    /**
+     *
+     */
 
     // Save file changes.
     await project.save();

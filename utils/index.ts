@@ -32,7 +32,7 @@ import { removeExtendsFromInterface } from "./removeExtendsFromInterface";
 import { getSourceFile, getExistingFiles } from "./files";
 import { addToExportDefaultArray } from "./addToExportDefaultArray";
 import { getRequireFromSourceFile } from "./getRequireFromSourceFile";
-import { isPre529Project } from "./isPre529Project";
+import { isPre529Project, getIsPre529Project } from "./isPre529Project";
 
 export {
     addPluginToCreateHandler,
@@ -63,5 +63,6 @@ export {
     getExistingFiles,
     addToExportDefaultArray,
     getRequireFromSourceFile,
-    isPre529Project
+    isPre529Project,
+    getIsPre529Project
 };

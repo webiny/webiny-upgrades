@@ -8,3 +8,4 @@ import { Context } from "../types";
 export const isPre529Project = (context: Context): boolean => {
     return fs.existsSync(path.join(context.project.root, "api"));
 };
+export const getIsPre529Project = isPre529Project;

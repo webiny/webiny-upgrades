@@ -42,7 +42,8 @@ const response = data => {
             project: {
                 root: argv.cwd || process.cwd()
             },
-            version
+            version,
+            log: log
         };
 
         await require(scriptsPath)(context);
