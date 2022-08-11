@@ -1,5 +1,5 @@
-import { Context } from "../types";
-import { isPre529Project } from "../utils";
+import { Context } from "../../types";
+import { isPre529Project } from "../../utils";
 
 export const getFileManagerPath = (context: Context) => {
     if (isPre529Project(context)) {
@@ -38,4 +38,30 @@ export const getDynamoDbToElasticsearchPath = context => {
         return "api/code/dynamodbToElastic";
     }
     return "apps/api/dynamodbToElastic";
+};
+
+interface PathConverters {
+    [key: string]: {
+        (context: Context): string;
+    };
+}
+
+const pathConverters: PathConverters = {
+    "${fileManager}": getFileManagerPath,
+    "${graphql}": getGraphQLPath,
+    "${headlessCms}": getHeadlessCMSPath,
+    "${pageBuilder}": getPageBuilderPath,
+    "${prerenderingService}": getPrerenderingServicePath,
+    "${dynamoToElastic}": getDynamoDbToElasticsearchPath
+};
+
+export const createFilePath = (context: Context, file: string): string | null => {
+    for (const p in pathConverters) {
+        if (file.substring(0, p.length) !== p) {
+            continue;
+        }
+        return file.replace(p, pathConverters[p](context));
+    }
+    context.log.error(`Could not determine directory for file "${file}".`);
+    return null;
 };

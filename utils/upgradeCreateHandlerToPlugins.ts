@@ -1,9 +1,14 @@
 import { SourceFile } from "ts-morph";
 import { getCreateHandlerExpressions } from "./getCreateHandlerExpressions";
 
+interface Options {
+    debug?: boolean;
+}
+
 export const upgradeCreateHandlerToPlugins = (
     source: SourceFile,
-    handler: string = "handler"
+    handler: string = "handler",
+    options: Options = {}
 ): void => {
     const { createHandlerExpression, plugins } = getCreateHandlerExpressions(source, handler);
 
@@ -24,6 +29,8 @@ export const upgradeCreateHandlerToPlugins = (
      * And then add the new ones.
      */
     createHandlerExpression.addArgument(
-        `{plugins: [${args.join(",")}], http: {debug: process.env.DEBUG === "true"}}`
+        `{plugins: [${args.join(",")}]${
+            options.debug !== false ? `, http: {debug: process.env.DEBUG === "true"}` : ""
+        }}`
     );
 };
