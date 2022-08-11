@@ -5,6 +5,7 @@ import { upgradePackages } from "./packages";
 import { updateFileManager } from "./updateFileManager";
 import { updateGraphQL } from "./updateGraphQL";
 import { updateHeadlessCms } from "./updateHeadlessCms";
+import { updatePageBuilder } from "./updatePageBuilder";
 
 module.exports = async (context: Context) => {
     const files = getAllFiles(context);
@@ -32,6 +33,14 @@ module.exports = async (context: Context) => {
      * Headless CMS
      */
     await updateHeadlessCms({
+        context,
+        project,
+        files
+    });
+    /**
+     * Page Builder
+     */
+    await updatePageBuilder({
         context,
         project,
         files
