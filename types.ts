@@ -1,6 +1,4 @@
 import { PackageJson as BasePackageJson } from "type-fest";
-import chalk from "chalk";
-import functions from "./utils/log";
 
 export interface Context {
     version: string;

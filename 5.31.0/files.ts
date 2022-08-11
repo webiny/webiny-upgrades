@@ -29,12 +29,22 @@ export const getAllFiles = (context: Context): Files => {
         new FileDefinition({
             path: createFilePath(context, "${graphql}/src/index.ts"),
             tag: "gql",
-            name: "graphql"
+            name: "graphql/index"
+        }),
+        new FileDefinition({
+            path: createFilePath(context, "${graphql}/src/types.ts"),
+            tag: "gql",
+            name: "graphql/types"
         }),
         new FileDefinition({
             path: createFilePath(context, "${headlessCms}/src/index.ts"),
             tag: "cms",
-            name: "cms"
+            name: "cms/index"
+        }),
+        new FileDefinition({
+            path: createFilePath(context, "${headlessCms}/src/types.ts"),
+            tag: "cms",
+            name: "cms/types"
         }),
         new FileDefinition({
             path: createFilePath(context, "${pageBuilder}/exportPages/combine/src/index.ts"),

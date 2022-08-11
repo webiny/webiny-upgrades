@@ -7,7 +7,7 @@ interface Options {
 
 export const upgradeCreateHandlerToPlugins = (
     source: SourceFile,
-    handler: string = "handler",
+    handler = "handler",
     options: Options = {}
 ): void => {
     const { createHandlerExpression, plugins } = getCreateHandlerExpressions(source, handler);

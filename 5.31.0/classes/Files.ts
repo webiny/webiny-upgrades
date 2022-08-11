@@ -1,5 +1,5 @@
 import { Context } from "../../types";
-import { FileDefinition } from "./FileDefinition";
+import { FileDefinition, Tag } from "./FileDefinition";
 
 export class Files {
     public readonly context: Context;
@@ -20,6 +20,15 @@ export class Files {
         }
         this.context.log.error(`There is no file with name "${name}".`);
         return null;
+    }
+
+    public byTag(tag: Tag): Files {
+        return new Files(
+            this.context,
+            this.files.filter(file => {
+                return file.tag === tag;
+            })
+        );
     }
 
     public filter(cb: (file: FileDefinition) => boolean): Files {

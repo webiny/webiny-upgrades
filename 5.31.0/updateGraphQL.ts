@@ -16,8 +16,14 @@ interface Params {
     context: Context;
 }
 
-export const updateGraphQL = async ({ context, project, files }: Params): Promise<void> => {
-    const indexFile = files.byName("graphql");
+export const updateGraphQL = async (params: Params): Promise<void> => {
+    await updateIndexFile(params);
+    await updateTypesFile(params);
+};
+
+const updateIndexFile = async (params: Params): Promise<void> => {
+    const { context, project, files } = params;
+    const indexFile = files.byName("graphql/index");
     if (!indexFile) {
         context.log.error(`Missing GraphQL index file. Skipping...`);
         return;
@@ -51,7 +57,10 @@ export const updateGraphQL = async ({ context, project, files }: Params): Promis
 
     addPackagesToDependencies(context, graphQLPath, {
         "@webiny/api-apw": version,
-        "@webiny/api-apw-scheduler-so-ddb": version
+        "@webiny/api-apw-scheduler-so-ddb": version,
+        // We actually remove these two packages since they do not exist anymore
+        "@webiny/handler-http": null,
+        "@webiny/handler-args": null
     });
 
     insertImportToSourceFile({
@@ -101,6 +110,42 @@ export const updateGraphQL = async ({ context, project, files }: Params): Promis
         "process: process.env.PRERENDERING_QUEUE_PROCESS_HANDLER",
         "process: String(process.env.PRERENDERING_QUEUE_PROCESS_HANDLER)"
     );
+
+    source.replaceWithText(text);
+};
+
+const updateTypesFile = (params: Params): Promise<void> => {
+    const { context, project, files } = params;
+    const typesFile = files.byName("graphql/types");
+    if (!typesFile) {
+        context.log.error(`Missing GraphQL types file. Skipping...`);
+        return;
+    }
+    const source = project.getSourceFile(typesFile.path);
+    if (!source) {
+        context.log.error(`Missing Source of GraphQL types file. Skipping...`);
+        return;
+    }
+    if (source.getText().match("HttpContext") === null) {
+        context.log.info(`It seems GraphQL types file was already upgraded. Skipping...`);
+        return;
+    }
+
+    removeImportFromSourceFile(source, "@webiny/handler-http/types");
+    removeImportFromSourceFile(source, "@webiny/handler-args/types");
+    /**
+     * Package dependencies were removed in updateIndexFile method
+     */
+
+    /**
+     * Then we need to remove HttpContext and ArgsContext from the types file
+     */
+    let text = source.getText();
+
+    text = text.replace("HttpContext,", "");
+    text = text.replace("HttpContext", "");
+    text = text.replace("ArgsContext,", "");
+    text = text.replace("ArgsContext", "");
 
     source.replaceWithText(text);
 };
