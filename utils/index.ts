@@ -22,7 +22,8 @@ import { addElasticsearchClient } from "./addElasticsearchClient";
 import {
     addPackagesToDependencies,
     addPackagesToDevDependencies,
-    addPackagesToPeerDependencies
+    addPackagesToPeerDependencies,
+    addPackagesToResolutions
 } from "./dependencies";
 
 import { getIsElasticsearchProject } from "./isElasticsearchProject";
@@ -56,6 +57,7 @@ export {
     addPackagesToDependencies,
     addPackagesToDevDependencies,
     addPackagesToPeerDependencies,
+    addPackagesToResolutions,
     getIsElasticsearchProject,
     upgradeCreateHandlerToPlugins,
     removeExtendsFromInterface,
