@@ -34,6 +34,7 @@ import { getSourceFile, getExistingFiles } from "./files";
 import { addToExportDefaultArray } from "./addToExportDefaultArray";
 import { getRequireFromSourceFile } from "./getRequireFromSourceFile";
 import { isPre529Project, getIsPre529Project } from "./isPre529Project";
+import { findVersion } from "./findVersion";
 
 export {
     addPluginToCreateHandler,
@@ -66,5 +67,6 @@ export {
     addToExportDefaultArray,
     getRequireFromSourceFile,
     isPre529Project,
-    getIsPre529Project
+    getIsPre529Project,
+    findVersion
 };

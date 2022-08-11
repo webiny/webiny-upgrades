@@ -2,10 +2,13 @@ import { Files } from "./classes/Files";
 import { Project } from "ts-morph";
 import { Context } from "../types";
 import {
+    addPackagesToDependencies,
     addPluginToCreateHandler,
+    findVersion,
     insertImportToSourceFile,
     removeImportFromSourceFile
 } from "../utils";
+import { createFilePath } from "./utils/paths";
 
 interface Params {
     files: Files;
@@ -43,6 +46,14 @@ export const updateGraphQL = async ({ context, project, files }: Params): Promis
     /**
      * Then we need to add the APW
      */
+    const graphQLPath = createFilePath(context, "${graphql}/package.json");
+    const version = findVersion(graphQLPath) || context.version;
+
+    addPackagesToDependencies(context, graphQLPath, {
+        "@webiny/api-apw": version,
+        "@webiny/api-apw-scheduler-so-ddb": version
+    });
+
     insertImportToSourceFile({
         source,
         name: ["createApwPageBuilderContext", "createApwGraphQL"],
