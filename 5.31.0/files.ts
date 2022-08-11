@@ -37,12 +37,12 @@ export const getAllFiles = (context: Context): Files => {
             name: "graphql/types"
         }),
         new FileDefinition({
-            path: createFilePath(context, "${headlessCms}/src/index.ts"),
+            path: createFilePath(context, "${cms}/src/index.ts"),
             tag: "cms",
             name: "cms/index"
         }),
         new FileDefinition({
-            path: createFilePath(context, "${headlessCms}/src/types.ts"),
+            path: createFilePath(context, "${cms}/src/types.ts"),
             tag: "cms",
             name: "cms/types"
         }),

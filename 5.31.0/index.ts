@@ -4,6 +4,7 @@ import { getAllFiles } from "./files";
 import { upgradePackages } from "./packages";
 import { updateFileManager } from "./updateFileManager";
 import { updateGraphQL } from "./updateGraphQL";
+import { updateHeadlessCms } from "./updateHeadlessCms";
 
 module.exports = async (context: Context) => {
     const files = getAllFiles(context);
@@ -27,12 +28,22 @@ module.exports = async (context: Context) => {
         project,
         files
     });
+    /**
+     * Headless CMS
+     */
+    await updateHeadlessCms({
+        context,
+        project,
+        files
+    });
+
+    /**
+     * React 17 upgrades
+     */
+    upgradePackages(context);
 
     // Save file changes.
     await project.save();
-
-    // Upgrade packages.
-    upgradePackages(context);
 
     // Format updated files.
     await prettierFormat(rawFiles);

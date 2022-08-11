@@ -66,7 +66,7 @@ interface PathConverters {
 const pathConverters: PathConverters = {
     "${fileManager}": getFileManagerPath,
     "${graphql}": getGraphQLPath,
-    "${headlessCms}": getHeadlessCMSPath,
+    "${cms}": getHeadlessCMSPath,
     "${pageBuilder}": getPageBuilderPath,
     "${prerenderingService}": getPrerenderingServicePath,
     "${dynamoToElastic}": getDynamoDbToElasticsearchPath,
