@@ -38,10 +38,19 @@ export const addPackagesToPeerDependencies = (
     addPackagesToDeps("peerDependencies", context, targetPath, packages);
 };
 
+export const addPackagesToResolutions = (
+    context: Context,
+    targetPath: string,
+    packages: Packages
+) => {
+    addPackagesToDeps("resolutions", context, targetPath, packages);
+};
+
 const allowedPackageDependencyTypes: string[] = [
     "dependencies",
     "devDependencies",
-    "peerDependencies"
+    "peerDependencies",
+    "resolutions"
 ];
 const addPackagesToDeps = (
     type: string,
@@ -81,6 +90,8 @@ const addPackagesToDeps = (
             log.error(`Package "${pkg}" version is not a valid semver version: "${version}".`);
             continue;
         }
+
+        console.log("dependencies", dependencies);
         dependencies[pkg] = version;
     }
     json[type] = dependencies;

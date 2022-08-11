@@ -1,6 +1,7 @@
 import { Context } from "../types";
 import { createMorphProject, prettierFormat, yarnInstall } from "../utils";
 import { getAllFiles } from "./files";
+import { upgradePackages } from "./packages";
 import { updateFileManager } from "./updateFileManager";
 import { updateGraphQL } from "./updateGraphQL";
 
@@ -29,6 +30,9 @@ module.exports = async (context: Context) => {
 
     // Save file changes.
     await project.save();
+
+    // Upgrade packages.
+    upgradePackages(context);
 
     // Format updated files.
     await prettierFormat(rawFiles);
