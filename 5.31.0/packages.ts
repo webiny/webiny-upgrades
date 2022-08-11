@@ -1,5 +1,3 @@
-import path from "path";
-
 import { Context } from "../types";
 import {
     addPackagesToDependencies,
@@ -7,12 +5,13 @@ import {
     addPackagesToResolutions,
     log
 } from "../utils";
+import { createFilePath } from "./utils/paths";
 
 const upgradeFiles = {
     root: "package.json",
-    appsAdmin: "apps/admin/package.json",
+    appsAdmin: "${admin}/package.json",
     appsTheme: "apps/theme/package.json",
-    appsWebsite: "apps/website/package.json"
+    appsWebsite: "${website}/package.json"
 };
 
 export const upgradePackages = (context: Context): void => {
@@ -32,13 +31,13 @@ export const upgradePackages = (context: Context): void => {
     log.success(`Upgraded 'resolutions' into`, upgradeFiles.root);
 
     // apps/admin/package.json
-    addPackagesToDependencies(context, upgradeFiles.appsAdmin, {
+    addPackagesToDependencies(context, createFilePath(context, upgradeFiles.appsAdmin), {
         "@types/react": "17.0.39",
         react: "17.0.2",
         "react-dom": "17.0.2"
     });
 
-    log.success(`Upgraded 'dependencies' into`, upgradeFiles.appsAdmin);
+    log.success(`Upgraded 'dependencies' into`, createFilePath(context, upgradeFiles.appsAdmin));
 
     // apps/theme/package.json
     addPackagesToDependencies(context, upgradeFiles.appsTheme, {
@@ -48,11 +47,11 @@ export const upgradePackages = (context: Context): void => {
     log.success(`Upgraded 'dependencies' into`, upgradeFiles.appsTheme);
 
     // apps/website/package.json
-    addPackagesToDependencies(context, upgradeFiles.appsWebsite, {
+    addPackagesToDependencies(context, createFilePath(context, upgradeFiles.appsWebsite), {
         "@types/react": "17.0.39",
         react: "17.0.2",
         "react-dom": "17.0.2"
     });
 
-    log.success(`Upgraded 'dependencies' into`, upgradeFiles.appsWebsite);
+    log.success(`Upgraded 'dependencies' into`, createFilePath(context, upgradeFiles.appsWebsite));
 };

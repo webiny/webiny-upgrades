@@ -90,8 +90,6 @@ const addPackagesToDeps = (
             log.error(`Package "${pkg}" version is not a valid semver version: "${version}".`);
             continue;
         }
-
-        console.log("dependencies", dependencies);
         dependencies[pkg] = version;
     }
     json[type] = dependencies;

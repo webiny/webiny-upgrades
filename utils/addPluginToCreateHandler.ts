@@ -3,13 +3,13 @@ import { getCreateHandlerExpressions } from "./getCreateHandlerExpressions";
 
 interface Params {
     source: SourceFile;
-    handler: string;
+    handler?: string;
     value: string;
     after?: string | null | RegExp;
 }
 
 export const addPluginToCreateHandler = (params: Params): void => {
-    const { source, handler, value, after } = params;
+    const { source, handler = "handler", value, after } = params;
     const { plugins, arrayExpression } = getCreateHandlerExpressions(source, handler);
 
     if (!plugins) {

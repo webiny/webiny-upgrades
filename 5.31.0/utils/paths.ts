@@ -33,11 +33,25 @@ export const getPrerenderingServicePath = (context: Context) => {
     return "apps/api/prerenderingService";
 };
 
-export const getDynamoDbToElasticsearchPath = context => {
+export const getDynamoDbToElasticsearchPath = (context: Context) => {
     if (isPre529Project(context)) {
         return "api/code/dynamodbToElastic";
     }
     return "apps/api/dynamodbToElastic";
+};
+
+export const getWebsitePath = (context: Context) => {
+    if (isPre529Project(context)) {
+        return "apps/admin/code";
+    }
+    return "apps/admin";
+};
+
+export const getAdminPath = (context: Context) => {
+    if (isPre529Project(context)) {
+        return "apps/website/code";
+    }
+    return "apps/website";
 };
 
 interface PathConverters {
@@ -46,13 +60,18 @@ interface PathConverters {
     };
 }
 
+/**
+ * Add more paths if required.
+ */
 const pathConverters: PathConverters = {
     "${fileManager}": getFileManagerPath,
     "${graphql}": getGraphQLPath,
     "${headlessCms}": getHeadlessCMSPath,
     "${pageBuilder}": getPageBuilderPath,
     "${prerenderingService}": getPrerenderingServicePath,
-    "${dynamoToElastic}": getDynamoDbToElasticsearchPath
+    "${dynamoToElastic}": getDynamoDbToElasticsearchPath,
+    "${website}": getWebsitePath,
+    "${admin}": getAdminPath
 };
 
 export const createFilePath = (context: Context, file: string): string | null => {
