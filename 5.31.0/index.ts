@@ -6,6 +6,7 @@ import { updateFileManager } from "./updateFileManager";
 import { updateGraphQL } from "./updateGraphQL";
 import { updateHeadlessCms } from "./updateHeadlessCms";
 import { updatePageBuilder } from "./updatePageBuilder";
+import { updatePrerenderingService } from "./updatePrerenderingService";
 
 module.exports = async (context: Context) => {
     const files = getAllFiles(context);
@@ -41,6 +42,14 @@ module.exports = async (context: Context) => {
      * Page Builder
      */
     await updatePageBuilder({
+        context,
+        project,
+        files
+    });
+    /**
+     * Prerendering Service
+     */
+    await updatePrerenderingService({
         context,
         project,
         files
