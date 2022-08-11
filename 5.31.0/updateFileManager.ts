@@ -20,12 +20,7 @@ export const updateFileManager = async (params: Params): Promise<void> => {
     await updateTransform(params);
 };
 
-interface UpdateParams {
-    files: Files;
-    context: Context;
-    project: Project;
-}
-const updateDownload = async ({ context, files, project }: UpdateParams): Promise<void> => {
+const updateDownload = async ({ context, files, project }: Params): Promise<void> => {
     const indexFile = files.byName("fm/download");
     if (!indexFile) {
         context.log.error(`Missing FileManager Download index file. Skipping...`);
@@ -85,7 +80,7 @@ const updateDownload = async ({ context, files, project }: UpdateParams): Promis
     });
 };
 
-const updateManage = async ({ files, context, project }: UpdateParams): Promise<void> => {
+const updateManage = async ({ files, context, project }: Params): Promise<void> => {
     const indexFile = files.byName("fm/manage");
     if (!indexFile) {
         context.log.error(`Missing FileManager Manage index file. Skipping...`);
@@ -157,7 +152,7 @@ const updateManage = async ({ files, context, project }: UpdateParams): Promise<
  
  */
 
-const updateTransform = async ({ files, context, project }: UpdateParams): Promise<void> => {
+const updateTransform = async ({ files, context, project }: Params): Promise<void> => {
     const indexFile = files.byName("fm/transform");
     if (!indexFile) {
         context.log.error(`Missing FileManager Transform index file. Skipping...`);

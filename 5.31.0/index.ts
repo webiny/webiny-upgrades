@@ -2,6 +2,7 @@ import { Context } from "../types";
 import { createMorphProject, prettierFormat, yarnInstall } from "../utils";
 import { getAllFiles } from "./files";
 import { updateFileManager } from "./updateFileManager";
+import { updateGraphQL } from "./updateGraphQL";
 
 module.exports = async (context: Context) => {
     const files = getAllFiles(context);
@@ -12,6 +13,15 @@ module.exports = async (context: Context) => {
      * File Manager
      */
     await updateFileManager({
+        context,
+        project,
+        files
+    });
+
+    /**
+     * GraphQL
+     */
+    await updateGraphQL({
         context,
         project,
         files
