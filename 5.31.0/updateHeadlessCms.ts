@@ -70,7 +70,7 @@ const updateIndexFile = async (params: Params): Promise<void> => {
 
     addPluginToCreateHandler({
         source,
-        after: "createHeadlessCmsGraphQL",
+        before: "scaffoldsPlugins",
         value: "createApwGraphQL()"
     });
     addPluginToCreateHandler({

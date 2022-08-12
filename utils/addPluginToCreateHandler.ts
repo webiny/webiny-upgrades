@@ -6,10 +6,11 @@ interface Params {
     handler?: string;
     value: string;
     after?: string | null | RegExp;
+    before?: string | null | RegExp;
 }
 
 export const addPluginToCreateHandler = (params: Params): void => {
-    const { source, handler = "handler", value, after } = params;
+    const { source, handler = "handler", value, after, before } = params;
     const { plugins, arrayExpression } = getCreateHandlerExpressions(source, handler);
 
     if (!plugins) {
@@ -31,6 +32,16 @@ export const addPluginToCreateHandler = (params: Params): void => {
                 continue;
             }
             index = Number(i) + 1;
+            break;
+        }
+    } else if (before) {
+        const re = before instanceof RegExp ? after : new RegExp(before);
+        for (const i in elements) {
+            const element = elements[i];
+            if (element.getText().match(re) === null) {
+                continue;
+            }
+            index = Number(i);
             break;
         }
     }

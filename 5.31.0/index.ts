@@ -7,6 +7,7 @@ import { updateGraphQL } from "./updateGraphQL";
 import { updateHeadlessCms } from "./updateHeadlessCms";
 import { updatePageBuilder } from "./updatePageBuilder";
 import { updatePrerenderingService } from "./updatePrerenderingService";
+import { updateDynamoDbToElasticsearch } from "./updateDynamoDbToElasticsearch";
 
 module.exports = async (context: Context) => {
     const files = getAllFiles(context);
@@ -50,6 +51,14 @@ module.exports = async (context: Context) => {
      * Prerendering Service
      */
     await updatePrerenderingService({
+        context,
+        project,
+        files
+    });
+    /**
+     * DynamoDB to Elasticsearch
+     */
+    await updateDynamoDbToElasticsearch({
         context,
         project,
         files

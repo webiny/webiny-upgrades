@@ -100,7 +100,7 @@ export const getAllFiles = (context: Context): Files => {
             pre529: true,
             elasticsearch: true,
             tag: "ddb2es",
-            name: "ddb/index"
+            name: "ddb-es/index"
         })
     ]);
 

@@ -35,9 +35,9 @@ export const getPrerenderingServicePath = (context: Context) => {
 
 export const getDynamoDbToElasticsearchPath = (context: Context) => {
     if (isPre529Project(context)) {
-        return "api/code/dynamodbToElastic";
+        return "api/code/dynamoToElastic";
     }
-    return "apps/api/dynamodbToElastic";
+    return "apps/api/dynamoToElastic";
 };
 
 export const getWebsitePath = (context: Context) => {
