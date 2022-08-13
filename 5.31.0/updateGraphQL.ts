@@ -6,7 +6,8 @@ import {
     addPluginToCreateHandler,
     findVersion,
     insertImportToSourceFile,
-    removeImportFromSourceFile
+    removeImportFromSourceFile,
+    removePluginFromCreateHandler
 } from "../utils";
 import { createFilePath } from "./utils/paths";
 
@@ -62,6 +63,9 @@ const updateIndexFile = async (params: Params): Promise<void> => {
         "@webiny/handler-http": null,
         "@webiny/handler-args": null
     });
+
+    removePluginFromCreateHandler(source, "handler", /createApwPageBuilderContext/);
+    removePluginFromCreateHandler(source, "handler", /createApwGraphQL/);
 
     insertImportToSourceFile({
         source,

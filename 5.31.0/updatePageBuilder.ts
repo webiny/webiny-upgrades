@@ -1,7 +1,7 @@
 import { Files } from "./classes/Files";
 import { Project } from "ts-morph";
 import { Context } from "../types";
-import { insertImportToSourceFile, removeImportFromSourceFile } from "../utils";
+import { insertImportToSourceFile, isPre529Project, removeImportFromSourceFile } from "../utils";
 
 interface Params {
     files: Files;
@@ -10,6 +10,9 @@ interface Params {
 }
 
 export const updatePageBuilder = async (params: Params): Promise<void> => {
+    if (isPre529Project(params.context) === false) {
+        return;
+    }
     await updateExportPagesCombine(params);
     await updateExportPagesProcess(params);
     await updateImportPagesCreate(params);

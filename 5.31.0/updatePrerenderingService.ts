@@ -3,6 +3,7 @@ import { Project } from "ts-morph";
 import { Context } from "../types";
 import {
     insertImportToSourceFile,
+    isPre529Project,
     removeImportFromSourceFile,
     upgradeCreateHandlerToPlugins
 } from "../utils";
@@ -14,6 +15,9 @@ interface Params {
 }
 
 export const updatePrerenderingService = async (params: Params): Promise<void> => {
+    if (isPre529Project(params.context) === false) {
+        return;
+    }
     await updateFlush(params);
     await updateQueueAdd(params);
     await updateQueueProcess(params);

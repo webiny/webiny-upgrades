@@ -4,6 +4,7 @@ import { Context } from "../types";
 import {
     addPluginToCreateHandler,
     insertImportToSourceFile,
+    isPre529Project,
     removeImportFromSourceFile,
     removePluginFromCreateHandler,
     upgradeCreateHandlerToPlugins
@@ -15,6 +16,9 @@ interface Params {
     context: Context;
 }
 export const updateFileManager = async (params: Params): Promise<void> => {
+    if (isPre529Project(params.context) === false) {
+        return;
+    }
     await updateDownload(params);
     await updateManage(params);
     await updateTransform(params);

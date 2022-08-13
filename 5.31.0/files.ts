@@ -14,17 +14,20 @@ export const getAllFiles = (context: Context): Files => {
         new FileDefinition({
             path: createFilePath(context, "${fileManager}/download/src/index.ts"),
             tag: "fm",
-            name: "fm/download"
+            name: "fm/download",
+            pre529: true
         }),
         new FileDefinition({
             path: createFilePath(context, "${fileManager}/manage/src/index.ts"),
             tag: "fm",
-            name: "fm/manage"
+            name: "fm/manage",
+            pre529: true
         }),
         new FileDefinition({
             path: createFilePath(context, "${fileManager}/transform/src/index.ts"),
             tag: "fm",
-            name: "fm/transform"
+            name: "fm/transform",
+            pre529: true
         }),
         new FileDefinition({
             path: createFilePath(context, "${graphql}/src/index.ts"),
@@ -49,27 +52,32 @@ export const getAllFiles = (context: Context): Files => {
         new FileDefinition({
             path: createFilePath(context, "${pageBuilder}/exportPages/combine/src/index.ts"),
             tag: "pb",
-            name: "pb/exportPages/combine"
+            name: "pb/exportPages/combine",
+            pre529: true
         }),
         new FileDefinition({
             path: createFilePath(context, "${pageBuilder}/exportPages/process/src/index.ts"),
             tag: "pb",
-            name: "pb/exportPages/process"
+            name: "pb/exportPages/process",
+            pre529: true
         }),
         new FileDefinition({
             path: createFilePath(context, "${pageBuilder}/importPages/create/src/index.ts"),
             tag: "pb",
-            name: "pb/importPages/create"
+            name: "pb/importPages/create",
+            pre529: true
         }),
         new FileDefinition({
             path: createFilePath(context, "${pageBuilder}/importPages/process/src/index.ts"),
             tag: "pb",
-            name: "pb/importPages/process"
+            name: "pb/importPages/process",
+            pre529: true
         }),
         new FileDefinition({
             path: createFilePath(context, "${pageBuilder}/updateSettings/src/index.ts"),
             tag: "pb",
-            name: "pb/updateSettings"
+            name: "pb/updateSettings",
+            pre529: true
         }),
         new FileDefinition({
             path: createFilePath(context, "${prerenderingService}/flush/src/index.ts"),
