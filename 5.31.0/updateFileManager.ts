@@ -149,11 +149,11 @@ const updateManage = async ({ files, context, project }: Params): Promise<void> 
 /**
  import { createHandler } from "@webiny/handler-aws/raw";
  import { createTransformFilePlugins } from "@webiny/api-file-manager/handlers/transform";
- 
+
  export const handler = createHandler({
     plugins: [createTransformFilePlugins()]
 });
- 
+
  */
 
 const updateTransform = async ({ files, context, project }: Params): Promise<void> => {
@@ -191,12 +191,12 @@ const updateTransform = async ({ files, context, project }: Params): Promise<voi
     removePluginFromCreateHandler(source, "handler", new RegExp(/transformFilePlugins\(\)/));
 
     /**
-     * Then we need to insert handler-aws and download plugins import
+     * Then we need to insert handler-aws and transform plugins import.
      */
     insertImportToSourceFile({
         source,
         name: {
-            createS3Handler: "createHandler"
+            createRawHandler: "createHandler"
         },
 
         moduleSpecifier: "@webiny/handler-aws"
