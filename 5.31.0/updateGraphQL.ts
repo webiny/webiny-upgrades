@@ -6,6 +6,7 @@ import {
     addPluginToCreateHandler,
     findVersion,
     insertImportToSourceFile,
+    isPre529Project,
     removeImportFromSourceFile,
     removePluginFromCreateHandler
 } from "../utils";
@@ -50,47 +51,53 @@ const updateIndexFile = async (params: Params): Promise<void> => {
         },
         moduleSpecifier: "@webiny/handler-aws"
     });
-    /**
-     * Then we need to add the APW
-     */
-    const graphQLPath = createFilePath(context, "${graphql}/package.json");
-    const version = findVersion(graphQLPath) || context.version;
 
+    const graphQLPath = createFilePath(context, "${graphql}/package.json");
     addPackagesToDependencies(context, graphQLPath, {
-        "@webiny/api-apw": version,
-        "@webiny/api-apw-scheduler-so-ddb": version,
-        // We actually remove these two packages since they do not exist anymore
         "@webiny/handler-http": null,
         "@webiny/handler-args": null
     });
 
-    removePluginFromCreateHandler(source, "handler", /createApwPageBuilderContext/);
-    removePluginFromCreateHandler(source, "handler", /createApwGraphQL/);
+    /**
+     * Then we need to add the APW
+     * 5.29+ versions
+     */
+    if (isPre529Project(context) === false) {
+        const version = findVersion(graphQLPath) || context.version;
 
-    insertImportToSourceFile({
-        source,
-        name: ["createApwPageBuilderContext", "createApwGraphQL"],
-        moduleSpecifier: "@webiny/api-apw"
-    });
+        addPackagesToDependencies(context, graphQLPath, {
+            "@webiny/api-apw": version,
+            "@webiny/api-apw-scheduler-so-ddb": version
+        });
 
-    insertImportToSourceFile({
-        source,
-        name: {
-            createStorageOperations: "createApwSaStorageOperations"
-        },
-        moduleSpecifier: "@webiny/api-apw-scheduler-so-ddb"
-    });
+        removePluginFromCreateHandler(source, "handler", /createApwPageBuilderContext/);
+        removePluginFromCreateHandler(source, "handler", /createApwGraphQL/);
 
-    addPluginToCreateHandler({
-        source,
-        before: "scaffoldsPlugins",
-        value: "createApwGraphQL()"
-    });
-    addPluginToCreateHandler({
-        source,
-        after: "createApwGraphQL",
-        value: "createApwPageBuilderContext({storageOperations: createApwSaStorageOperations({ documentClient })})"
-    });
+        insertImportToSourceFile({
+            source,
+            name: ["createApwPageBuilderContext", "createApwGraphQL"],
+            moduleSpecifier: "@webiny/api-apw"
+        });
+
+        insertImportToSourceFile({
+            source,
+            name: {
+                createStorageOperations: "createApwSaStorageOperations"
+            },
+            moduleSpecifier: "@webiny/api-apw-scheduler-so-ddb"
+        });
+
+        addPluginToCreateHandler({
+            source,
+            before: "scaffoldsPlugins",
+            value: "createApwGraphQL()"
+        });
+        addPluginToCreateHandler({
+            source,
+            after: "createApwGraphQL",
+            value: "createApwPageBuilderContext({storageOperations: createApwSaStorageOperations({ documentClient })})"
+        });
+    }
 
     /**
      * There is a possibility that some process.env variables are not set as strings, so lets add those.

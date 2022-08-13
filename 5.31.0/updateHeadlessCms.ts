@@ -6,6 +6,7 @@ import {
     addPluginToCreateHandler,
     findVersion,
     insertImportToSourceFile,
+    isPre529Project,
     removeImportFromSourceFile,
     removePluginFromCreateHandler
 } from "../utils";
@@ -41,49 +42,6 @@ const updateIndexFile = async (params: Params): Promise<void> => {
      * We need to fix the handler first.
      */
     removeImportFromSourceFile(source, "@webiny/handler-aws");
-    /**
-     * Then we need to add the APW
-     */
-    const cmsPath = createFilePath(context, "${cms}/package.json");
-    const version = findVersion(cmsPath) || context.version;
-
-    addPackagesToDependencies(context, cmsPath, {
-        "@webiny/api-apw": version,
-        "@webiny/api-apw-scheduler-so-ddb": version,
-        // We actually remove these two packages since they do not exist anymore
-        "@webiny/handler-http": null,
-        "@webiny/handler-args": null
-    });
-    /**
-     * Then we move onto APW
-     */
-    removeImportFromSourceFile(source, "@webiny/api-apw");
-    removePluginFromCreateHandler(source, "handler", /createApwHeadlessCmsContext/);
-    insertImportToSourceFile({
-        source,
-        name: ["createApwHeadlessCmsContext", "createApwGraphQL"],
-        moduleSpecifier: "@webiny/api-apw"
-    });
-
-    insertImportToSourceFile({
-        source,
-        name: {
-            createStorageOperations: "createApwSaStorageOperations"
-        },
-        moduleSpecifier: "@webiny/api-apw-scheduler-so-ddb"
-    });
-
-    addPluginToCreateHandler({
-        source,
-        before: "scaffoldsPlugins",
-        value: "createApwGraphQL()"
-    });
-    addPluginToCreateHandler({
-        source,
-        after: "createApwGraphQL",
-        value: "createApwHeadlessCmsContext({storageOperations: createApwSaStorageOperations({ documentClient })})"
-    });
-
     insertImportToSourceFile({
         source,
         name: {
@@ -91,6 +49,53 @@ const updateIndexFile = async (params: Params): Promise<void> => {
         },
         moduleSpecifier: "@webiny/handler-aws"
     });
+    const cmsPath = createFilePath(context, "${cms}/package.json");
+    addPackagesToDependencies(context, cmsPath, {
+        // We actually remove these two packages since they do not exist anymore
+        "@webiny/handler-http": null,
+        "@webiny/handler-args": null
+    });
+
+    /**
+     * Then we need to add the APW
+     */
+    if (isPre529Project(context) === false) {
+        const version = findVersion(cmsPath) || context.version;
+
+        addPackagesToDependencies(context, cmsPath, {
+            "@webiny/api-apw": version,
+            "@webiny/api-apw-scheduler-so-ddb": version
+        });
+        /**
+         * Then we move onto APW
+         */
+        removeImportFromSourceFile(source, "@webiny/api-apw");
+        removePluginFromCreateHandler(source, "handler", /createApwHeadlessCmsContext/);
+        insertImportToSourceFile({
+            source,
+            name: ["createApwHeadlessCmsContext", "createApwGraphQL"],
+            moduleSpecifier: "@webiny/api-apw"
+        });
+
+        insertImportToSourceFile({
+            source,
+            name: {
+                createStorageOperations: "createApwSaStorageOperations"
+            },
+            moduleSpecifier: "@webiny/api-apw-scheduler-so-ddb"
+        });
+
+        addPluginToCreateHandler({
+            source,
+            before: "scaffoldsPlugins",
+            value: "createApwGraphQL()"
+        });
+        addPluginToCreateHandler({
+            source,
+            after: "createApwGraphQL",
+            value: "createApwHeadlessCmsContext({storageOperations: createApwSaStorageOperations({ documentClient })})"
+        });
+    }
 };
 
 const updateTypesFile = (params: Params): Promise<void> => {
