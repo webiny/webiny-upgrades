@@ -6,7 +6,8 @@ import {
     getIsElasticsearchProject,
     insertImportToSourceFile,
     removeImportFromSourceFile,
-    removePluginFromCreateHandler
+    removePluginFromCreateHandler,
+    isPre529Project
 } from "../utils";
 import { getGraphQLPath } from "./utils/paths";
 
@@ -20,6 +21,8 @@ export const updateDynamoDbToElasticsearch = async (params: Params) => {
     const { context, project, files } = params;
     const apiGraphQLPath = getGraphQLPath(context);
     if (getIsElasticsearchProject(context, apiGraphQLPath) === false) {
+        return;
+    } else if (isPre529Project(context) === false) {
         return;
     }
     const indexFile = files.byName("ddb-es/index");
