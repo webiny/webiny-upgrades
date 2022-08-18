@@ -17,7 +17,7 @@ const upgradeApiPulumi = context => {
     /**
      * Not required to upgrade if user's project is with Elasticsearch.
      */
-    const isElasticsearchProject = getIsElasticsearchProject(context);
+    const isElasticsearchProject = getIsElasticsearchProject(context, "api/code/graphql");
     if (isElasticsearchProject) {
         return;
     }

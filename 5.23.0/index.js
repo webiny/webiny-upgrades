@@ -1,5 +1,5 @@
 const glob = require("fast-glob");
-const { yarnInstall, createMorphProject, prettierFormat } = require("../utils");
+const { yarnInstall } = require("../utils");
 const apiPulumi = require("./apiPulumi");
 
 module.exports = async context => {

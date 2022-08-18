@@ -1,7 +1,15 @@
 #!/usr/bin/env node
+/**
+ * This upgrade uses ts-node, but it's local only to this upgrade.
+ */
+process.env.NODE_PATH = process.cwd();
+require("ts-node").register({
+    dir: __dirname
+});
+
 const fs = require("fs");
 const path = require("path");
-const { log } = require("./utils");
+const log = require("./utils/log").default;
 
 const response = data => {
     console.log(JSON.stringify(data));
@@ -18,8 +26,11 @@ const response = data => {
             throw new Error(`Missing positional "version" argument!`);
         }
 
-        const scriptsPath = path.join(__dirname, version, `index.js`);
-        if (!fs.existsSync(scriptsPath)) {
+        const scriptsPath = path.join(__dirname, version, `index`);
+
+        const scriptsJsPath = `${scriptsPath}.js`;
+        const scriptsTsPath = `${scriptsPath}.ts`;
+        if (!fs.existsSync(scriptsJsPath) && !fs.existsSync(scriptsTsPath)) {
             response({
                 type: "error",
                 message: "Script does not exist.",
@@ -31,7 +42,8 @@ const response = data => {
             project: {
                 root: argv.cwd || process.cwd()
             },
-            version
+            version,
+            log: log
         };
 
         await require(scriptsPath)(context);
@@ -46,6 +58,7 @@ const response = data => {
 
         response({ type: "success", message: "", error: null });
     } catch (e) {
+        console.log(e);
         const duration = (new Date() - start) / 1000;
         log.error(`Upgrade completed in ${log.error.hl(duration)}s.`);
 

@@ -7,7 +7,8 @@
     "prettier:check": "yarn prettier --check",
     "prettier:fix": "yarn prettier --write",
     "eslint": "eslint \"**/*.{js,jsx,ts,tsx}\" --max-warnings=0",
-    "eslint:fix": "yarn eslint --fix"
+    "eslint:fix": "yarn eslint --fix",
+    "lint:fix": "yarn eslint --fix && yarn prettier --write"
   },
   "dependencies": {
     "@types/node": "^14.18.21",
@@ -22,8 +23,21 @@
     "semver": "^7.3.5",
     "ts-morph": "^12.2.0",
     "ts-node": "^10.8.1",
-    "typescript": "4.5.5",
+    "typescript": "4.7.4",
     "write-json-file": "^4.0.0",
     "yargs": "^17.2.1"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.5.0",
+    "@typescript-eslint/parser": "^5.5.0",
+    "eslint": "^8.21.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-import-resolver-babel-module": "^5.3.1",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jest": "^25.3.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.2.0",
+    "eslint-plugin-react": "^7.27.1",
+    "eslint-plugin-standard": "^5.0.0"
   }
 }

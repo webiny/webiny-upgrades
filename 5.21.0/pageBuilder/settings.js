@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 const tsMorph = require("ts-morph");
 
 const {
