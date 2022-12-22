@@ -35,15 +35,35 @@ import { addToExportDefaultArray } from "./addToExportDefaultArray";
 import { getRequireFromSourceFile } from "./getRequireFromSourceFile";
 import { isPre529Project, getIsPre529Project } from "./isPre529Project";
 import { findVersion } from "./findVersion";
+import {
+    createFilePath,
+    getAdminPath,
+    getDynamoDbToElasticsearchPath,
+    getFileManagerPath,
+    getGraphQLPath,
+    getHeadlessCMSPath,
+    getPageBuilderPath,
+    getPrerenderingServicePath,
+    getWebsitePath
+} from "./paths";
 
 export {
     addPluginToCreateHandler,
     addResolutionToRootPackageJson,
     addWorkspaceToRootPackageJson,
+    createFilePath,
     createMorphProject,
     createNamedExports,
     createNamedImports,
+    getAdminPath,
     getCreateHandlerExpressions,
+    getDynamoDbToElasticsearchPath,
+    getFileManagerPath,
+    getGraphQLPath,
+    getHeadlessCMSPath,
+    getPageBuilderPath,
+    getPrerenderingServicePath,
+    getWebsitePath,
     insertImportToSourceFile,
     log,
     prettierFormat,
