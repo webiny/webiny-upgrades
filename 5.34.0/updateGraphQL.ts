@@ -47,7 +47,7 @@ const updateIndexFile = async (params: Params): Promise<void> => {
      */
     addPackagesToDependencies(context, graphQLPackagePath, {
         "@webiny/api-folders": version,
-        "@webiny/api-apw-folders-so-ddb": version
+        "@webiny/api-folders-so-ddb": version
     });
 
     /**
@@ -101,7 +101,7 @@ const updateTypesFile = (params: Params): Promise<void> => {
         return;
     }
 
-    if (source.getText().match("FoldersContext") === null) {
+    if (source.getText().match("FoldersContext") !== null) {
         context.log.info(`It seems GraphQL types file was already upgraded. Skipping...`);
         return;
     }
@@ -120,8 +120,8 @@ const updateTypesFile = (params: Params): Promise<void> => {
      */
     let text = source.getText();
 
-    text = text.replace("CmsContext,", "CmsContext, FoldersContext,");
-    text = text.replace("CmsContext", "CmsContext, FoldersContext");
+    text = text.replace("FormBuilderContext,", "FormBuilderContext, FoldersContext,");
+    text = text.replace("FormBuilderContext {", "FormBuilderContext, FoldersContext {");
 
     source.replaceWithText(text);
 };
