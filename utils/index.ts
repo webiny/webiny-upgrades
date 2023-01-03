@@ -47,6 +47,9 @@ import {
     getWebsitePath
 } from "./paths";
 
+export { Files } from "./classes/Files";
+export * from "./classes/FileDefinition";
+
 export {
     addPluginToCreateHandler,
     addResolutionToRootPackageJson,

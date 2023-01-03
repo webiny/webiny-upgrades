@@ -1,11 +1,11 @@
 import { createMorphProject, prettierFormat, yarnInstall } from "../utils";
 import { updateGraphQL } from "./updateGraphQL";
-import { getAllFiles } from "./files";
+import { setupFiles } from "./setupFiles";
 import { Context } from "../types";
 
 module.exports = async (context: Context) => {
-    const files = getAllFiles(context);
-    const rawFiles = files.all();
+    const files = setupFiles(context);
+    const rawFiles = files.paths();
     const project = createMorphProject(rawFiles);
 
     // GraphQL

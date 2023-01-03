@@ -1,5 +1,8 @@
 import { Context } from "../../types";
 import { FileDefinition, Tag } from "./FileDefinition";
+import { getIsPre529Project } from "../isPre529Project";
+import { getIsElasticsearchProject } from "../isElasticsearchProject";
+import { getGraphQLPath } from "../paths";
 
 export class Files {
     public readonly context: Context;
@@ -35,9 +38,34 @@ export class Files {
         return new Files(this.context, this.files.filter(cb));
     }
 
-    public all(): string[] {
-        return this.files.map(file => {
-            return file.path;
+    /**
+     * Get files that are relevant to the current project.
+     *
+     * Conditions:
+     * - is project pre-5.29?
+     * - is project DDB-only or DDB+ES?
+     */
+    public relevant() {
+        const isPre529Project = getIsPre529Project(this.context);
+        const isElasticsearchProject = getIsElasticsearchProject(
+            this.context,
+            getGraphQLPath(this.context)
+        );
+
+        return this.filter(file => {
+            if (file.pre529 === true && !isPre529Project) {
+                return false;
+            } else if (file.elasticsearch === true && !isElasticsearchProject) {
+                return false;
+            }
+            return true;
         });
+    }
+
+    /**
+     * Get raw file paths.
+     */
+    public paths(): string[] {
+        return this.files.map(file => file.path);
     }
 }
