@@ -30,6 +30,8 @@ import { getIsElasticsearchProject } from "./isElasticsearchProject";
 import { upgradeCreateHandlerToPlugins } from "./upgradeCreateHandlerToPlugins";
 import { removeExtendsFromInterface } from "./removeExtendsFromInterface";
 
+export { removeFromExportDefaultArray } from "./removeFromExportDefaultArray";
+
 import { getSourceFile, getExistingFiles } from "./files";
 import { addToExportDefaultArray } from "./addToExportDefaultArray";
 import { getRequireFromSourceFile } from "./getRequireFromSourceFile";

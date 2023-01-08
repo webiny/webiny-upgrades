@@ -15,6 +15,11 @@ export const setupFiles = (context: Context): Files => {
             path: createFilePath(context, "${graphql}/src/types.ts"),
             tag: "gql",
             name: "graphql/types"
+        }),
+        new FileDefinition({
+            path: createFilePath(context, "${admin}/src/plugins/headlessCms.ts"),
+            tag: "gql",
+            name: "admin/headlessCms"
         })
     ]);
 
