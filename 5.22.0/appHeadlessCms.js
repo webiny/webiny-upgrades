@@ -2,7 +2,7 @@ const {
     insertImportToSourceFile,
     getSourceFile,
     getExistingFiles,
-    addToExportDefaultArray,
+    addToExportDefaultArray
 } = require("../utils");
 
 const upgradePaths = {
