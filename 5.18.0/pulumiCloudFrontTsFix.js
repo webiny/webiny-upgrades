@@ -3,7 +3,7 @@ const fs = require("fs");
 const { log } = require("../utils");
 
 module.exports = async context => {
-    log.info(`Fixing TypeScript issue in ${log.info.hl("api/pulumi/dev/elasticSearch.ts")}`);
+    log.info(`Fixing TypeScript issue in %s`, "api/pulumi/dev/elasticSearch.ts");
 
     const project = context.project;
 
@@ -15,12 +15,11 @@ module.exports = async context => {
             "Resource: pulumi.interpolate`${this.domain.arn}/*`"
         );
         fs.writeFileSync(pulumiFilePath, pulumiFile);
-        log.success(`${log.success.hl("api/pulumi/dev/elasticSearch.ts")}`);
+        log.success(`%s`, "api/pulumi/dev/elasticSearch.ts");
     } else {
         log.warning(
-            `Skipping fixing TypeScript issue in ${log.warning.hl(
-                "api/pulumi/dev/elasticSearch.ts"
-            )} - file does not exist.`
+            `Skipping fixing TypeScript issue in %s - file does not exist.`,
+            "api/pulumi/dev/elasticSearch.ts"
         );
     }
 

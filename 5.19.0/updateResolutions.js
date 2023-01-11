@@ -2,9 +2,9 @@ const { log, addResolutionToRootPackageJson } = require("../utils");
 
 module.exports = async () => {
     log.info(
-        `Inserting new entries into the ${log.info.hl(
-            "resolutions"
-        )} property in the root ${log.info.hl("package.json")} file...`
+        `Inserting new entries into the %s property in the root %s file...`,
+        "resolutions",
+        "package.json"
     );
 
     await addResolutionToRootPackageJson("package.json", {

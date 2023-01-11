@@ -20,7 +20,7 @@ export const prettierFormat = async (files: string[]) => {
         log.success("Updated code formatted successfully.");
         console.log();
     } catch (ex) {
-        console.log(log.error.hl("Prettier failed."));
+        log.error("%s", "Prettier failed.");
         log.error(ex.message);
         if (ex.stdout) {
             console.log(ex.stdout);

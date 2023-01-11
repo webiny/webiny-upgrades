@@ -6,15 +6,24 @@ interface Params {
     target: string;
 }
 
-export const removeFromExportDefaultArray = ({ source, target }: Params): void => {
+interface Options {
+    quiet?: boolean;
+}
+
+export const removeFromExportDefaultArray = (
+    { source, target }: Params,
+    options: Options = {}
+): void => {
     if (!source) {
         return;
     }
 
     const assignments = source.getExportAssignments();
     if (assignments.length === 0) {
-        log.debug(`Missing export assignments in file "${source.getFilePath()}".`);
-        return;
+        if (!options.quiet) {
+            log.debug(`Missing export assignments in file "${source.getFilePath()}".`);
+            return;
+        }
     }
 
     for (const item of assignments) {

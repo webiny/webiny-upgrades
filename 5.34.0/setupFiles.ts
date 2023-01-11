@@ -20,6 +20,32 @@ export const setupFiles = (context: Context): Files => {
             path: createFilePath(context, "${admin}/src/plugins/headlessCms.ts"),
             tag: "gql",
             name: "admin/headlessCms"
+        }),
+        // Themes/Website
+        new FileDefinition({
+            path: createFilePath(context, "${theme}/formBuilder/styles/theme.scss"),
+            tag: "theme",
+            name: "formBuilder/styles/theme.scss"
+        }),
+        new FileDefinition({
+            path: createFilePath(context, "${theme}/pageBuilder/styles/elements/layout.scss"),
+            tag: "theme",
+            name: "pageBuilder/styles/elements/layout.scss"
+        }),
+        new FileDefinition({
+            path: createFilePath(context, "${theme}/pageBuilder/styles/base.scss"),
+            tag: "theme",
+            name: "pageBuilder/styles/base.scss"
+        }),
+        new FileDefinition({
+            path: createFilePath(context, "${website}/src/components/Page/Render.tsx"),
+            tag: "website",
+            name: "website/render"
+        }),
+        new FileDefinition({
+            path: createFilePath(context, "${website}/src/components/Page/graphql.ts"),
+            tag: "website",
+            name: "website/components/Page/graphql.ts"
         })
     ]);
 

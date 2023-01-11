@@ -14,9 +14,8 @@ module.exports = async context => {
 
     if (!fs.existsSync(projectTsPath)) {
         log.warning(
-            `Skipping inserting new Admin Area and Website CLI plugins - ${log.warning.hl(
-                projectTsPath
-            )} does not exist.`
+            `Skipping inserting new Admin Area and Website CLI plugins - %s does not exist.`,
+            projectTsPath
         );
         console.log();
         return;
@@ -31,40 +30,38 @@ module.exports = async context => {
 
     const src = path.join(__dirname, "newCliPlugins", "admin", "cli");
     const dest = path.join(project.root, "apps", "admin", "cli");
-    log.info(`Inserting new CLI plugins into ${log.info.hl(dest)}.`);
+    log.info(`Inserting new CLI plugins into %s.`, dest);
 
     if (apps.admin) {
         await ncp(src, dest);
         log.success("CLI plugins successfully inserted.");
     } else {
         log.warning(
-            `Skipping insertion of new CLI plugins into ${log.warning.hl(
-                dest
-            )}, it seems that the ${log.warning.hl(
-                "Admin Area"
-            )} project application doesn't exist.`
+            `Skipping insertion of new CLI plugins into %s, it seems that the %s project application doesn't exist.`,
+            dest,
+            "Admin Area"
         );
     }
     console.log();
 
     const src2 = path.join(__dirname, "newCliPlugins", "website", "cli");
     const dest2 = path.join(project.root, "apps", "website", "cli");
-    log.info(`Inserting new CLI plugins into ${log.info.hl(dest2)}.`);
+    log.info(`Inserting new CLI plugins into %s.`, dest2);
     if (apps.website) {
         await ncp(src2, dest2);
         log.success("CLI plugins successfully inserted.");
     } else {
         log.warning(
-            `Skipping insertion of new CLI plugins into ${log.warning.hl(
-                dest2
-            )}, it seems that the ${log.warning.hl("Website")} project application doesn't exist.`
+            `Skipping insertion of new CLI plugins into %s, it seems that the %s project application doesn't exist.`,
+            dest2,
+            "Website"
         );
     }
 
     console.log();
 
     // Adjust root webiny.project.ts - update plugins.
-    log.info(`Updating root ${log.info.hl(`webiny.project.ts`)} manifest file...`);
+    log.info(`Updating root %s manifest file...`, "webiny.project.ts");
 
     projectTs = projectTs.replace('import cliPageBuilder from "@webiny/api-page-builder/cli";', "");
 
@@ -87,7 +84,7 @@ ${apps.website ? 'import websitePlugins from "./apps/website/cli";' : ""}`
     );
 
     fs.writeFileSync(projectTsPath, projectTs);
-    log.success(`Root ${log.success.hl(`webiny.project.ts`)} manifest file successfully updated.`);
+    log.success(`Root %s manifest file successfully updated.`, "webiny.project.ts");
 
     console.log();
 };

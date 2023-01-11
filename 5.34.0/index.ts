@@ -3,13 +3,14 @@ import { updateGraphQL } from "./updateGraphQL";
 import { setupFiles } from "./setupFiles";
 import { Context } from "../types";
 import { updateAdminApp } from "./updateAdminApp";
+import { updateWebsite } from "./updateWebsite";
 
 module.exports = async (context: Context) => {
     const files = setupFiles(context);
     const rawFiles = files.paths();
     const project = createMorphProject(rawFiles);
 
-    await [updateGraphQL, updateAdminApp].reduce(async (_, processor) => {
+    await [updateGraphQL, updateAdminApp, updateWebsite].reduce(async (_, processor) => {
         return await processor({
             context,
             project,
@@ -22,5 +23,5 @@ module.exports = async (context: Context) => {
 
     await prettierFormat(rawFiles);
 
-    await yarnInstall();
+    // await yarnInstall();
 };

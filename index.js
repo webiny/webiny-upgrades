@@ -49,7 +49,7 @@ const response = data => {
         await require(scriptsPath)(context);
 
         const duration = (new Date() - start) / 1000;
-        log.success(`Upgrade completed in ${log.success.hl(duration)}s.`);
+        log.success(`Upgrade completed in %ss.`, duration);
 
         console.log();
 
@@ -60,7 +60,7 @@ const response = data => {
     } catch (e) {
         console.log(e);
         const duration = (new Date() - start) / 1000;
-        log.error(`Upgrade completed in ${log.error.hl(duration)}s.`);
+        log.error(`Upgrade completed in %ss.`, duration);
 
         const [version] = argv._;
         if (version) {

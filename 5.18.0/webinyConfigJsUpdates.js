@@ -4,14 +4,14 @@ const fs = require("fs");
 const { log } = require("../utils");
 
 module.exports = async context => {
-    log.info(`Updating ${log.info.hl("webiny.config.js")} files...`);
+    log.info(`Updating %s files...`, "webiny.config.js");
 
     const project = context.project;
     const configsPaths = await glob(project.root + "/**/webiny.config.{js,ts}", {
         ignore: project.root + "/**/node_modules/**"
     });
 
-    log.info(`Found ${log.info.hl(configsPaths.length)} files...`);
+    log.info(`Found %s files...`, configsPaths.length);
 
     console.log();
 
@@ -33,15 +33,11 @@ module.exports = async context => {
             }
 
             if (configPath.endsWith(".js")) {
-                log.warning(
-                    `Removing old ${log.warning.hl(configPath)} file (using ${log.warning.hl(
-                        "webiny.config.ts"
-                    )} now).`
-                );
+                log.warning(`Removing old %s file (using %s now).`, configPath, "webiny.config.ts");
                 fs.unlinkSync(configPath);
             }
         } catch (error) {
-            log.error(`An error occurred while processing ${log.error.hl(configPath)}:`);
+            log.error(`An error occurred while processing %s:`, configPath);
             console.log(error);
         }
     }
@@ -50,7 +46,7 @@ module.exports = async context => {
 const handleApiConfig = ({ configPath }) => {
     const dest = path.join(path.dirname(configPath), "webiny.config.ts");
     if (configPath.includes("/transform/")) {
-        log.info(`Updating ${log.info.hl(dest)}.`);
+        log.info(`Updating %s.`, dest);
         fs.copyFileSync(
             path.join(__dirname, "webinyConfigJsUpdates", "files", "fm.transform.webiny.config.ts"),
             dest
@@ -61,7 +57,7 @@ const handleApiConfig = ({ configPath }) => {
     }
 
     if (configPath.includes("/prerenderingService/")) {
-        log.info(`Updating ${log.info.hl(dest)}.`);
+        log.info(`Updating %s.`, dest);
         fs.copyFileSync(
             path.join(__dirname, "webinyConfigJsUpdates", "files", "ps.webiny.config.ts"),
             dest
@@ -71,7 +67,7 @@ const handleApiConfig = ({ configPath }) => {
         return;
     }
 
-    log.info(`Updating ${log.info.hl(dest)}.`);
+    log.info(`Updating %s.`, dest);
     fs.copyFileSync(
         path.join(__dirname, "webinyConfigJsUpdates", "files", "function.webiny.config.ts"),
         dest
@@ -83,12 +79,8 @@ const handleApiConfig = ({ configPath }) => {
 
 const handleAppsAdminConfig = ({ configPath }) => {
     const dest = path.join(path.dirname(configPath), "webiny.config.ts");
-    log.info(`Updating ${log.info.hl(dest)}.`);
-    log.warning(
-        `Note that the ${log.warning.hl("start")} command will be renamed to ${log.warning.hl(
-            "watch"
-        )}.`
-    );
+    log.info(`Updating %s.`, dest);
+    log.warning(`Note that the %s command will be renamed to %s.`, "start", "watch");
     fs.copyFileSync(
         path.join(__dirname, "webinyConfigJsUpdates", "files", "admin.webiny.config.ts"),
         dest
@@ -100,12 +92,8 @@ const handleAppsAdminConfig = ({ configPath }) => {
 
 const handleAppsWebsiteConfig = ({ configPath }) => {
     const dest = path.join(path.dirname(configPath), "webiny.config.ts");
-    log.info(`Updating ${log.info.hl(dest)}.`);
-    log.warning(
-        `Note that the ${log.warning.hl("start")} command will be renamed to ${log.warning.hl(
-            "watch"
-        )}.`
-    );
+    log.info(`Updating %s.`, dest);
+    log.warning(`Note that the %s command will be renamed to %s.`, "start", "watch");
     fs.copyFileSync(
         path.join(__dirname, "webinyConfigJsUpdates", "files", "website.webiny.config.ts"),
         dest
@@ -118,7 +106,7 @@ const handleAppsWebsiteConfig = ({ configPath }) => {
 const handleCustomConfig = ({ configPath }) => {
     const dest = path.join(path.dirname(configPath), "webiny.config.ts");
     // Detect type of config and replace it with the correct updated one.
-    log.info(`Updating ${log.info.hl(dest)}.`);
+    log.info(`Updating %s.`, dest);
     let content = fs.readFileSync(configPath, "utf8");
 
     if (content.includes("buildApp")) {

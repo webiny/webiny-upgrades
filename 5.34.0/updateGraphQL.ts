@@ -26,19 +26,23 @@ const updateIndexFile = async (params: Params): Promise<void> => {
     const indexFile = files.byName("graphql/index");
     const graphQLPackagePath = createFilePath(context, "${graphql}/package.json");
     const version = findVersion(graphQLPackagePath) || context.version;
-    const source = project.getSourceFile(indexFile.path);
 
     if (!indexFile) {
-        context.log.error(`Missing GraphQL index file. Skipping...`);
+        context.log.error(`Missing GraphQL index file (%s).`, "skipping upgrade");
         return;
     }
 
+    const source = project.getSourceFile(indexFile.path);
+
     if (!source) {
-        context.log.error(`Missing Source of GraphQL index file. Skipping...`);
+        context.log.error(`Missing Source of GraphQL index file (%s).`, "skipping upgrade");
         return;
     }
     if (source.getText().match("createACO") !== null) {
-        context.log.info(`It seems GraphQL index file was already upgraded. Skipping...`);
+        context.log.info(
+            `It seems the GraphQL index file has already been upgraded (%s).`,
+            "skipping upgrade"
+        );
         return;
     }
 
@@ -68,20 +72,21 @@ const updateIndexFile = async (params: Params): Promise<void> => {
 const updateTypesFile = (params: Params): Promise<void> => {
     const { context, project, files } = params;
     const typesFile = files.byName("graphql/types");
-    const source = project.getSourceFile(typesFile.path);
 
     if (!typesFile) {
-        context.log.error(`Missing GraphQL types file. Skipping...`);
+        context.log.error(`Missing GraphQL types file (%s).`, "skipping upgrade");
         return;
     }
 
+    const source = project.getSourceFile(typesFile.path);
+
     if (!source) {
-        context.log.error(`Missing Source of GraphQL types file. Skipping...`);
+        context.log.error(`Missing Source of GraphQL types file (%s).`, "skipping upgrade");
         return;
     }
 
     if (source.getText().match("ACOContext") !== null) {
-        context.log.info(`It seems GraphQL types file was already upgraded. Skipping...`);
+        context.log.info(`GraphQL types file has already been upgraded (%s).`, "skipping upgrade");
         return;
     }
 
@@ -90,17 +95,17 @@ const updateTypesFile = (params: Params): Promise<void> => {
      */
     insertImportToSourceFile({
         source,
-        name: ["FoldersContext"],
+        name: ["ACOContext"],
         moduleSpecifier: "@webiny/api-aco/types"
     });
 
     /**
-     * Add FoldersContext to types declaration
+     * Add ACOContext to types declaration
      */
     let text = source.getText();
 
-    text = text.replace("FormBuilderContext,", "FormBuilderContext, FoldersContext,");
-    text = text.replace("FormBuilderContext {", "FormBuilderContext, FoldersContext {");
+    text = text.replace("FormBuilderContext,", "FormBuilderContext, ACOContext,");
+    text = text.replace("FormBuilderContext {", "FormBuilderContext, ACOContext {");
 
     source.replaceWithText(text);
 };

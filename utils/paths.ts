@@ -54,6 +54,10 @@ export const getWebsitePath = (context: Context) => {
     return "apps/website";
 };
 
+export const getThemePath = () => {
+    return "apps/theme";
+};
+
 interface PathConverters {
     [key: string]: {
         (context: Context): string;
@@ -71,6 +75,7 @@ const pathConverters: PathConverters = {
     "${prerenderingService}": getPrerenderingServicePath,
     "${dynamoToElastic}": getDynamoDbToElasticsearchPath,
     "${website}": getWebsitePath,
+    "${theme}": getThemePath,
     "${admin}": getAdminPath
 };
 
