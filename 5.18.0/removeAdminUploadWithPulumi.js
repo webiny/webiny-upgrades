@@ -3,7 +3,7 @@ const fs = require("fs");
 const { log } = require("../utils");
 
 module.exports = async context => {
-    log.info(`Updating Admin Area Pulumi code (${log.info.hl("apps/admin/pulumi/app")})...`);
+    log.info(`Updating Admin Area Pulumi code (%s)...`, "apps/admin/pulumi/app");
 
     const project = context.project;
 
@@ -13,18 +13,14 @@ module.exports = async context => {
         let pulumiIndex = fs.readFileSync(pulumiIndexPath, "utf8");
 
         if (!pulumiIndex.match("appUrl: cloudfront")) {
-            log.warning(
-                `Could not update ${log.warning.hl(
-                    pulumiIndexPath
-                )} - you will need to do it manually.`
-            );
+            log.warning(`Could not update %s - you will need to do it manually.`, pulumiIndexPath);
         } else {
             pulumiIndex = pulumiIndex.replace(
                 "appUrl: cloudfront",
                 "appStorage: app.bucket.id, appUrl: cloudfront"
             );
             fs.writeFileSync(pulumiIndexPath, pulumiIndex);
-            log.success(`${log.success.hl(pulumiIndexPath)} successfully updated.`);
+            log.success(`%s successfully updated.`, pulumiIndexPath);
 
             const pulumiNewAppPath = path.join(
                 __dirname,
@@ -32,7 +28,7 @@ module.exports = async context => {
                 "newApp.ts"
             );
             fs.copyFileSync(pulumiNewAppPath, pulumiAppPath);
-            log.success(`${log.success.hl(pulumiAppPath)} successfully updated.`);
+            log.success(`%s successfully updated.`, pulumiAppPath);
         }
     }
 

@@ -10,6 +10,7 @@ export const prettierFormat = async (files: string[]) => {
             const filePath = path.join(process.cwd(), file);
             const options = await prettier.resolveConfig(filePath);
             const fileContentRaw = fs.readFileSync(filePath).toString("utf8");
+            log.debug("%s", file);
             const fileContentFormatted = prettier.format(fileContentRaw, {
                 ...options,
                 filepath: filePath
@@ -20,7 +21,7 @@ export const prettierFormat = async (files: string[]) => {
         log.success("Updated code formatted successfully.");
         console.log();
     } catch (ex) {
-        console.log(log.error.hl("Prettier failed."));
+        log.error("%s", "Prettier failed.");
         log.error(ex.message);
         if (ex.stdout) {
             console.log(ex.stdout);

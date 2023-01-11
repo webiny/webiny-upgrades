@@ -44,18 +44,22 @@ export const getDynamoDbToElasticsearchPath = (context: Context) => {
     return "apps/api/dynamoToElastic";
 };
 
-export const getWebsitePath = (context: Context) => {
+export const getAdminPath = (context: Context) => {
     if (isPre529Project(context)) {
         return "apps/admin/code";
     }
     return "apps/admin";
 };
 
-export const getAdminPath = (context: Context) => {
+export const getWebsitePath = (context: Context) => {
     if (isPre529Project(context)) {
         return "apps/website/code";
     }
     return "apps/website";
+};
+
+export const getThemePath = () => {
+    return "apps/theme";
 };
 
 interface PathConverters {
@@ -75,6 +79,7 @@ const pathConverters: PathConverters = {
     "${prerenderingService}": getPrerenderingServicePath,
     "${dynamoToElastic}": getDynamoDbToElasticsearchPath,
     "${website}": getWebsitePath,
+    "${theme}": getThemePath,
     "${admin}": getAdminPath
 };
 

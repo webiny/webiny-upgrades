@@ -19,15 +19,14 @@ module.exports = async context => {
         "editorPlugins.ts"
     );
 
-    log.info(`Updating plugins in ${log.info.hl(editorPluginsPath)} file...`);
+    log.info(`Updating plugins in %s file...`, editorPluginsPath);
 
     if (fs.existsSync(editorPluginsPath)) {
         let editorPluginsFile = fs.readFileSync(editorPluginsPath, "utf8");
         if (editorPluginsFile.includes(ACTION_PLUGIN_IMPORT)) {
             log.warning(
-                `Could not update ${log.warning.hl(
-                    editorPluginsPath
-                )} - the following import already exists:`
+                `Could not update %s - the following import already exists:`,
+                editorPluginsPath
             );
             log.warning(ACTION_PLUGIN_IMPORT);
             console.log();
@@ -50,27 +49,21 @@ ${ACTION_PLUGIN_IMPORT}`
             fs.writeFileSync(editorPluginsPath, editorPluginsFile);
         } else {
             log.warning(
-                `Could not update ${log.warning.hl(
-                    editorPluginsPath
-                )}. Please open it and manually add the import statement and register the ${log.warning.hl(
-                    "action"
-                )} plugin:`
+                `Could not update %s. Please open it and manually add the import statement and register the %s plugin:`,
+                editorPluginsPath,
+                "action"
             );
             log.warning(ACTION_PLUGIN_IMPORT);
             console.log();
             return;
         }
     } else {
-        log.warning(
-            `Could not update plugins in ${log.warning.hl(
-                editorPluginsPath
-            )} - file does not exist.`
-        );
+        log.warning(`Could not update plugins in %s - file does not exist.`, editorPluginsPath);
         console.log();
         return;
     }
 
-    log.success(`Plugins in ${log.success.hl(editorPluginsPath)} file successfully updated.`);
+    log.success(`Plugins in %s file successfully updated.`, editorPluginsPath);
 
     console.log();
 };
