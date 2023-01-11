@@ -16,8 +16,8 @@ export const updateWebinyProjectTs = async (params: Params): Promise<void> => {
     await setAppAliases(params);
 
     params.context.log.success(
-        `Added %s and set the %s feature flag in %s project manifest file.`,
-        "app aliases",
+        `Added %s and set the %s feature flag in %s.`,
+        "application aliases",
         "pbLegacyRenderingEngine",
         "webiny.project.ts"
     );
