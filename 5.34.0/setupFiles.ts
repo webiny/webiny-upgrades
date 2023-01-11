@@ -46,6 +46,11 @@ export const setupFiles = (context: Context): Files => {
             path: createFilePath(context, "${website}/src/components/Page/graphql.ts"),
             tag: "website",
             name: "website/components/Page/graphql.ts"
+        }),
+        new FileDefinition({
+            path: createFilePath(context, "${root}/webiny.project.ts"),
+            tag: "core",
+            name: "webiny.project.ts"
         })
     ]);
 
