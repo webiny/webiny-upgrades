@@ -30,5 +30,5 @@ module.exports = async (context: Context) => {
 
     await prettierFormat(rawFiles);
 
-    // await yarnInstall();
+    await yarnInstall();
 };
