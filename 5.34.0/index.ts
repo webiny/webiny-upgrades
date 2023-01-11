@@ -2,6 +2,7 @@ import { createMorphProject, prettierFormat, yarnInstall } from "../utils";
 import { updateGraphQL } from "./updateGraphQL";
 import { setupFiles } from "./setupFiles";
 import { Context } from "../types";
+import { updateWebinyProjectTs } from "./updateWebinyProjectTs";
 
 module.exports = async (context: Context) => {
     const files = setupFiles(context);
@@ -10,6 +11,13 @@ module.exports = async (context: Context) => {
 
     // GraphQL
     await updateGraphQL({
+        context,
+        project,
+        files
+    });
+
+    // webiny.project.ts
+    await updateWebinyProjectTs({
         context,
         project,
         files

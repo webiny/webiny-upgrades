@@ -1,6 +1,10 @@
 import { Context } from "../types";
 import { isPre529Project } from "../utils";
 
+export const getProjectRootPath = () => {
+    return ".";
+};
+
 export const getFileManagerPath = (context: Context) => {
     if (isPre529Project(context)) {
         return "api/code/fileManager";
@@ -64,7 +68,7 @@ interface PathConverters {
  * Add more paths if required.
  */
 const pathConverters: PathConverters = {
-    "${fileManager}": getFileManagerPath,
+    "${root}": getProjectRootPath,
     "${graphql}": getGraphQLPath,
     "${cms}": getHeadlessCMSPath,
     "${pageBuilder}": getPageBuilderPath,

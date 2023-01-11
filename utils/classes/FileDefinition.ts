@@ -1,4 +1,4 @@
-export type Tag = "fm" | "pb" | "cms" | "gql" | "ps" | "ddb2es";
+export type Tag = "fm" | "pb" | "cms" | "gql" | "ps" | "ddb2es" | "core";
 export interface FileDefinitionParams {
     path: string;
     elasticsearch?: boolean;
