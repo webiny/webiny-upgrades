@@ -26,6 +26,11 @@ const log = (type, ...args) => {
 };
 
 class ConsoleLogger {
+    private _debug = false;
+
+    setDebug(debug) {
+        this._debug = debug;
+    }
     log(...args) {
         log("log", ...args);
     }
@@ -39,7 +44,9 @@ class ConsoleLogger {
     }
 
     debug(...args) {
-        log("debug", ...args);
+        if (this._debug) {
+            log("debug", ...args);
+        }
     }
 
     warning(...args) {

@@ -38,6 +38,8 @@ const response = data => {
             });
         }
 
+        log.setDebug(argv.debug ?? false);
+
         const context = {
             project: {
                 root: argv.cwd || process.cwd()

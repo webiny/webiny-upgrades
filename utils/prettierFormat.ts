@@ -10,6 +10,7 @@ export const prettierFormat = async (files: string[]) => {
             const filePath = path.join(process.cwd(), file);
             const options = await prettier.resolveConfig(filePath);
             const fileContentRaw = fs.readFileSync(filePath).toString("utf8");
+            log.debug("%s", file);
             const fileContentFormatted = prettier.format(fileContentRaw, {
                 ...options,
                 filepath: filePath
