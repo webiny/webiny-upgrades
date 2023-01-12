@@ -33,6 +33,11 @@ export const setupFiles = (context: Context): Files => {
             name: "pageBuilder/styles/elements/layout.scss"
         }),
         new FileDefinition({
+            path: createFilePath(context, "${theme}/pageBuilder/styles/elements/image.scss"),
+            tag: "theme",
+            name: "pageBuilder/styles/elements/image.scss"
+        }),
+        new FileDefinition({
             path: createFilePath(context, "${theme}/pageBuilder/styles/base.scss"),
             tag: "theme",
             name: "pageBuilder/styles/base.scss"

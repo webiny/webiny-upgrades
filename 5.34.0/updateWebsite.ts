@@ -35,6 +35,12 @@ export const updateWebsite = async (params: Params) => {
 
     replace(
         context,
+        files.byName("pageBuilder/styles/elements/image.scss"),
+        path.join(__dirname, "replacements", "pageBuilder_styles_elements_image.scss")
+    );
+
+    replace(
+        context,
         files.byName("pageBuilder/styles/base.scss"),
         path.join(__dirname, "replacements", "pageBuilder_styles_base.scss")
     );
