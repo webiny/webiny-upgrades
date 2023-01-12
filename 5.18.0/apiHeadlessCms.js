@@ -49,7 +49,7 @@ const upgradeGraphQL = (project, context) => {
         return;
     }
 
-    log.info(`Upgrading ${log.info.hl(paths.graphQL)}`);
+    log.info(`Upgrading %s`, paths.graphQL);
 
     const source = project.getSourceFile(files(context).graphQLIndex);
 
@@ -117,7 +117,7 @@ const upgradeHeadlessCMS = (project, context) => {
         return;
     }
 
-    log.info(`Upgrading ${log.info.hl(paths.headlessCMS)}`);
+    log.info(`Upgrading %s`, paths.headlessCMS);
 
     const source = project.getSourceFile(files(context).headlessCMSIndex);
 

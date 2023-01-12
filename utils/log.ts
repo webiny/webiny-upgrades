@@ -1,67 +1,61 @@
 import chalk from "chalk";
 
-const getLogType = type => {
-    switch (type) {
-        case "log":
-            return type;
-        case "info":
-            return `${chalk.blueBright(type)}`;
-        case "error":
-            return `${chalk.red(type)}`;
-        case "warning":
-            return `${chalk.yellow(type)}`;
-        case "debug":
-            return `${chalk.gray(type)}`;
-        case "success":
-            return `${chalk.green(type)}`;
-    }
+const logColors = {
+    log: v => v,
+    info: chalk.blueBright,
+    error: chalk.red,
+    warning: chalk.yellow,
+    debug: chalk.gray,
+    success: chalk.green
 };
 
-const webinyLog = (type, ...args) => {
-    const prefix = `webiny ${getLogType(type)}: `;
+const colorizePlaceholders = (type, string) => {
+    return string.replace(/\%[a-zA-Z]/g, match => {
+        return logColors[type](match);
+    });
+};
+
+const log = (type, ...args) => {
+    const prefix = `webiny ${logColors[type](type)}: `;
 
     const [first, ...rest] = args;
     if (typeof first === "string") {
-        return console.log(prefix + first, ...rest);
+        return console.log(prefix + colorizePlaceholders(type, first), ...rest);
     }
     return console.log(prefix, first, ...rest);
 };
 
-const functions: any = {
+class ConsoleLogger {
+    private _debug = false;
+
+    setDebug(debug) {
+        this._debug = debug;
+    }
     log(...args) {
-        webinyLog("log", ...args);
-    },
+        log("log", ...args);
+    }
 
     info(...args) {
-        webinyLog("info", ...args);
-    },
+        log("info", ...args);
+    }
 
     success(...args) {
-        webinyLog("success", ...args);
-    },
+        log("success", ...args);
+    }
 
     debug(...args) {
-        webinyLog("debug", ...args);
-    },
+        if (this._debug) {
+            log("debug", ...args);
+        }
+    }
 
     warning(...args) {
-        webinyLog("warning", ...args);
-    },
+        log("warning", ...args);
+    }
 
     error(...args) {
-        webinyLog("error", ...args);
+        log("error", ...args);
     }
-};
+}
 
-functions.info.highlight = chalk.blueBright;
-functions.info.hl = chalk.blueBright;
-functions.success.highlight = chalk.green;
-functions.success.hl = chalk.green;
-functions.debug.highlight = chalk.gray;
-functions.debug.hl = chalk.gray;
-functions.warning.highlight = chalk.yellow;
-functions.warning.hl = chalk.yellow;
-functions.error.highlight = chalk.red;
-functions.error.hl = chalk.red;
-
-export default functions;
+export default new ConsoleLogger();

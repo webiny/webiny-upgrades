@@ -30,20 +30,45 @@ import { getIsElasticsearchProject } from "./isElasticsearchProject";
 import { upgradeCreateHandlerToPlugins } from "./upgradeCreateHandlerToPlugins";
 import { removeExtendsFromInterface } from "./removeExtendsFromInterface";
 
+export { removeFromExportDefaultArray } from "./removeFromExportDefaultArray";
+
 import { getSourceFile, getExistingFiles } from "./files";
 import { addToExportDefaultArray } from "./addToExportDefaultArray";
 import { getRequireFromSourceFile } from "./getRequireFromSourceFile";
 import { isPre529Project, getIsPre529Project } from "./isPre529Project";
 import { findVersion } from "./findVersion";
+import {
+    createFilePath,
+    getAdminPath,
+    getDynamoDbToElasticsearchPath,
+    getFileManagerPath,
+    getGraphQLPath,
+    getHeadlessCMSPath,
+    getPageBuilderPath,
+    getPrerenderingServicePath,
+    getWebsitePath
+} from "./paths";
+
+export { Files } from "./classes/Files";
+export * from "./classes/FileDefinition";
 
 export {
     addPluginToCreateHandler,
     addResolutionToRootPackageJson,
     addWorkspaceToRootPackageJson,
+    createFilePath,
     createMorphProject,
     createNamedExports,
     createNamedImports,
+    getAdminPath,
     getCreateHandlerExpressions,
+    getDynamoDbToElasticsearchPath,
+    getFileManagerPath,
+    getGraphQLPath,
+    getHeadlessCMSPath,
+    getPageBuilderPath,
+    getPrerenderingServicePath,
+    getWebsitePath,
     insertImportToSourceFile,
     log,
     prettierFormat,
