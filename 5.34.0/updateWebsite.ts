@@ -1,8 +1,8 @@
 import { Project } from "ts-morph";
-import fs from "fs-extra";
 import path from "path";
-import { FileDefinition, Files, insertImportToSourceFile } from "../utils";
+import { Files, insertImportToSourceFile } from "../utils";
 import { Context } from "../types";
+import { backupAndReplace } from "./backupAndReplace";
 
 interface Params {
     files: Files;
@@ -10,45 +10,37 @@ interface Params {
     context: Context;
 }
 
-const replace = (context: Context, file: FileDefinition, source: string) => {
-    const fileInfo = path.parse(file.path);
-    const backupPath = path.join(fileInfo.dir, `${fileInfo.name}.backup${fileInfo.ext}`);
-    fs.copyFileSync(file.path, backupPath);
-    fs.copyFileSync(source, file.path);
-    context.log.info(`Replaced %s (backup created at %s).`, file.path, backupPath);
-};
-
 export const updateWebsite = async (params: Params) => {
     const { project, files, context } = params;
 
-    replace(
+    backupAndReplace(
         context,
         files.byName("formBuilder/styles/theme.scss"),
-        path.join(__dirname, "replacements", "formBuilder_styles_theme.scss")
+        path.join(__dirname, "replacements", "website", "formBuilder_styles_theme.scss")
     );
 
-    replace(
+    backupAndReplace(
         context,
         files.byName("pageBuilder/styles/elements/layout.scss"),
-        path.join(__dirname, "replacements", "pageBuilder_styles_elements_layout.scss")
+        path.join(__dirname, "replacements", "website", "pageBuilder_styles_elements_layout.scss")
     );
 
-    replace(
+    backupAndReplace(
         context,
         files.byName("pageBuilder/styles/elements/image.scss"),
-        path.join(__dirname, "replacements", "pageBuilder_styles_elements_image.scss")
+        path.join(__dirname, "replacements", "website", "pageBuilder_styles_elements_image.scss")
     );
 
-    replace(
+    backupAndReplace(
         context,
         files.byName("pageBuilder/styles/base.scss"),
-        path.join(__dirname, "replacements", "pageBuilder_styles_base.scss")
+        path.join(__dirname, "replacements", "website", "pageBuilder_styles_base.scss")
     );
 
-    replace(
+    backupAndReplace(
         context,
         files.byName("website/components/Page/graphql.ts"),
-        path.join(__dirname, "replacements", "website_components_page_graphql.ts")
+        path.join(__dirname, "replacements", "website", "website_components_page_graphql.ts")
     );
 
     // Add <WebsiteScripts/> component
