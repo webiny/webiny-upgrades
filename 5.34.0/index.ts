@@ -5,19 +5,23 @@ import { Context } from "../types";
 import { updateAdminApp } from "./updateAdminApp";
 import { updateWebsite } from "./updateWebsite";
 import { updateWebinyProjectTs } from "./updateWebinyProjectTs";
+import { updateAdmin } from "./updateAdmin";
 
 module.exports = async (context: Context) => {
     const files = setupFiles(context);
     const rawFiles = files.paths();
     const project = createMorphProject(rawFiles);
 
-    await [updateGraphQL, updateAdminApp, updateWebsite].reduce(async (_, processor) => {
-        return await processor({
-            context,
-            project,
-            files
-        });
-    }, Promise.resolve());
+    await [updateGraphQL, updateAdminApp, updateWebsite, updateAdmin].reduce(
+        async (_, processor) => {
+            return await processor({
+                context,
+                project,
+                files
+            });
+        },
+        Promise.resolve()
+    );
 
     await updateWebinyProjectTs({
         context,
