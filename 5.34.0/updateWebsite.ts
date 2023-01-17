@@ -74,15 +74,4 @@ export const updateWebsite = async (params: Params) => {
             "skipping upgrade"
         );
     }
-
-    // Update element plugins import paths
-    const websitePageBuilder = files.byName("website/plugins/pageBuilder.ts");
-    const websitePageBuilderSource = project.getSourceFile(websitePageBuilder.path);
-    const websitePageBuilderSourceCode = websitePageBuilderSource.getFullText();
-
-    if (websitePageBuilderSourceCode.includes("/elements/media/")) {
-        websitePageBuilderSource.replaceWithText(
-            websitePageBuilderSourceCode.replaceAll("/elements/media/", "/elements/embeds/")
-        );
-    }
 };
