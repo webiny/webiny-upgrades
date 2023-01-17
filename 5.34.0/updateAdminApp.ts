@@ -39,4 +39,11 @@ export const updateAdminApp = async (params: Params) => {
         editorPluginsFile,
         path.join(__dirname, "replacements", "admin", "admin_plugins_pageBuilder_editorPlugins.ts")
     );
+
+    const renderPluginsFile = files.byName("admin/plugins/pageBuilder/renderPlugins.ts");
+    backupAndReplace(
+        context,
+        renderPluginsFile,
+        path.join(__dirname, "replacements", "admin", "admin_plugins_pageBuilder_renderPlugins.ts")
+    );
 };

@@ -58,6 +58,11 @@ export const setupFiles = (context: Context): Files => {
             name: "admin/plugins/pageBuilder/editorPlugins.ts"
         }),
         new FileDefinition({
+            path: createFilePath(context, "${admin}/src/plugins/pageBuilder/renderPlugins.ts"),
+            tag: "admin",
+            name: "admin/plugins/pageBuilder/renderPlugins.ts"
+        }),
+        new FileDefinition({
             path: createFilePath(context, "${root}/webiny.project.ts"),
             tag: "core",
             name: "webiny.project.ts"
