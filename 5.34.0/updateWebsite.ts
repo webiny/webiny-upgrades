@@ -45,18 +45,18 @@ export const updateWebsite = async (params: Params) => {
 
     // Add <WebsiteScripts/> component
     const websiteRender = files.byName("website/render");
-    const source = project.getSourceFile(websiteRender.path);
+    const websiteRenderSource = project.getSourceFile(websiteRender.path);
 
     insertImportToSourceFile({
-        source,
+        source: websiteRenderSource,
         name: "WebsiteScripts",
         moduleSpecifier: "@webiny/app-page-builder/render/components/WebsiteScripts",
         after: "@webiny/app-page-builder/render/components/Element"
     });
 
-    const sourceCode = source.getFullText();
+    const sourceCode = websiteRenderSource.getFullText();
     if (!sourceCode.includes("<WebsiteScripts")) {
-        source.replaceWithText(
+        websiteRenderSource.replaceWithText(
             sourceCode.replace(
                 "</Helmet>",
                 `</Helmet>
@@ -72,6 +72,17 @@ export const updateWebsite = async (params: Params) => {
             "<WebsiteScripts/>",
             "website",
             "skipping upgrade"
+        );
+    }
+
+    // Update element plugins import paths
+    const websitePageBuilder = files.byName("website/plugins/pageBuilder.ts");
+    const websitePageBuilderSource = project.getSourceFile(websitePageBuilder.path);
+    const websitePageBuilderSourceCode = websitePageBuilderSource.getFullText();
+
+    if (websitePageBuilderSourceCode.includes("/elements/media/")) {
+        websitePageBuilderSource.replaceWithText(
+            websitePageBuilderSourceCode.replaceAll("/elements/media/", "/elements/embeds/")
         );
     }
 };

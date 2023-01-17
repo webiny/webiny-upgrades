@@ -1,6 +1,8 @@
+import path from "path";
 import { Project } from "ts-morph";
 import { Files, removeImportFromSourceFile, removeFromExportDefaultArray } from "../utils";
 import { Context } from "../types";
+import { backupAndReplace } from "./backupAndReplace";
 
 interface Params {
     files: Files;
@@ -30,4 +32,11 @@ export const updateAdminApp = async (params: Params) => {
         removeFromExportDefaultArray({ source, target: key });
         removeImportFromSourceFile(source, removeMap[key], { quiet: true });
     });
+
+    const editorPluginsFile = files.byName("admin/plugins/pageBuilder/editorPlugins.ts");
+    backupAndReplace(
+        context,
+        editorPluginsFile,
+        path.join(__dirname, "replacements", "admin", "admin_plugins_pageBuilder_editorPlugins.ts")
+    );
 };
