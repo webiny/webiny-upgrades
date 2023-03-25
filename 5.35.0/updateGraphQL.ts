@@ -55,6 +55,8 @@ const updateIndexFile = async (params: Params): Promise<void> => {
     });
 
     if (isElasticsearchProject) {
+        removeImportFromSourceFile(source, "@webiny/api-file-manager-ddb-es");
+
         insertImportToSourceFile({
             source,
             name: ["createFileManagerStorageOperations"],
@@ -70,6 +72,8 @@ const updateIndexFile = async (params: Params): Promise<void> => {
             before: "fileManagerS3()"
         });
     } else {
+        removeImportFromSourceFile(source, "@webiny/api-file-manager-ddb");
+
         insertImportToSourceFile({
             source,
             name: ["createFileManagerStorageOperations"],
