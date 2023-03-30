@@ -109,6 +109,7 @@ const updateIndexFile = async (params: Params): Promise<void> => {
      */
     insertImportToSourceFile({
         source,
+        after: "@webiny/api-aco",
         name: ["createAcoPageBuilderContext"],
         moduleSpecifier: "@webiny/api-page-builder-aco"
     });
