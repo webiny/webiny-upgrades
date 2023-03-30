@@ -105,6 +105,28 @@ const updateIndexFile = async (params: Params): Promise<void> => {
     });
 
     /**
+     * Remove old createACO handlers from GraphQL
+     */
+    removeImportFromSourceFile(source, "@webiny/api-aco");
+    removePluginFromCreateHandler(source, "handler", "createACO");
+
+    /**
+     * Add api-aco handlers to GraphQL
+     */
+    insertImportToSourceFile({
+        source,
+        after: "@webiny/api-headless-cms-ddb",
+        name: ["createAco"],
+        moduleSpecifier: "@webiny/api-aco"
+    });
+
+    addPluginToCreateHandler({
+        source,
+        before: "scaffoldsPlugins",
+        value: "createAco()"
+    });
+
+    /**
      * Add api-page-builder-aco handlers to GraphQL
      */
     insertImportToSourceFile({
