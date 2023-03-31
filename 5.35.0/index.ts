@@ -1,5 +1,6 @@
-import { createMorphProject, prettierFormat } from "../utils";
+import { createMorphProject, prettierFormat, yarnInstall } from "../utils";
 import { updateGraphQL } from "./updateGraphQL";
+import { updateToEmotion11 } from "./updateToEmotion11";
 import { setupFiles } from "./setupFiles";
 import { Context } from "../types";
 
@@ -8,7 +9,7 @@ module.exports = async (context: Context) => {
     const rawFiles = files.paths();
     const project = createMorphProject(rawFiles);
 
-    await [updateGraphQL].reduce(async (_, processor) => {
+    await [updateGraphQL, updateToEmotion11].reduce(async (_, processor) => {
         return await processor({
             context,
             project,
@@ -20,4 +21,6 @@ module.exports = async (context: Context) => {
     await project.save();
 
     await prettierFormat(rawFiles);
+
+    await yarnInstall();
 };

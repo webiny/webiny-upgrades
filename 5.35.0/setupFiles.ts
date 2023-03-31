@@ -10,6 +10,16 @@ export const setupFiles = (context: Context): Files => {
             path: createFilePath(context, "${graphql}/src/index.ts"),
             tag: "gql",
             name: "graphql/index"
+        }),
+        new FileDefinition({
+            path: createFilePath(context, "${website}/package.json"),
+            tag: "website",
+            name: "website/package.json"
+        }),
+        new FileDefinition({
+            path: createFilePath(context, "${theme}/package.json"),
+            tag: "theme",
+            name: "theme/package.json"
         })
     ]);
 

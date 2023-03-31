@@ -1332,7 +1332,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globby@npm:^11.1.0":
+"globby@npm:^11.0.1, globby@npm:^11.1.0":
   version: 11.1.0
   resolution: "globby@npm:11.1.0"
   dependencies:
@@ -2258,6 +2258,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"replace-in-path@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "replace-in-path@npm:1.1.0"
+  dependencies:
+    globby: ^11.0.1
+  bin:
+    replace-in-path: dist/bin/replace-in-path.js
+  checksum: e09068cf481778db412f8aaa80837836d3ffd1b125316676ab9a4de7670aedd806c8d12f903409ff4eff1a1cad560c1fec9dc625aa3205f43c4709dcd1204bf4
+  languageName: node
+  linkType: hard
+
 "require-directory@npm:^2.1.1":
   version: 2.1.1
   resolution: "require-directory@npm:2.1.1"
@@ -2366,6 +2377,7 @@ __metadata:
     load-json-file: ^6.0.1
     ncp: ^2.0.0
     prettier: ^2.5.1
+    replace-in-path: ^1.1.0
     semver: ^7.3.5
     ts-morph: ^12.2.0
     ts-node: ^10.8.1
