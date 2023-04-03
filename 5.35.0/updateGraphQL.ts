@@ -49,9 +49,6 @@ const updateIndexFile = async (params: Params): Promise<void> => {
 
     removeImportFromSourceFile(source, "@webiny/api-file-manager/plugins");
     removePluginFromCreateHandler(source, "handler", "fileManagerPlugins");
-    removeImportFromSourceFile(source, "@webiny/api-file-manager-ddb");
-    removePluginFromCreateHandler(source, "handler", "fileManagerPlugins");
-    removePluginFromCreateHandler(source, "handler", "fileManagerDynamoDbStorageOperation");
 
     insertImportToSourceFile({
         source,
