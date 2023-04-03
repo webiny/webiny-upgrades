@@ -48,6 +48,7 @@ const updateIndexFile = async (params: Params): Promise<void> => {
     }
 
     removeImportFromSourceFile(source, "@webiny/api-file-manager/plugins");
+    removePluginFromCreateHandler(source, "handler", "fileManagerPlugins");
     removeImportFromSourceFile(source, "@webiny/api-file-manager-ddb");
     removePluginFromCreateHandler(source, "handler", "fileManagerPlugins");
     removePluginFromCreateHandler(source, "handler", "fileManagerDynamoDbStorageOperation");
@@ -60,6 +61,13 @@ const updateIndexFile = async (params: Params): Promise<void> => {
     });
 
     if (isElasticsearchProject) {
+        removeImportFromSourceFile(source, "@webiny/api-file-manager-ddb-es");
+        removePluginFromCreateHandler(
+            source,
+            "handler",
+            "fileManagerDynamoDbElasticStorageOperation"
+        );
+
         insertImportToSourceFile({
             source,
             name: ["createFileManagerStorageOperations"],
@@ -75,6 +83,9 @@ const updateIndexFile = async (params: Params): Promise<void> => {
             before: "fileManagerS3()"
         });
     } else {
+        removeImportFromSourceFile(source, "@webiny/api-file-manager-ddb");
+        removePluginFromCreateHandler(source, "handler", "fileManagerDynamoDbStorageOperation");
+
         insertImportToSourceFile({
             source,
             name: ["createFileManagerStorageOperations"],
