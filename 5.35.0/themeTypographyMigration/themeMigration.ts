@@ -45,23 +45,41 @@ const updateSourceFileWithMigratedTheme = (sourceFile: SourceFile, theme: Record
 /*
 * @desc Check if user have the theme and typography prop
 * */
-export const hasTypographyProp = (themeObject: Record<string, any>): boolean => {
-    return themeObject?.styles?.typography !== undefined;
+export const hasTypographyProp = (typography: Record<string, any>): boolean => {
+    return typography !== undefined;
 }
 
 /*
 * @desc Check if legacy typography object has at least one key for migration
 * */
-export const legacyThemeCanBeMigrated = (themeObject: Record<string, any>): boolean => {
-    if(!hasTypographyProp(themeObject)) {
+export const legacyTypographyCanBeMigrated = (typography: Record<string, any>): boolean => {
+
+    if(!hasTypographyProp(typography)) {
         return false;
     }
-    const typography = themeObject.styles.typography;
+
     // check if typography has at least one key
-    return !!Object.keys(typography).length
+    if(!!Object.keys(typography).length) {
+        for (const key in typography) {
+            const typographyObject = typography[key];
+            // Must be object and not array
+            if(!(typeof typographyObject === 'object' && !Array.isArray(typographyObject))){
+                return false;
+            }
+            // Must be object and not an iteration object lie Set, Map...
+            if(!(typeof typographyObject === 'object' && !(Symbol.iterator in typographyObject))) {
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
 }
 
 export type TypographyObjectMigrationResult = {
+    /*
+    * @desc: New migrated typography object
+    */
     typography: Record<string, any>,
     hasCustomStylesDetected: boolean;
     isSuccessfullyMigrated: boolean
@@ -75,6 +93,10 @@ const migrateToNewTheme = (typography: Record<string, any>): TypographyObjectMig
             isSuccessfullyMigrated: false
         };
     }
+
+    for (const typographyKey in typography) {
+
+    }
 }
 
 export const typographyIsAlreadyMigrated = (typography: Record<string, any>): boolean => {
@@ -83,20 +105,23 @@ export const typographyIsAlreadyMigrated = (typography: Record<string, any>): bo
         return false;
     }
 
-    const headings = typography?.headings;
-    const paragraphs = typography?.paragraphs;
-    const lists = typography?.lists;
-    const quotes = typography?.qotes;
-
-    // if at least one of the new typography styles is present and arrray is detected
-    // in that case the theme is already
-    if(!!(headings && Array.isArray(headings)) ||
-        !!(paragraphs && Array.isArray(paragraphs)) ||
-        !!(lists && Array.isArray(lists)) ||
-        !!(quotes && Array.isArray(quotes))) {
+    // check if typography has at least one key
+    if(!!Object.keys(typography).length) {
+        for (const key in typography) {
+            const typographyStyle = typography[key];
+            // Must be object and not array
+            if (Array.isArray(typographyStyle) && typographyStyle?.length > 0) {
+                for (let i = 0; i < typographyStyle.length - 1; i++) {
+                    const style = typographyStyle[i];
+                    // check the current
+                    if (!(style.hasOwnProperty("id") && style.hasOwnProperty("name") && style.hasOwnProperty("tag") && style.hasOwnProperty("css"))) {
+                        return false;
+                    }
+                }
+            }
+        }
         return true;
     }
-
     return false;
 }
 

@@ -15,7 +15,7 @@ export type ThemeFileMigrationDefinition = {
     migrationInstructions: MigrationInstructions;
 }
 
-const themeUpgradeDefinition = (context: Context): ThemeFileMigrationDefinition[] => {
+const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefinition[] => {
     return [
         {
             file: new FileDefinition(
@@ -335,16 +335,10 @@ const cwpTemplateAwsDefinitions = (context: Context): ThemeFileMigrationDefiniti
 }
 
 export const migrationFileDefinitions = (context: Context): ThemeFileMigrationDefinition[] => {
-    /**
-     * Add files that will be used at some point in the upgrade process.
-     */
-    const files = [
-        ...themeUpgradeDefinition(context),
+    return [
+        ...themeLayoutUpgradeDefinition(context),
         ...appFormBuilderDefinitions(context),
         ...appPageBuilderElementsDefinitions(context),
-        ...cwpTemplateAwsDefinitions(context),
         ...cwpTemplateAwsDefinitions(context)
     ];
-
-    return files;
 };

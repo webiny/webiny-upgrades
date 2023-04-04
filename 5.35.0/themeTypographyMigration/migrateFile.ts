@@ -1,7 +1,6 @@
 import {Project, SourceFile} from "ts-morph";
 import {ThemeFileMigrationDefinition} from "./migrationFileDefinitions";
 import {getSourceFile} from "../../utils";
-import {Context} from "../../types";
 
 const migrateExpressions = (source: SourceFile):void => {
 
@@ -19,12 +18,23 @@ const migrateTypes = (source: SourceFile): void => {
 
 }
 
+
+// * check th theme -
+// 1. if typography exist
+// 2. Check if you can access to legacy styles
+
+// * Map the theme to new structure
+// 1. For the same key copy the existing style of the user
+//  - if the key does not contain the default names try to find the heading, paragraph in the name
+// by default create paragraph styles
+//
+
 export type ThemeFileMigrationResult = {
     isSuccessfullyMigrated: boolean;
     skipped: boolean;
     info?: string;
 }
-const migrateFile = (migrateDefinition: ThemeFileMigrationDefinition, project: Project): ThemeFileMigrationResult => {
+export const migrateFile = (migrateDefinition: ThemeFileMigrationDefinition, project: Project): ThemeFileMigrationResult => {
     const source = getSourceFile(project, migrateDefinition.file.path);
     if(!source){
         return {
