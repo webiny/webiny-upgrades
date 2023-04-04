@@ -62,6 +62,10 @@ export const getThemePath = () => {
     return "apps/theme";
 };
 
+export const getPackagePath = () => {
+    return `${getProjectRootPath()}/packages`;
+};
+
 interface PathConverters {
     [key: string]: {
         (context: Context): string;
@@ -80,7 +84,8 @@ const pathConverters: PathConverters = {
     "${dynamoToElastic}": getDynamoDbToElasticsearchPath,
     "${website}": getWebsitePath,
     "${theme}": getThemePath,
-    "${admin}": getAdminPath
+    "${admin}": getAdminPath,
+    "${package}": getPackagePath
 };
 
 export const createFilePath = (context: Context, file: string): string | null => {
