@@ -1,5 +1,5 @@
 import {Project, SourceFile} from "ts-morph";
-import {TypographyMigrateDefinition} from "./migrationFileDefinitions";
+import {ThemeFileMigrationDefinition} from "./migrationFileDefinitions";
 import {getSourceFile} from "../../utils";
 import {Context} from "../../types";
 
@@ -19,8 +19,21 @@ const migrateTypes = (source: SourceFile): void => {
 
 }
 
-const migrateFile = (migrateDefinition: TypographyMigrateDefinition, project: Project): void => {
+export type ThemeFileMigrationResult = {
+    isSuccessfullyMigrated: boolean;
+    skipped: boolean;
+    info?: string;
+}
+const migrateFile = (migrateDefinition: ThemeFileMigrationDefinition, project: Project): ThemeFileMigrationResult => {
     const source = getSourceFile(project, migrateDefinition.file.path);
+    if(!source){
+        return {
+            isSuccessfullyMigrated: false,
+            skipped: true,
+            info: `File does not exist. Path: ${migrateDefinition.file}`
+        }
+    }
+
     if (migrateDefinition.migrationInstructions?.imports) {
         migrateImports(source);
     }
@@ -35,5 +48,10 @@ const migrateFile = (migrateDefinition: TypographyMigrateDefinition, project: Pr
 
     if (migrateDefinition.migrationInstructions?.expressions) {
         migrateExpressions(source);
+    }
+
+    return {
+        skipped: false,
+        isSuccessfullyMigrated: true
     }
 }

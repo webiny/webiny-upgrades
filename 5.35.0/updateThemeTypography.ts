@@ -3,7 +3,7 @@ import { Context } from "../types";
 import { Files } from "../utils";
 import {
     getAppThemeSourceFile,
-    getThemeObject,
+    getTypographyObject,
     legacyThemeCanBeMigrated
 } from "./themeTypographyMigration/themeMigration";
 import {migrationFileDefinitions} from "./themeTypographyMigration/migrationFileDefinitions";
@@ -21,11 +21,11 @@ export const updateThemeTypography = async (params: Params): Promise<void> => {
     context.log.info(`Check if current theme can be migrated`);
 
     const themeSourceFile = getAppThemeSourceFile(context, project);
-    const theme = getThemeObject(themeSourceFile);
-    if(!theme){
+    const typographyObject = getTypographyObject(themeSourceFile);
+    if(!typographyObject){
         context.log.error(`Constant with name 'theme', can't be found in App/Theme/theme.ts file.`);
     }
-    const canBeMigrated = legacyThemeCanBeMigrated(theme);
+    const canBeMigrated = legacyThemeCanBeMigrated(typographyObject);
     if(!canBeMigrated) {
         context.log.error(`Current theme can't be migrated, typography has no defined styles.`);
     }

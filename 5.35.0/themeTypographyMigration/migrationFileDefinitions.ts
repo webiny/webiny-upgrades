@@ -7,7 +7,7 @@ export type MigrationInstructions = {
     [key in TypographyUpgradeType]?: Record<string, any>;
 }
 
-export type TypographyMigrateDefinition = {
+export type ThemeFileMigrationDefinition = {
     file: FileDefinition;
     /*
     * Detailed instructions about code changes
@@ -15,7 +15,7 @@ export type TypographyMigrateDefinition = {
     migrationInstructions: MigrationInstructions;
 }
 
-const themeUpgradeDefinition = (context: Context): TypographyMigrateDefinition[] => {
+const themeUpgradeDefinition = (context: Context): ThemeFileMigrationDefinition[] => {
     return [
         {
             file: new FileDefinition(
@@ -142,7 +142,7 @@ const themeUpgradeDefinition = (context: Context): TypographyMigrateDefinition[]
     ];
 };
 
-const appFormBuilderDefinitions = (context: Context): TypographyMigrateDefinition[] => {
+const appFormBuilderDefinitions = (context: Context): ThemeFileMigrationDefinition[] => {
     return [
         {
             file: new FileDefinition(
@@ -160,7 +160,7 @@ const appFormBuilderDefinitions = (context: Context): TypographyMigrateDefinitio
     ];
 }
 
-const appPageBuilderElementsDefinitions = (context: Context): TypographyMigrateDefinition[] => {
+const appPageBuilderElementsDefinitions = (context: Context): ThemeFileMigrationDefinition[] => {
     return [
         {
             file: new FileDefinition(
@@ -192,7 +192,7 @@ const appPageBuilderElementsDefinitions = (context: Context): TypographyMigrateD
     ];
 }
 
-const cwpTemplateAwsDefinitions = (context: Context): TypographyMigrateDefinition[] => {
+const cwpTemplateAwsDefinitions = (context: Context): ThemeFileMigrationDefinition[] => {
     return [
         {
             file: new FileDefinition(
@@ -334,7 +334,7 @@ const cwpTemplateAwsDefinitions = (context: Context): TypographyMigrateDefinitio
     ]
 }
 
-export const migrationFileDefinitions = (context: Context): TypographyMigrateDefinition[] => {
+export const migrationFileDefinitions = (context: Context): ThemeFileMigrationDefinition[] => {
     /**
      * Add files that will be used at some point in the upgrade process.
      */
