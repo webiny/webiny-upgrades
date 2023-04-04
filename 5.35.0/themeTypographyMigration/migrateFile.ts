@@ -1,23 +1,14 @@
-import {Project, SourceFile} from "ts-morph";
-import {ThemeFileMigrationDefinition} from "./migrationFileDefinitions";
-import {getSourceFile} from "../../utils";
+import { Project, SourceFile } from "ts-morph";
+import { ThemeFileMigrationDefinition } from "./migrationFileDefinitions";
+import { getSourceFile } from "../../utils";
 
-const migrateExpressions = (source: SourceFile):void => {
+const migrateExpressions = (source: SourceFile): void => {};
 
-}
+const migrateImports = (source: SourceFile): void => {};
 
-const migrateImports = (source: SourceFile): void => {
+const migrateInterfaces = (source: SourceFile): void => {};
 
-}
-
-const migrateInterfaces = (source: SourceFile): void => {
-
-}
-
-const migrateTypes = (source: SourceFile): void => {
-
-}
-
+const migrateTypes = (source: SourceFile): void => {};
 
 // * check th theme -
 // 1. if typography exist
@@ -33,15 +24,18 @@ export type ThemeFileMigrationResult = {
     isSuccessfullyMigrated: boolean;
     skipped: boolean;
     info?: string;
-}
-export const migrateFile = (migrateDefinition: ThemeFileMigrationDefinition, project: Project): ThemeFileMigrationResult => {
+};
+export const migrateFile = (
+    migrateDefinition: ThemeFileMigrationDefinition,
+    project: Project
+): ThemeFileMigrationResult => {
     const source = getSourceFile(project, migrateDefinition.file.path);
-    if(!source){
+    if (!source) {
         return {
             isSuccessfullyMigrated: false,
             skipped: true,
             info: `File does not exist. Path: ${migrateDefinition.file}`
-        }
+        };
     }
 
     if (migrateDefinition.migrationInstructions?.imports) {
@@ -63,5 +57,5 @@ export const migrateFile = (migrateDefinition: ThemeFileMigrationDefinition, pro
     return {
         skipped: false,
         isSuccessfullyMigrated: true
-    }
-}
+    };
+};

@@ -4,10 +4,11 @@ import { Files } from "../utils";
 import {
     getAppThemeSourceFile,
     getTypographyObject,
-    legacyTypographyCanBeMigrated, typographyIsAlreadyMigrated
+    legacyTypographyCanBeMigrated, migrateToNewTheme,
+    typographyIsAlreadyMigrated
 } from "./themeTypographyMigration/themeMigration";
-import {migrationFileDefinitions} from "./themeTypographyMigration/migrationFileDefinitions";
-import {migrateFile} from "./themeTypographyMigration/migrateFile";
+import { migrationFileDefinitions } from "./themeTypographyMigration/migrationFileDefinitions";
+import { migrateFile } from "./themeTypographyMigration/migrateFile";
 
 interface Params {
     files: Files;
@@ -16,58 +17,62 @@ interface Params {
 }
 
 export const updateThemeTypography = async (params: Params): Promise<void> => {
-    const { context, project, files } = params;
+    const { context, project } = params;
 
     context.log.info(`Upgrading Webiny theme to new typography styles.`);
-    context.log.info(`Check if current theme can be migrated`);
+    context.log.info(`Checking the legacy theme object...`);
 
     // Get the theme file and typography object
     const themeSourceFile = getAppThemeSourceFile(context, project);
-    const typographyObject = getTypographyObject(themeSourceFile);
+    const legacyTypography = getTypographyObject(themeSourceFile);
 
     /*
-    * CHECK AND VALIDATE THE LEGACY THEME BEFORE MIGRATION
-    */
-    if(!typographyObject){
-        context.log.error(`Constant with name 'typography', can't be found in App/Theme/theme.ts file.`);
+     * CHECK AND VALIDATE THE LEGACY THEME BEFORE MIGRATION
+     */
+    if (!legacyTypography) {
+        context.log.error(
+            `Constant with name 'typography', can't be found in App/Theme/theme.ts file.`
+        );
         return;
     }
 
-    if(typographyIsAlreadyMigrated(typographyObject)) {
+    if (typographyIsAlreadyMigrated(legacyTypography)) {
         context.log.error(`Theme's typography styles are already migrated.`);
         return;
     }
 
-    const canBeMigrated = legacyTypographyCanBeMigrated(typographyObject);
-    if(!canBeMigrated) {
-        context.log.error(`Current theme can't be migrated, typography has no defined styles.`);
+    if (!legacyTypographyCanBeMigrated(legacyTypography)) {
+        context.log.error(`Current theme typography can't be migrated, detected custom object structure.`);
         return;
     }
 
+    context.log.info(`Theme is valid for migration...`);
+
     /*
-    * MIGRATE THE SOLUTION
+    * MIGRATE THE THEME OBJECT
     */
-    context.log.info(`Start theme migration...`);
+    context.log.info(`Start theme and typography styles migration...`);
+    const themeMigrationResult = migrateToNewTheme(legacyTypography);
+
+    if(themeMigrationResult.isSuccessfullyMigrated) {
+        context.log.info(`Theme and typography styles as successfully migrated...`);
+    }
+
+    const migratedTheme = themeMigrationResult.typography;
+
+    /*
+     * MIGRATE THE REST OF SOLUTION THAT HAVE ACCESS TO THE THEME
+     */
+    context.log.info(`Migrate the typography style expressions, imports and interfaces in the solution...`);
     const migrationDefinitions = migrationFileDefinitions(context);
-    migrationDefinitions.forEach(fileDefinition => {
-        const result = migrateFile(fileDefinition, project);
+    migrationDefinitions.forEach(definition => {
+        const result = migrateFile(definition, project);
         // log message if file is not successfully migrated
-        if(result.skipped || !result.isSuccessfullyMigrated) {
+        if (result.skipped || !result.isSuccessfullyMigrated) {
             context.log.info(result.info);
         }
     });
 
 
-
-    // Check if exist and take the legacy theme object
-    context.log.warning(`Can't find the legacy "theme" object in Admin/App/theme file.`);
-    // Check if typography object exist or users implemented custom theme object.
-
-
-
-
-    // everything is upgraded with success - remove legacy object from the theme
-    context.log.info(`Legacy "theme" object is removed from Admin/App/theme file.`);
-
-    context.log.success(`Successfully upgraded to new Webiny theme typography object structure`);
+    context.log.success(`Successfully upgraded to new Webiny theme styles.`);
 };
