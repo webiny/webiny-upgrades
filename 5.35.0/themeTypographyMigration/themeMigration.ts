@@ -64,7 +64,7 @@ export const setMigratedTypographyInSourceFile = (
 ): SetMigratedTypographyResult => {
 
     if(!migratedTypography) {
-        return { isSuccessful: false, info: "Migrated typography object can't be set in source file, 'migratedTypography' is undefined." }
+        return { isSuccessful: false, info: "New typography object can't be set in source file, 'migratedTypography' is undefined." }
     }
     if (!appThemeSourceFile) {
         return undefined;
@@ -72,7 +72,7 @@ export const setMigratedTypographyInSourceFile = (
     // take the variable
     const variable = appThemeSourceFile.getVariableDeclarationOrThrow("typography");
     if (!variable) {
-        return { isSuccessful: false, info: "Migrated typography object can't be set in source file, variable 'typography' is not found." }
+        return { isSuccessful: false, info: "New typography object can't be set in source file, variable 'typography' is not found." }
     }
     // set new objet
 
@@ -80,9 +80,9 @@ export const setMigratedTypographyInSourceFile = (
         const typography = JSON.stringify(migratedTypography);
         variable.set({ initializer: typography });
     } catch (e) {
-        return { isSuccessful: false, info: "Migrated typography is not set in source file. Can't be parsed and set to the variable." }
+        return { isSuccessful: false, info: "New typography is not set in source file. Can't be parsed and set to the variable." }
     }
-    return { isSuccessful: true, info: "Migrated typography successfully set in source file." }
+    return { isSuccessful: true, info: "Migrated typography object successfully set in source file." }
 };
 
 /*
@@ -163,22 +163,22 @@ export const mapToNewTypographyStyle = (
     };
 };
 
-export type TypographyObjectMigrationResult = {
+export type TypographyObjectMapResult = {
     /*
      * @desc: New migrated typography object
      */
     typography: Record<string, any>;
-    isSuccessfullyMigrated: boolean;
+    isSuccessfullyMapped: boolean;
     info?: string;
 };
 
-export const migrateToNewTypographyStyles = (
+export const mapToNewTypographyStyles = (
     legacyTypography: Record<string, any>
-): TypographyObjectMigrationResult => {
+): TypographyObjectMapResult => {
     if (!legacyTypography) {
         return {
             typography: legacyTypography,
-            isSuccessfullyMigrated: false,
+            isSuccessfullyMapped: false,
             info: "Legacy typography object is undefined, migration is canceled"
         };
     }
@@ -200,7 +200,7 @@ export const migrateToNewTypographyStyles = (
 
     return {
         typography: newTypography,
-        isSuccessfullyMigrated: true
+        isSuccessfullyMapped: true
     };
 };
 

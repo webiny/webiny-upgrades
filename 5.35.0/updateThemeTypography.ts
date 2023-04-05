@@ -5,7 +5,7 @@ import {
     getAppThemeSourceFile,
     getTypographyObject,
     legacyTypographyCanBeMigrated,
-    migrateToNewTypographyStyles, setMigratedTypographyInSourceFile,
+    mapToNewTypographyStyles, setMigratedTypographyInSourceFile,
     typographyIsAlreadyMigrated
 } from "./themeTypographyMigration/themeMigration";
 import { migrationFileDefinitions } from "./themeTypographyMigration/migrationFileDefinitions";
@@ -50,22 +50,22 @@ export const updateThemeTypography = async (params: Params): Promise<void> => {
         return;
     }
 
-    context.log.info(`Theme is valid for migration...`);
+    context.log.info(`Legacy typography object structure can be migrated.`);
 
     /*
      * MIGRATE THE THEME OBJECT
      */
-    context.log.info(`Start theme and typography styles migration...`);
-    const stylesMigrationResult = migrateToNewTypographyStyles(legacyTypography);
+    context.log.info(`Map legacy typography object to new structure...`);
+    const typographyMappingResult = mapToNewTypographyStyles(legacyTypography);
 
-    if(!stylesMigrationResult.isSuccessfullyMigrated){
-        context.log.info(stylesMigrationResult.info);
+    if(!typographyMappingResult.isSuccessfullyMapped){
+        context.log.info(typographyMappingResult.info);
         return;
     }
-    context.log.info(`Typography styles are successfully mapped...`);
+    context.log.info(`Legacy typography object is successfully mapped.`);
 
     // SET IN SOURCE CODE
-    const migratedTypography = stylesMigrationResult.typography;
+    const migratedTypography = typographyMappingResult.typography;
     const setInSourceResult = setMigratedTypographyInSourceFile(themeSourceFile, migratedTypography);
     context.log.info(setInSourceResult.info);
     if(!setInSourceResult.isSuccessful){
@@ -88,5 +88,5 @@ export const updateThemeTypography = async (params: Params): Promise<void> => {
         }
     });
 
-    context.log.success(`Successfully upgraded to new Webiny theme styles.`);
+    context.log.success(`Cheers! You have successfully upgraded to new Webiny typography styles.`);
 };
