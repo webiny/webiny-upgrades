@@ -5,11 +5,12 @@ import {
     getAppThemeSourceFile,
     getTypographyObject,
     legacyTypographyCanBeMigrated,
-    migrateToNewTypographyStyles,
+    migrateToNewTypographyStyles, setMigratedTypographyInSourceFile,
     typographyIsAlreadyMigrated
 } from "./themeTypographyMigration/themeMigration";
 import { migrationFileDefinitions } from "./themeTypographyMigration/migrationFileDefinitions";
 import { migrateFile } from "./themeTypographyMigration/migrateFile";
+import * as console from "console";
 
 interface Params {
     files: Files;
@@ -61,9 +62,15 @@ export const updateThemeTypography = async (params: Params): Promise<void> => {
         context.log.info(stylesMigrationResult.info);
         return;
     }
-    context.log.info(`Theme and typography styles as successfully migrated...`);
+    context.log.info(`Typography styles are successfully mapped...`);
 
+    // SET IN SOURCE CODE
     const migratedTypography = stylesMigrationResult.typography;
+    const setInSourceResult = setMigratedTypographyInSourceFile(themeSourceFile, migratedTypography);
+    context.log.info(setInSourceResult.info);
+    if(!setInSourceResult.isSuccessful){
+        return;
+    }
 
 
     /*

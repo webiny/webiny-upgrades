@@ -30,29 +30,59 @@ export const getAppThemeSourceFile = (context: Context, project: Project): Sourc
 export const getTypographyObject = (
     appThemeSourceFile: SourceFile
 ): Record<string, any> | undefined => {
+
     if (!appThemeSourceFile) {
         return undefined;
     }
+
     const variable = appThemeSourceFile.getVariableDeclarationOrThrow("typography");
     if (!variable) {
         return undefined;
     }
+
     const typographyVariable = variable.getInitializerIfKindOrThrow(ts.SyntaxKind.ObjectLiteralExpression);
-    return JSON.parse(typographyVariable?.getFullText()) ?? undefined;
+
+    // Parse the typography object
+    let typographyObject;
+    try {
+        typographyObject = JSON.parse(typographyVariable?.getFullText()) ?? undefined;
+    } catch(e) {
+        typographyObject = undefined;
+    }
+    return typographyObject;
 };
 
-const updateSourceFileWithMigratedTypography = (
+
+export type SetMigratedTypographyResult = {
+    isSuccessful: boolean,
+    info?: string;
+}
+
+export const setMigratedTypographyInSourceFile = (
     appThemeSourceFile: SourceFile,
     migratedTypography: Record<string, any>
-) => {
+): SetMigratedTypographyResult => {
+
+    if(!migratedTypography) {
+        return { isSuccessful: false, info: "Migrated typography object can't be set in source file, 'migratedTypography' is undefined." }
+    }
     if (!appThemeSourceFile) {
         return undefined;
     }
+    // take the variable
     const variable = appThemeSourceFile.getVariableDeclarationOrThrow("typography");
     if (!variable) {
-        return undefined;
+        return { isSuccessful: false, info: "Migrated typography object can't be set in source file, variable 'typography' is not found." }
     }
-    const typographyVariable = variable.getInitializerIfKindOrThrow(ts.SyntaxKind.ObjectLiteralExpression);
+    // set new objet
+
+    try {
+        const typography = JSON.stringify(migratedTypography);
+        variable.set({ initializer: typography });
+    } catch (e) {
+        return { isSuccessful: false, info: "Migrated typography is not set in source file. Can't be parsed and set to the variable." }
+    }
+    return { isSuccessful: true, info: "Migrated typography successfully set in source file." }
 };
 
 /*
