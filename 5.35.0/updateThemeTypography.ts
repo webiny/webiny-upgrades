@@ -4,7 +4,8 @@ import { Files } from "../utils";
 import {
     getAppThemeSourceFile,
     getTypographyObject,
-    legacyTypographyCanBeMigrated, migrateToNewTheme,
+    legacyTypographyCanBeMigrated,
+    migrateToNewTypographyStyles,
     typographyIsAlreadyMigrated
 } from "./themeTypographyMigration/themeMigration";
 import { migrationFileDefinitions } from "./themeTypographyMigration/migrationFileDefinitions";
@@ -42,28 +43,35 @@ export const updateThemeTypography = async (params: Params): Promise<void> => {
     }
 
     if (!legacyTypographyCanBeMigrated(legacyTypography)) {
-        context.log.error(`Current theme typography can't be migrated, detected custom object structure.`);
+        context.log.error(
+            `Current theme typography can't be migrated, detected custom object structure.`
+        );
         return;
     }
 
     context.log.info(`Theme is valid for migration...`);
 
     /*
-    * MIGRATE THE THEME OBJECT
-    */
+     * MIGRATE THE THEME OBJECT
+     */
     context.log.info(`Start theme and typography styles migration...`);
-    const themeMigrationResult = migrateToNewTheme(legacyTypography);
+    const stylesMigrationResult = migrateToNewTypographyStyles(legacyTypography);
 
-    if(themeMigrationResult.isSuccessfullyMigrated) {
-        context.log.info(`Theme and typography styles as successfully migrated...`);
+    if(!stylesMigrationResult.isSuccessfullyMigrated){
+        context.log.info(stylesMigrationResult.info);
+        return;
     }
+    context.log.info(`Theme and typography styles as successfully migrated...`);
 
-    const migratedTheme = themeMigrationResult.typography;
+    const migratedTypography = stylesMigrationResult.typography;
+
 
     /*
      * MIGRATE THE REST OF SOLUTION THAT HAVE ACCESS TO THE THEME
      */
-    context.log.info(`Migrate the typography style expressions, imports and interfaces in the solution...`);
+    context.log.info(
+        `Migrate the typography style expressions, imports and interfaces in the solution...`
+    );
     const migrationDefinitions = migrationFileDefinitions(context);
     migrationDefinitions.forEach(definition => {
         const result = migrateFile(definition, project);
@@ -72,7 +80,6 @@ export const updateThemeTypography = async (params: Params): Promise<void> => {
             context.log.info(result.info);
         }
     });
-
 
     context.log.success(`Successfully upgraded to new Webiny theme styles.`);
 };

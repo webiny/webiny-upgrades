@@ -1,7 +1,12 @@
 import { Context } from "../../types";
 import { Project, SourceFile, ts } from "ts-morph";
 import { createFilePath, FileDefinition, getSourceFile } from "../../utils";
-import {Typography, typographyKeyToHtmlTagMapping, TypographyStyle} from "./definitions";
+import {
+    htmlTagToTypographyTypeMapping,
+    Typography,
+    typographyKeyToHtmlTagMapping,
+    TypographyStyle
+} from "./definitions";
 
 const APP_THEME_FILE_PATH = "${theme}/theme.ts";
 
@@ -32,14 +37,23 @@ export const getTypographyObject = (
     if (!variable) {
         return undefined;
     }
-    const themeObject = variable.getInitializerIfKindOrThrow(ts.SyntaxKind.ObjectLiteralExpression);
-    return themeObject.getProperties();
+    const typographyVariable = variable.getInitializerIfKindOrThrow(ts.SyntaxKind.ObjectLiteralExpression);
+    return JSON.parse(typographyVariable?.getFullText()) ?? undefined;
 };
 
-const updateSourceFileWithMigratedTheme = (
-    sourceFile: SourceFile,
-    theme: Record<string, any>
-) => {};
+const updateSourceFileWithMigratedTypography = (
+    appThemeSourceFile: SourceFile,
+    migratedTypography: Record<string, any>
+) => {
+    if (!appThemeSourceFile) {
+        return undefined;
+    }
+    const variable = appThemeSourceFile.getVariableDeclarationOrThrow("typography");
+    if (!variable) {
+        return undefined;
+    }
+    const typographyVariable = variable.getInitializerIfKindOrThrow(ts.SyntaxKind.ObjectLiteralExpression);
+};
 
 /*
  * ----- MANIPULATION WITH THEME OBJECT ----
@@ -78,48 +92,86 @@ export const legacyTypographyCanBeMigrated = (typography: Record<string, any>): 
     return false;
 };
 
+export const mapToNewTypographyStyle = (
+    legacyKey: string,
+    css: Record<string, any>
+): TypographyStyle | undefined => {
+    if (!legacyKey) {
+        return undefined;
+    }
+    if (!css) {
+        return undefined;
+    }
+
+    // Webiny default defined keys and tags
+    let tag = typographyKeyToHtmlTagMapping[legacyKey];
+
+    // If tag is not present the key is custom name set by the user
+    if (!tag) {
+        // try to find a proper tag by checking if the key includes names like heading, list...
+        // example for custom name. ZyxHeading, ZyXList
+        const customKey = legacyKey.toLowerCase();
+        if (customKey.includes("heading")) {
+            tag = typographyKeyToHtmlTagMapping["heading1"];
+        }
+        if (customKey.includes("paragraph")) {
+            tag = typographyKeyToHtmlTagMapping["paragraph1"];
+        }
+        if (customKey.includes("list")) {
+            tag = typographyKeyToHtmlTagMapping["list"];
+        }
+        if (customKey.includes("quote")) {
+            tag = typographyKeyToHtmlTagMapping["quote"];
+        }
+    }
+
+    return {
+        id: legacyKey,
+        name: legacyKey,
+        tag: tag || "p", // if key is not found by default will be paragraph tag
+        css
+    };
+};
+
 export type TypographyObjectMigrationResult = {
     /*
      * @desc: New migrated typography object
      */
     typography: Record<string, any>;
-    hasCustomStylesDetected: boolean;
     isSuccessfullyMigrated: boolean;
+    info?: string;
 };
 
-export const mapToNewTypographyStyle = (legacyKey: string, css: Record<string, any>): TypographyStyle | undefined => {
-
-    if(!legacyKey) { return undefined; }
-    if(!css) { return undefined; }
-
-    return {
-        id: legacyKey,
-        name: legacyKey,
-        tag: typographyKeyToHtmlTagMapping[legacyKey] || "p", // if key is not found by default will be paragraph tag
-        css
-    }
-}
-
-export const migrateToNewTheme = (legacyTypography: Record<string, any>): TypographyObjectMigrationResult => {
+export const migrateToNewTypographyStyles = (
+    legacyTypography: Record<string, any>
+): TypographyObjectMigrationResult => {
     if (!legacyTypography) {
         return {
             typography: legacyTypography,
-            hasCustomStylesDetected: false,
-            isSuccessfullyMigrated: false
+            isSuccessfullyMigrated: false,
+            info: "Legacy typography object is undefined, migration is canceled"
         };
     }
 
-    let newTypography: Typography = {
+    const newTypography: Typography = {
         headings: [],
         paragraphs: [],
         lists: [],
         quotes: []
-    }
+    };
 
+    // map all legacy styles
     for (const key in legacyTypography) {
         const css = legacyTypography[key];
-        let newTypography = mapToNewTypographyStyle(key, css);
+        const style = mapToNewTypographyStyle(key, css);
+        const typographyType = htmlTagToTypographyTypeMapping[style.tag];
+        newTypography[typographyType].push(style);
     }
+
+    return {
+        typography: newTypography,
+        isSuccessfullyMigrated: true
+    };
 };
 
 export const typographyIsAlreadyMigrated = (typography: Record<string, any>): boolean => {
