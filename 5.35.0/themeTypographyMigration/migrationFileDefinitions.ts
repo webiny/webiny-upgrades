@@ -173,7 +173,9 @@ const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefin
                     ]
                 },
                 imports: {
-
+                    declarations: [
+                        { moduleSpecifier: "../../../theme", insertDefaultImport: "theme", removeNamedImports: ["typography"] }
+                    ]
                 }
             }
         },
@@ -184,8 +186,16 @@ const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefin
                 name: "/layouts/pages/Static/Header.tsx"
             }),
             migrationInstructions: {
-                expressions: {},
-                imports: {}
+                statements: {
+                    variables: [
+                        { name: "HeaderWrapper", syntaxKind: SyntaxKind.TemplateSpan }
+                    ]
+                },
+                imports: {
+                    declarations: [
+                        { moduleSpecifier: "../../../theme", insertDefaultImport: "theme", removeNamedImports: ["typography"] }
+                    ]
+                }
             }
         }
     ];

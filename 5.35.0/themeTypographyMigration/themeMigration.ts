@@ -122,7 +122,7 @@ export const legacyTypographyCanBeMigrated = (typography: Record<string, any>): 
             if (!(typeof typographyObject === "object" && !Array.isArray(typographyObject))) {
                 return false;
             }
-            // Must be object and not an iteration object lie Set, Map...
+            // Must be object and not an iteration object like Set, Map...
             if (!(typeof typographyObject === "object" && !(Symbol.iterator in typographyObject))) {
                 return false;
             }
@@ -134,7 +134,8 @@ export const legacyTypographyCanBeMigrated = (typography: Record<string, any>): 
 
 export const mapToNewTypographyStyle = (
     legacyKey: string,
-    css: Record<string, any>
+    css: Record<string, any>,
+    context: Context
 ): TypographyStyle | undefined => {
     if (!legacyKey) {
         return undefined;
@@ -151,17 +152,17 @@ export const mapToNewTypographyStyle = (
         // try to find a proper tag by checking if the key includes names like heading, list...
         // example for custom name. ZyxHeading, ZyXList
         const customKey = legacyKey.toLowerCase();
-        if (customKey.includes("heading")) {
-            tag = typographyKeyToHtmlTagMapping["heading1"];
-        }
-        if (customKey.includes("paragraph")) {
-            tag = typographyKeyToHtmlTagMapping["paragraph1"];
-        }
-        if (customKey.includes("list")) {
-            tag = typographyKeyToHtmlTagMapping["list"];
-        }
-        if (customKey.includes("quote")) {
-            tag = typographyKeyToHtmlTagMapping["quote"];
+        switch (true) {
+            case customKey.includes("heading"):
+                tag = typographyKeyToHtmlTagMapping["heading1"];
+            case customKey.includes("paragraph"):
+                tag = typographyKeyToHtmlTagMapping["paragraph1"];
+            case customKey.includes("list"):
+                tag = typographyKeyToHtmlTagMapping["list"];
+            case customKey.includes("quote"):
+                tag = typographyKeyToHtmlTagMapping["quote"];
+            default:
+                context.log.warning(`We couldn't map your custom key ${customKey} to the new structure, please add manually.`);
         }
     }
 
@@ -183,7 +184,8 @@ export type TypographyObjectMapResult = {
 };
 
 export const mapToNewTypographyStyles = (
-    legacyTypography: Record<string, any>
+    legacyTypography: Record<string, any>,
+    context: Context
 ): TypographyObjectMapResult => {
     if (!legacyTypography) {
         return {
@@ -202,7 +204,7 @@ export const mapToNewTypographyStyles = (
     // map all legacy styles
     for (const key in legacyTypography) {
         const css = legacyTypography[key];
-        const style = mapToNewTypographyStyle(key, css);
+        const style = mapToNewTypographyStyle(key, css, context);
         if (style) {
             const typographyType = htmlTagToTypographyTypeMapping[style.tag];
             newTypography[typographyType].push(style);
@@ -228,7 +230,6 @@ export const typographyIsAlreadyMigrated = (typography: Record<string, any>): bo
             if (Array.isArray(typographyStyle) && typographyStyle?.length > 0) {
                 for (let i = 0; i < typographyStyle.length - 1; i++) {
                     const style = typographyStyle[i];
-                    // check the current
                     if (
                         !(
                             style.hasOwnProperty("id") &&

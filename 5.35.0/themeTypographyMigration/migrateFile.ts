@@ -2,12 +2,16 @@ import {Project, SourceFile, SyntaxKind} from "ts-morph";
 import {ThemeFileMigrationDefinition} from "./migrationFileDefinitions";
 import {getSourceFile} from "../../utils";
 import {StyleIdToTypographyTypeMap} from "./definitions";
+import {Context} from "../../types";
 
 const migrateStatements = (
     sourceFile: SourceFile,
-    instructions: Record<string, any>,
-    map: StyleIdToTypographyTypeMap
+    migrationDefinition: ThemeFileMigrationDefinition,
+    map: StyleIdToTypographyTypeMap,
+    context: Context
 ): void => {
+
+    const instructions = migrationDefinition.migrationInstructions?.statements;
     // Variable declaration
     // example: Heading = styled.div(theme.styles.typography["heading1"])
     if (!!instructions?.variables?.length) {
@@ -30,7 +34,7 @@ const migrateStatements = (
 
                 // Go to all element expressions in the variable declaration and update
                 if (allExpressions) {
-                    allExpressions.forEach(expression => {
+                    for (const expression of allExpressions) {
                         const elementAccess = expression.asKind(SyntaxKind.ElementAccessExpression);
 
                         // Success to the typography key like, heading1, heading2....
@@ -41,12 +45,16 @@ const migrateStatements = (
 
                         // Typography type like headings, paragraphs...
                         typographyType = map[styleKey];
+                        if(!typographyType){
+                            context.log.warning(`Expression can't be updated, style key '${styleKey}' doesn't exist. /n 
+                            File: ${migrationDefinition.file.path}, line: ${elementAccess.getStartLineNumber()}.`)
+                        }
                         if (typographyType && styleKey) {
                             elementAccess.setExpression(
-                                `theme.styles.typography.${typographyType}.byId("${styleKey}")`
+                                `theme.styles.typography.${elementAccess}.cssById("${styleKey}")`
                             );
                         }
-                    });
+                    }
                 }
             }
 
@@ -62,39 +70,70 @@ const migrateStatements = (
                     );
 
                 if (allTemplateSpans) {
-                    allTemplateSpans.forEach(templateSpan => {
+                    for (const templateSpan of allTemplateSpans) {
                         const expression = templateSpan.asKind(SyntaxKind.TemplateSpan);
                         // Success to the typography key like, heading1, heading2....
                         styleKey = expression.getExpression().getKindName();
                         // Typography type like headings, paragraphs...
                         typographyType = map[styleKey];
+                        if(!typographyType){
+                            context.log.warning(`Expression can't be updated, style key '${styleKey}' doesn't exist. /n 
+                            File: ${migrationDefinition.file.path}, line: ${expression.getStartLineNumber()}.`)
+                            return;
+                        }
                         if (typographyType && styleKey) {
                             expression.setExpression(
                                 `theme.styles.typography.${typographyType}.byId("${styleKey}")`
                             );
                         }
-                    });
+                    }
                 }
             }
         });
     }
 };
 
-const migrateImports = (source: SourceFile): void => {};
+const migrateImports = (sourceFile: SourceFile,
+                            migrationDefinition: ThemeFileMigrationDefinition,
+                            map: StyleIdToTypographyTypeMap,
+                            context: Context): void => {
+
+    const instructions = migrationDefinition.migrationInstructions?.imports;
+
+    // Variable declaration
+    // example: Heading = styled.div(theme.styles.typography["heading1"])
+    if (!!instructions?.declarations?.length) {
+        for (const importInstruction of instructions?.declarations) {
+            const importDeclaration = sourceFile.getImportDeclaration(i => i.getModuleSpecifierValue() === importInstruction.moduleSpecifier)
+             if(!importDeclaration){
+                 context.log.warning(`Theme import module can't be found. File: ${migrationDefinition.file.path}`)
+                 return;
+             }
+
+            if(importInstruction?.insertDefaultImport) {
+                importDeclaration.setDefaultImport(importInstruction.insertDefaultImport)
+            }
+
+            if(importInstruction?.removeNamedImports) {
+                // Get all imports that are not present in the remove list
+                const filteredNamedImports = importDeclaration.getNamedImports().
+                filter(namedImport => !importInstruction.removeNamedImports.includes(namedImport.getName()));
+                // Remove all
+                importDeclaration.removeNamedImports();
+                // Add all named imports. Example of named imports:
+                // import defaultImport, { namedImport1, namedImport2 } from "../../../theme";
+                if(!!filteredNamedImports?.length) {
+                    importDeclaration.addNamedImports(filteredNamedImports.map(i => i.getName));
+                }
+            }
+        }
+    }
+};
 
 const migrateInterfaces = (source: SourceFile): void => {};
 
 const migrateTypes = (source: SourceFile): void => {};
 
-// * check th theme -
-// 1. if typography exist
-// 2. Check if you can access to legacy styles
-
-// * Map the theme to new structure
-// 1. For the same key copy the existing style of the user
-//  - if the key does not contain the default names try to find the heading, paragraph in the name
-// by default create paragraph styles
-//
 
 export type ThemeFileMigrationResult = {
     isSuccessfullyMigrated: boolean;
@@ -104,7 +143,8 @@ export type ThemeFileMigrationResult = {
 export const migrateFile = (
     migrateDefinition: ThemeFileMigrationDefinition,
     typographyMap: StyleIdToTypographyTypeMap,
-    project: Project
+    project: Project,
+    context: Context
 ): ThemeFileMigrationResult => {
     const source = getSourceFile(project, migrateDefinition.file.path);
 
@@ -112,12 +152,12 @@ export const migrateFile = (
         return {
             isSuccessfullyMigrated: false,
             skipped: true,
-            info: `File does not exist. Path: ${migrateDefinition.file}`
+            info: `File does not exist. Path: ${migrateDefinition.file.path}`
         };
     }
 
     if (migrateDefinition.migrationInstructions?.imports) {
-        migrateImports(source);
+        migrateImports(source, migrateDefinition, typographyMap, context);
     }
 
     if (migrateDefinition.migrationInstructions?.interfaces) {
@@ -129,8 +169,7 @@ export const migrateFile = (
     }
 
     if (migrateDefinition.migrationInstructions?.statements) {
-        const statements = migrateDefinition.migrationInstructions?.statements;
-        migrateStatements(source, statements, typographyMap);
+        migrateStatements(source, migrateDefinition, typographyMap, context);
     }
 
     return {
