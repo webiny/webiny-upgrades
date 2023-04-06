@@ -2,15 +2,16 @@ import { Project } from "ts-morph";
 import { Context } from "../types";
 import { Files } from "../utils";
 import {
+    createStyleIdToTypographyTypeMap,
     getAppThemeSourceFile,
     getTypographyObject,
     legacyTypographyCanBeMigrated,
-    mapToNewTypographyStyles, setMigratedTypographyInSourceFile,
+    mapToNewTypographyStyles,
+    setMigratedTypographyInSourceFile,
     typographyIsAlreadyMigrated
 } from "./themeTypographyMigration/themeMigration";
 import { migrationFileDefinitions } from "./themeTypographyMigration/migrationFileDefinitions";
 import { migrateFile } from "./themeTypographyMigration/migrateFile";
-import * as console from "console";
 
 interface Params {
     files: Files;
@@ -58,7 +59,7 @@ export const updateThemeTypography = async (params: Params): Promise<void> => {
     context.log.info(`Map legacy typography object to new structure...`);
     const typographyMappingResult = mapToNewTypographyStyles(legacyTypography);
 
-    if(!typographyMappingResult.isSuccessfullyMapped){
+    if (!typographyMappingResult.isSuccessfullyMapped) {
         context.log.info(typographyMappingResult.info);
         return;
     }
@@ -66,22 +67,28 @@ export const updateThemeTypography = async (params: Params): Promise<void> => {
 
     // SET IN SOURCE CODE
     const migratedTypography = typographyMappingResult.typography;
-    const setInSourceResult = setMigratedTypographyInSourceFile(themeSourceFile, migratedTypography);
-    context.log.info(setInSourceResult.info);
-    if(!setInSourceResult.isSuccessful){
+    const styleIdToTypographyTypeMap = createStyleIdToTypographyTypeMap(migratedTypography);
+
+    const setInSourceResult = setMigratedTypographyInSourceFile(
+        themeSourceFile,
+        migratedTypography
+    );
+    if (!setInSourceResult.isSuccessful) {
+        context.log.info(setInSourceResult.info);
         return;
     }
 
+    context.log.info(
+        "Mapped typography styles object successfully set in App/theme/theme.ts file."
+    );
 
     /*
      * MIGRATE THE REST OF SOLUTION THAT HAVE ACCESS TO THE THEME
      */
-    context.log.info(
-        `Migrate the typography style expressions, imports and interfaces in the solution...`
-    );
+    context.log.info(`Migrate the legacy typography statements, imports and interfaces...`);
     const migrationDefinitions = migrationFileDefinitions(context);
     migrationDefinitions.forEach(definition => {
-        const result = migrateFile(definition, project);
+        const result = migrateFile(definition, styleIdToTypographyTypeMap, project);
         // log message if file is not successfully migrated
         if (result.skipped || !result.isSuccessfullyMigrated) {
             context.log.info(result.info);

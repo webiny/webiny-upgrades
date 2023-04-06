@@ -11,6 +11,7 @@ export type Typography = {
     lists: TypographyStyle[];
     quotes: TypographyStyle[];
 };
+export type TypographyType = "headings" | "paragraphs" | "lists" | "quotes";
 
 export const typographyKeyToHtmlTagMapping = {
     heading1: "h1",
@@ -35,4 +36,13 @@ export const htmlTagToTypographyTypeMapping = {
     p: "paragraphs",
     ul: "lists",
     quoteblock: "quotes"
+};
+
+/*
+ * Map style id to typography type.
+ * This will help for fast access to the typography types with custom styles keys defined by the user.
+ * Example for custom mapping: { XyZParagraph1: "headings" },
+ * */
+export type StyleIdToTypographyTypeMap = {
+    [key in string]: TypographyType;
 };

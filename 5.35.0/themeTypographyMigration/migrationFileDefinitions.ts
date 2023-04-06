@@ -1,7 +1,14 @@
 import { Context } from "../../types";
 import { createFilePath, FileDefinition } from "../../utils";
+import { ElementAccessExpression, SyntaxKind } from "ts-morph";
 
-export type TypographyUpgradeType = "imports" | "expressions" | "interfaces" | "types" | "classes";
+export type TypographyUpgradeType =
+    | "imports"
+    | "expressions"
+    | "interfaces"
+    | "types"
+    | "classes"
+    | "statements";
 export type MigrationInstructions = {
     [key in TypographyUpgradeType]?: Record<string, any>;
 };
@@ -26,7 +33,12 @@ const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefin
                 name: "/layouts/forms/DefaultFormLayout/SuccessMessage.tsx"
             }),
             migrationInstructions: {
-                expressions: {}
+                statements: {
+                    variables: [
+                        { name: "Heading", syntaxKind: SyntaxKind.ElementAccessExpression },
+                        { name: "Message", syntaxKind: SyntaxKind.ElementAccessExpression }
+                    ]
+                }
             }
         },
         {
@@ -39,7 +51,11 @@ const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefin
                 name: "/layouts/forms/DefaultFormLayout/TermsOfServiceSection.tsx"
             }),
             migrationInstructions: {
-                expressions: {}
+                statements: {
+                    variables: [
+                        { name: "RteFieldLabel", syntaxKind: SyntaxKind.ElementAccessExpression }
+                    ]
+                }
             }
         },
         {
@@ -52,7 +68,11 @@ const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefin
                 name: "/layouts/forms/DefaultFormLayout/fields/Input.tsx"
             }),
             migrationInstructions: {
-                expressions: {}
+                statements: {
+                    variables: [
+                        { name: "StyledInput", syntaxKind: SyntaxKind.ElementAccessExpression }
+                    ]
+                }
             }
         },
         {
@@ -65,7 +85,11 @@ const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefin
                 name: "/layouts/forms/DefaultFormLayout/fields/Select.tsx"
             }),
             migrationInstructions: {
-                expressions: {}
+                statements: {
+                    variables: [
+                        { name: "StyledSelect", syntaxKind: SyntaxKind.ElementAccessExpression }
+                    ]
+                }
             }
         },
         {
@@ -78,7 +102,11 @@ const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefin
                 name: "/layouts/forms/DefaultFormLayout/fields/Textarea.tsx"
             }),
             migrationInstructions: {
-                expressions: {}
+                statements: {
+                    variables: [
+                        { name: "StyledTextarea", syntaxKind: SyntaxKind.ElementAccessExpression }
+                    ]
+                }
             }
         },
         {
@@ -91,7 +119,11 @@ const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefin
                 name: "/layouts/forms/DefaultFormLayout/fields/components/Field.tsx"
             }),
             migrationInstructions: {
-                expressions: {}
+                statements: {
+                    variables: [
+                        { name: "Field", syntaxKind: SyntaxKind.ElementAccessExpression }
+                    ]
+                }
             }
         },
         {
@@ -104,7 +136,11 @@ const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefin
                 name: "/layouts/forms/DefaultFormLayout/fields/components/FieldErrorMessage.tsx"
             }),
             migrationInstructions: {
-                expressions: {}
+                statements: {
+                    variables: [
+                        { name: "Wrapper", syntaxKind: SyntaxKind.TemplateSpan }
+                    ]
+                }
             }
         },
         {
@@ -117,7 +153,11 @@ const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefin
                 name: "/layouts/forms/DefaultFormLayout/fields/components/FieldHelperMessage.tsx"
             }),
             migrationInstructions: {
-                expressions: {}
+                statements: {
+                    variables: [
+                        { name: "FieldHelperMessage", syntaxKind: SyntaxKind.TemplateSpan }
+                    ]
+                }
             }
         },
         {
@@ -127,8 +167,14 @@ const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefin
                 name: "/layouts/pages/Static/Footer.tsx"
             }),
             migrationInstructions: {
-                expressions: {},
-                imports: {}
+                statements: {
+                    variables: [
+                        { name: "FooterLogo", syntaxKind: SyntaxKind.TemplateSpan }
+                    ]
+                },
+                imports: {
+
+                }
             }
         },
         {

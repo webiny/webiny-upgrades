@@ -3,9 +3,11 @@ import { Project, SourceFile, ts } from "ts-morph";
 import { createFilePath, FileDefinition, getSourceFile } from "../../utils";
 import {
     htmlTagToTypographyTypeMapping,
+    StyleIdToTypographyTypeMap,
     Typography,
     typographyKeyToHtmlTagMapping,
-    TypographyStyle
+    TypographyStyle,
+    TypographyType
 } from "./definitions";
 
 const APP_THEME_FILE_PATH = "${theme}/theme.ts";
@@ -30,7 +32,6 @@ export const getAppThemeSourceFile = (context: Context, project: Project): Sourc
 export const getTypographyObject = (
     appThemeSourceFile: SourceFile
 ): Record<string, any> | undefined => {
-
     if (!appThemeSourceFile) {
         return undefined;
     }
@@ -40,31 +41,34 @@ export const getTypographyObject = (
         return undefined;
     }
 
-    const typographyVariable = variable.getInitializerIfKindOrThrow(ts.SyntaxKind.ObjectLiteralExpression);
+    const typographyVariable = variable.getInitializerIfKindOrThrow(
+        ts.SyntaxKind.ObjectLiteralExpression
+    );
 
     // Parse the typography object
     let typographyObject;
     try {
         typographyObject = JSON.parse(typographyVariable?.getFullText()) ?? undefined;
-    } catch(e) {
+    } catch (e) {
         typographyObject = undefined;
     }
     return typographyObject;
 };
 
-
 export type SetMigratedTypographyResult = {
-    isSuccessful: boolean,
+    isSuccessful: boolean;
     info?: string;
-}
+};
 
 export const setMigratedTypographyInSourceFile = (
     appThemeSourceFile: SourceFile,
     migratedTypography: Record<string, any>
 ): SetMigratedTypographyResult => {
-
-    if(!migratedTypography) {
-        return { isSuccessful: false, info: "New typography object can't be set in source file, 'migratedTypography' is undefined." }
+    if (!migratedTypography) {
+        return {
+            isSuccessful: false,
+            info: "New typography object can't be set in source file, 'migratedTypography' is undefined."
+        };
     }
     if (!appThemeSourceFile) {
         return undefined;
@@ -72,7 +76,10 @@ export const setMigratedTypographyInSourceFile = (
     // take the variable
     const variable = appThemeSourceFile.getVariableDeclarationOrThrow("typography");
     if (!variable) {
-        return { isSuccessful: false, info: "New typography object can't be set in source file, variable 'typography' is not found." }
+        return {
+            isSuccessful: false,
+            info: "New typography object can't be set in source file, variable 'typography' is not found."
+        };
     }
     // set new objet
 
@@ -80,9 +87,12 @@ export const setMigratedTypographyInSourceFile = (
         const typography = JSON.stringify(migratedTypography);
         variable.set({ initializer: typography });
     } catch (e) {
-        return { isSuccessful: false, info: "New typography is not set in source file. Can't be parsed and set to the variable." }
+        return {
+            isSuccessful: false,
+            info: "New typography is not set in source file. Can't be parsed and set to the variable."
+        };
     }
-    return { isSuccessful: true, info: "Migrated typography object successfully set in source file." }
+    return { isSuccessful: true };
 };
 
 /*
@@ -167,7 +177,7 @@ export type TypographyObjectMapResult = {
     /*
      * @desc: New migrated typography object
      */
-    typography: Record<string, any>;
+    typography?: Typography;
     isSuccessfullyMapped: boolean;
     info?: string;
 };
@@ -177,9 +187,8 @@ export const mapToNewTypographyStyles = (
 ): TypographyObjectMapResult => {
     if (!legacyTypography) {
         return {
-            typography: legacyTypography,
             isSuccessfullyMapped: false,
-            info: "Legacy typography object is undefined, migration is canceled"
+            info: "Legacy typography object is undefined, migration is canceled."
         };
     }
 
@@ -194,8 +203,10 @@ export const mapToNewTypographyStyles = (
     for (const key in legacyTypography) {
         const css = legacyTypography[key];
         const style = mapToNewTypographyStyle(key, css);
-        const typographyType = htmlTagToTypographyTypeMapping[style.tag];
-        newTypography[typographyType].push(style);
+        if (style) {
+            const typographyType = htmlTagToTypographyTypeMapping[style.tag];
+            newTypography[typographyType].push(style);
+        }
     }
 
     return {
@@ -234,4 +245,26 @@ export const typographyIsAlreadyMigrated = (typography: Record<string, any>): bo
         return true;
     }
     return false;
+};
+
+/*
+ * Map style id to typography type
+ * Example { heading1: "headings" }
+ * */
+export const createStyleIdToTypographyTypeMap = (
+    migratedTypography: Typography
+): StyleIdToTypographyTypeMap | undefined => {
+    if (!migratedTypography) {
+        return undefined;
+    }
+
+    const map: StyleIdToTypographyTypeMap = {};
+    for (const key in migratedTypography) {
+        const styles = migratedTypography[key];
+        styles.forEach(style => {
+            map[style.id] = key as TypographyType;
+        });
+    }
+
+    return map;
 };
