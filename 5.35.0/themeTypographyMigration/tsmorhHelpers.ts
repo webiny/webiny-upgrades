@@ -1,4 +1,4 @@
-import { SyntaxKind, VariableStatement } from "ts-morph";
+import {Node, PropertyAssignment, SpreadAssignment, SyntaxKind, VariableStatement} from "ts-morph";
 import { Context } from "../../types";
 import { StyleIdToTypographyTypeMap } from "./definitions";
 
@@ -21,6 +21,7 @@ export const updatePropertyAssigment = (
 
     if (instructions?.child) {
         const { updatePropsNames } = instructions?.child;
+
         const propertyAssignments = statement.getChildrenOfKind(SyntaxKind.PropertyAssignment);
 
         for (const assignment of propertyAssignments) {
@@ -29,6 +30,7 @@ export const updatePropertyAssigment = (
             const initializer = assignment.getInitializerIfKind(
                 SyntaxKind.PropertyAccessExpression
             );
+
             if (!initializer) {
                 return;
             }
@@ -56,6 +58,7 @@ export const updatePropertyAssigment = (
                 const accessExpressionToUpdate = assignment.getFirstChildByKind(
                     SyntaxKind.PropertyAccessExpression
                 );
+
                 if (accessExpressionToUpdate) {
                     accessExpressionToUpdate.setExpression(
                         `theme.styles.typography.${typographyType}.cssById(${styleKey})`
@@ -65,3 +68,70 @@ export const updatePropertyAssigment = (
         }
     }
 };
+
+export const takeAllNodesForUpdate = (
+    varStatement: VariableStatement,
+    nodeUpdates: Record<string, any>
+): Node[] => {
+    return varStatement.forEachChildAsArray().filter(node => isNodeToUpdate(node, nodeUpdates));
+};
+
+/*
+ * Check id node need to be updated
+ */
+export const isNodeToUpdate = (node: Node, nodeUpdates: Record<string, any>): boolean => {
+    // check the spec for the node
+
+    switch (node.getKind()) {
+        case SyntaxKind.SpreadAssignment:
+
+            const spreadNode = node as SpreadAssignment;
+            const spreadNodeInstructions = nodeUpdates.filter(
+                instruction => instruction.syntaxKind === SyntaxKind.SpreadAssignment
+            );
+
+            // Check the instruction if this node is available for migration
+            for (const instruction of spreadNodeInstructions) {
+                // check the expression type
+                if (
+                    spreadNode.getExpression().getKind() === instruction.syntaxKind &&
+                    spreadNode.getFullText().includes(instruction.matchText)
+                ) {
+                    return true;
+                }
+            }
+            return false;
+
+        case SyntaxKind.PropertyAssignment:
+
+            const propertyAssignmentNode = node as PropertyAssignment;
+            const propertyAssignmentInstructions = nodeUpdates.filter(
+                instruction => instruction.syntaxKind === SyntaxKind.PropertyAssignment
+            );
+
+            // Check the instruction if this node is available for migration
+            for (const instruction of propertyAssignmentInstructions) {
+                // check if this is the property name that we want to update
+                if(!(propertyAssignmentNode.getSymbol().getEscapedName() == instruction.symbolEscapedName)){
+                    return false;
+                }
+                // check initializer type
+                if(!(propertyAssignmentNode.getInitializer().getKind() === instruction.initializerKind)){
+                    return false;
+                }
+                // check the expression text
+                if(!(propertyAssignmentNode.getText().includes(instruction.matchText))){
+                    return false;
+                }
+                return true;
+            }
+
+        default:
+            return false;
+    }
+    return false;
+};
+
+export const updatePropertyAccessExpression = () => {};
+
+export const updateSpreadAssignment = () => {};

@@ -1,5 +1,5 @@
-import {Context} from "../../types";
-import {findVersion, log} from "../../utils";
+import { Context } from "../../types";
+import { findVersion, log } from "../../utils";
 import path from "path";
 import fs from "fs";
 import ncpBase from "ncp";
@@ -17,7 +17,6 @@ export type ThemeBackupResult = {
  * Creates folder named 'legacy_theme_backup'
  * */
 export const createThemeUpgradeBackup = async (context: Context): Promise<ThemeBackupResult> => {
-
     const currentProjectVersion = findVersion(path.join(context.project.root, "package.json"));
 
     log.info(

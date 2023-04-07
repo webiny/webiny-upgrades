@@ -242,18 +242,36 @@ const appPageBuilderElementsDefinitions = (context: Context): ThemeFileMigration
                 name: "/app-page-builder-elements/src/renderers/pagesList/pagesListComponents/defaultPagesListComponent.tsx"
             }),
             migrationInstructions: {
-                expressions: {
+                statements: {
                     variables: [
                         {
                             name: "styles",
                             syntaxKind: SyntaxKind.PropertyAssignment,
-                            child: {
-                                name: "pb-pages-list-default-list-li-info",
-                                syntaxKind: SyntaxKind.PropertyAssignment,
-                                // node attached to the current child that contains the props
-                                initializerKind: SyntaxKind.PropertyAccessExpression,
-                                updatePropsNames: ["h3", "p"]
-                            }
+                            nodeUpdates: [
+                                // first level properties update
+                                {
+                                    symbolEscapedName: "h3",
+                                    syntaxKind: SyntaxKind.PropertyAssignment,
+                                    // node attached to the current child that contains the props
+                                    initializerKind: SyntaxKind.PropertyAccessExpression,
+                                    matchText: "theme.styles.typography"
+                                },
+                                {
+                                    symbolEscapedName: "p",
+                                    syntaxKind: SyntaxKind.PropertyAssignment,
+                                    // node attached to the current child that contains the props
+                                    initializerKind: SyntaxKind.PropertyAccessExpression,
+                                    matchText: "theme.styles.typography"
+                                },
+                                {
+                                    // spread assignments do not have text
+                                    name: undefined,
+                                    syntaxKind: SyntaxKind.SpreadAssignment,
+                                    // node attached to the current child that contains the props
+                                    expression: SyntaxKind.PropertyAccessExpression,
+                                    matchText: "...theme.styles.typography"
+                                }
+                            ]
                         }
                     ]
                 },
