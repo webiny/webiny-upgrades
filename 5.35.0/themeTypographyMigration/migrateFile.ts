@@ -3,7 +3,7 @@ import { ThemeFileMigrationDefinition } from "./migrationFileDefinitions";
 import { getSourceFile } from "../../utils";
 import { StyleIdToTypographyTypeMap } from "./definitions";
 import { Context } from "../../types";
-import { updatePropertyAssigment } from "./tsmorhHelpers";
+import { migrateVariableStatement } from "./tsmorhHelpers";
 
 const migrateStatements = (
     sourceFile: SourceFile,
@@ -22,7 +22,7 @@ const migrateStatements = (
             let typographyType = undefined;
 
             if (varInstruction.syntaxKind === SyntaxKind.PropertyAssignment) {
-                updatePropertyAssigment(
+                migrateVariableStatement(
                     statement,
                     instructions,
                     map,

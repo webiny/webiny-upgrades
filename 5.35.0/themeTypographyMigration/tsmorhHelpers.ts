@@ -1,6 +1,6 @@
 import {Node, PropertyAssignment, SpreadAssignment, SyntaxKind, VariableStatement} from "ts-morph";
-import { Context } from "../../types";
-import { StyleIdToTypographyTypeMap } from "./definitions";
+import {Context} from "../../types";
+import {StyleIdToTypographyTypeMap} from "./definitions";
 
 /*
  * Update property assigment that as a children have property access expression.
@@ -8,7 +8,7 @@ import { StyleIdToTypographyTypeMap } from "./definitions";
  * Escaped name or prop name of the property assigment is 'h3'
  * Property access expression: theme.styles.typography.heading3
  * */
-export const updatePropertyAssigment = (
+export const migrateVariableStatement = (
     statement: VariableStatement,
     instructions: Record<string, any>,
     map: StyleIdToTypographyTypeMap,
@@ -23,53 +23,34 @@ export const updatePropertyAssigment = (
         const { updatePropsNames } = instructions?.child;
 
         const propertyAssignments = statement.getChildrenOfKind(SyntaxKind.PropertyAssignment);
+        const nodesForUpdate = takeAllNodesForMigration(statement, instructions?.nodesUpdates);
 
-        for (const assignment of propertyAssignments) {
-            // Check if this assigment contains property access expression
-            // theme.styles.typography.heading3
-            const initializer = assignment.getInitializerIfKind(
-                SyntaxKind.PropertyAccessExpression
-            );
+        for (const node of nodesForUpdate) {
+            const nodeKind = node.getKind();
 
-            if (!initializer) {
-                return;
-            }
+            if (nodeKind === SyntaxKind.PropertyAssignment) {
+                const propertyAssignment = node as PropertyAssignment;
 
-            // Escaped name is the prop name h3 from this example: 'h3: theme.styles.typography.heading3'
-            const propName = assignment?.getSymbol()?.getEscapedName();
-
-            // Check if that prop need to be updated
-            if (propName && updatePropsNames.includes(propName)) {
-                // Initializer will get the last prop from the access chain expression
-                const styleKey = initializer.getName();
-
-                /// check if this key is included in the map
-                // and get the typography ty[e
-                const typographyType = map[styleKey];
-                // Typography type like headings, paragraphs...
-                if (!typographyType) {
-                    context.log
-                        .warning(`Expression can't be updated, style key '${styleKey}' doesn't exist. /n 
-                            File: ${filePath}, line: ${assignment.getStartLineNumber()}.`);
-                    return;
-                }
-
-                // to update the full expression we need to get the first childa
-                const accessExpressionToUpdate = assignment.getFirstChildByKind(
+                // child node is PropertyAccessExpression, that means the access of the properties is
+                // property chained access with dot. like. "theme.styles.typography.paragraph1"
+                if (
+                    propertyAssignment.getInitializer().getKind() ===
                     SyntaxKind.PropertyAccessExpression
-                );
-
-                if (accessExpressionToUpdate) {
-                    accessExpressionToUpdate.setExpression(
-                        `theme.styles.typography.${typographyType}.cssById(${styleKey})`
-                    );
+                ) {
+                    updatePropertyAccessExpression(propertyAssignment, map, context, filePath);
                 }
             }
+
+            if (nodeKind === SyntaxKind.SpreadAssignment) {
+                const spreadAssignment = node as SpreadAssignment;
+                updateSpreadAssignment(spreadAssignment);
+            }
+
         }
     }
 };
 
-export const takeAllNodesForUpdate = (
+export const takeAllNodesForMigration = (
     varStatement: VariableStatement,
     nodeUpdates: Record<string, any>
 ): Node[] => {
@@ -84,7 +65,6 @@ export const isNodeToUpdate = (node: Node, nodeUpdates: Record<string, any>): bo
 
     switch (node.getKind()) {
         case SyntaxKind.SpreadAssignment:
-
             const spreadNode = node as SpreadAssignment;
             const spreadNodeInstructions = nodeUpdates.filter(
                 instruction => instruction.syntaxKind === SyntaxKind.SpreadAssignment
@@ -103,7 +83,6 @@ export const isNodeToUpdate = (node: Node, nodeUpdates: Record<string, any>): bo
             return false;
 
         case SyntaxKind.PropertyAssignment:
-
             const propertyAssignmentNode = node as PropertyAssignment;
             const propertyAssignmentInstructions = nodeUpdates.filter(
                 instruction => instruction.syntaxKind === SyntaxKind.PropertyAssignment
@@ -112,15 +91,25 @@ export const isNodeToUpdate = (node: Node, nodeUpdates: Record<string, any>): bo
             // Check the instruction if this node is available for migration
             for (const instruction of propertyAssignmentInstructions) {
                 // check if this is the property name that we want to update
-                if(!(propertyAssignmentNode.getSymbol().getEscapedName() == instruction.symbolEscapedName)){
+                if (
+                    !(
+                        propertyAssignmentNode.getSymbol().getEscapedName() ==
+                        instruction.symbolEscapedName
+                    )
+                ) {
                     return false;
                 }
                 // check initializer type
-                if(!(propertyAssignmentNode.getInitializer().getKind() === instruction.initializerKind)){
+                if (
+                    !(
+                        propertyAssignmentNode.getInitializer().getKind() ===
+                        instruction.initializerKind
+                    )
+                ) {
                     return false;
                 }
                 // check the expression text
-                if(!(propertyAssignmentNode.getText().includes(instruction.matchText))){
+                if (!propertyAssignmentNode.getText().includes(instruction.matchText)) {
                     return false;
                 }
                 return true;
@@ -132,6 +121,59 @@ export const isNodeToUpdate = (node: Node, nodeUpdates: Record<string, any>): bo
     return false;
 };
 
-export const updatePropertyAccessExpression = () => {};
+export const updatePropertyAccessExpression = (
+    assigment: PropertyAssignment,
+    map: StyleIdToTypographyTypeMap,
+    context: Context,
+    filePath: string
+): void => {
+    const initializer = assigment.getInitializerIfKind(SyntaxKind.PropertyAccessExpression);
 
-export const updateSpreadAssignment = () => {};
+    if (!initializer) {
+        return;
+    }
+
+    // Initializer will get the last prop from the access chain expression
+    const styleKey = initializer.getName();
+
+    /// check if this key is included in the map
+    // and get the typography type
+    const typographyType = map[styleKey];
+    // Typography type like headings, paragraphs...
+    if (!typographyType) {
+        context.log.warning(`Expression can't be updated, style key '${styleKey}' doesn't exist. /n 
+                            File: ${filePath}, line: ${assigment.getStartLineNumber()}.`);
+        return;
+    }
+
+    // to update the full expression we need to get the first child
+    const accessExpressionToUpdate = assigment.getFirstChildByKind(
+        SyntaxKind.PropertyAccessExpression
+    );
+
+    if (accessExpressionToUpdate) {
+        accessExpressionToUpdate.setExpression(
+            `theme.styles.typography.${typographyType}.cssById(${styleKey})`
+        );
+    }
+};
+
+export const updateSpreadAssignment = (assigment: SpreadAssignment, map: StyleIdToTypographyTypeMap, context, filePath): void => {
+    if(!assigment) {
+        return;
+    }
+
+    const identifier = assigment.getFirstChildByKind(SyntaxKind.Identifier);
+    const styleKey = identifier.getText();
+
+    /// check if this key is included in the map
+    // and get the typography type
+    const typographyType = map[styleKey];
+    // Typography type like headings, paragraphs...
+    if (!typographyType) {
+        context.log.warning(`Expression can't be updated, style key '${styleKey}' doesn't exist. /n 
+                            File: ${filePath}, line: ${assigment.getStartLineNumber()}.`);
+        return;
+    }
+    assigment.setExpression(`...theme.styles.typography.${typographyType}.cssBy("${styleKey}")`);
+};

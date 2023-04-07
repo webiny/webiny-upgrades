@@ -264,10 +264,10 @@ const appPageBuilderElementsDefinitions = (context: Context): ThemeFileMigration
                                     matchText: "theme.styles.typography"
                                 },
                                 {
-                                    // spread assignments do not have text
+                                    // spread assignments do not have name
                                     name: undefined,
                                     syntaxKind: SyntaxKind.SpreadAssignment,
-                                    // node attached to the current child that contains the props
+                                    // expression attached to the current child that contains the props
                                     expression: SyntaxKind.PropertyAccessExpression,
                                     matchText: "...theme.styles.typography"
                                 }
@@ -441,4 +441,11 @@ export const migrationFileDefinitions = (context: Context): ThemeFileMigrationDe
         ...appPageBuilderElementsDefinitions(context),
         ...cwpTemplateAwsDefinitions(context)
     ];
+};
+
+export const getVariableNodeUpdateInstructions = (
+    symbolEscapedName: string,
+    nodeUpdates: Record<string, any>[]
+): Record<string, any> | undefined => {
+    return nodeUpdates.find(x => x.symbolEscapedName === symbolEscapedName);
 };
