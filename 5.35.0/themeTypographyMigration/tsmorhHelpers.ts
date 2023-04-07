@@ -3,7 +3,8 @@ import {Context} from "../../types";
 import {StyleIdToTypographyTypeMap} from "./definitions";
 
 /*
- * Update property assigment that as a children have property access expression.
+ * Update all props and assignments in the declared variable object.
+   // Example: CSSObject variable
  * For example we want to update property assigment like this example: 'h3: theme.styles.typography.heading3'
  * Escaped name or prop name of the property assigment is 'h3'
  * Property access expression: theme.styles.typography.heading3
@@ -19,10 +20,8 @@ export const migrateVariableStatement = (
         return;
     }
 
-    if (instructions?.child) {
-        const { updatePropsNames } = instructions?.child;
+    if (instructions?.nodesUpdates) {
 
-        const propertyAssignments = statement.getChildrenOfKind(SyntaxKind.PropertyAssignment);
         const nodesForUpdate = takeAllNodesForMigration(statement, instructions?.nodesUpdates);
 
         for (const node of nodesForUpdate) {
@@ -43,7 +42,7 @@ export const migrateVariableStatement = (
 
             if (nodeKind === SyntaxKind.SpreadAssignment) {
                 const spreadAssignment = node as SpreadAssignment;
-                updateSpreadAssignment(spreadAssignment);
+                updateSpreadAssignment(spreadAssignment, map, context, filePath);
             }
 
         }

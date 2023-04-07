@@ -1,5 +1,5 @@
 import { Project, SourceFile, SyntaxKind } from "ts-morph";
-import { ThemeFileMigrationDefinition } from "./migrationFileDefinitions";
+import {ImportDeclarationDefinition, ThemeFileMigrationDefinition} from "./migrationFileDefinitions";
 import { getSourceFile } from "../../utils";
 import { StyleIdToTypographyTypeMap } from "./definitions";
 import { Context } from "../../types";
@@ -15,6 +15,7 @@ const migrateStatements = (
     // Variable declaration
     // example: Heading = styled.div(theme.styles.typography["heading1"])
     if (!!instructions?.variables?.length) {
+
         for (const varInstruction of instructions?.variables) {
             const statement = sourceFile.getVariableStatement(varInstruction.name);
 
@@ -120,7 +121,7 @@ const migrateImports = (
     // Variable declaration
     // example: Heading = styled.div(theme.styles.typography["heading1"])
     if (!!instructions?.declarations?.length) {
-        for (const importInstruction of instructions?.declarations) {
+        for (const importInstruction of instructions?.declarations as ImportDeclarationDefinition[]) {
             const importDeclaration = sourceFile.getImportDeclaration(
                 i => i.getModuleSpecifierValue() === importInstruction.moduleSpecifier
             );
@@ -143,13 +144,19 @@ const migrateImports = (
                         namedImport =>
                             !importInstruction.removeNamedImports.includes(namedImport.getName())
                     );
+
                 // Remove all
                 importDeclaration.removeNamedImports();
+
                 // Add all named imports. Example of named imports:
                 // import defaultImport, { namedImport1, namedImport2 } from "../../../theme";
                 if (!!filteredNamedImports?.length) {
                     importDeclaration.addNamedImports(filteredNamedImports.map(i => i.getName));
                 }
+            }
+
+            if (importInstruction?.addNamedImports) {
+                importDeclaration.addNamedImports(importInstruction.addNamedImports);
             }
         }
     }

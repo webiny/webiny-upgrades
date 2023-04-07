@@ -1,6 +1,7 @@
 import { Context } from "../../types";
 import { createFilePath, FileDefinition } from "../../utils";
 import { ElementAccessExpression, SyntaxKind } from "ts-morph";
+import {string} from "fast-glob/out/utils";
 
 export type TypographyUpgradeType =
     | "imports"
@@ -12,6 +13,13 @@ export type TypographyUpgradeType =
 export type MigrationInstructions = {
     [key in TypographyUpgradeType]?: Record<string, any>;
 };
+
+export type ImportDeclarationDefinition = {
+    insertDefaultImport: string;
+    moduleSpecifier?: string;
+    removeNamedImports?: string[];
+    addNamedImports?: string[];
+}
 
 export type ThemeFileMigrationDefinition = {
     file: FileDefinition;
@@ -228,8 +236,15 @@ const appPageBuilderElementsDefinitions = (context: Context): ThemeFileMigration
                 name: "/app-page-builder-elements/src/types.ts"
             }),
             migrationInstructions: {
-                expressions: {},
-                imports: {}
+                imports: {
+                    declarations: [
+                        {
+                            moduleSpecifier: "../../../theme",
+                            removeNamedImports: ["Theme"],
+                            addNamedImports: ['DecoratedTheme']
+                        }
+                    ] as ImportDeclarationDefinition[]
+                }
             }
         },
         {
@@ -274,9 +289,7 @@ const appPageBuilderElementsDefinitions = (context: Context): ThemeFileMigration
                             ]
                         }
                     ]
-                },
-                imports: {},
-                types: {}
+                }
             }
         }
     ];
