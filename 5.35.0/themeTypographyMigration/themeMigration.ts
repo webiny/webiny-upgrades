@@ -81,8 +81,8 @@ export const setMigratedTypographyInSourceFile = (
             info: "New typography object can't be set in source file, variable 'typography' is not found."
         };
     }
-    // set new objet
 
+    // set new objet
     try {
         const typography = JSON.stringify(migratedTypography);
         variable.set({ initializer: typography });
@@ -162,7 +162,9 @@ export const mapToNewTypographyStyle = (
             case customKey.includes("quote"):
                 tag = typographyKeyToHtmlTagMapping["quote"];
             default:
-                context.log.warning(`We couldn't map your custom key ${customKey} to the new structure, please add manually.`);
+                context.log.warning(
+                    `We couldn't map your custom key ${customKey} to the new structure, please add manually.`
+                );
         }
     }
 

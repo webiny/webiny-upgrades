@@ -12,6 +12,7 @@ import {
 } from "./themeTypographyMigration/themeMigration";
 import { migrationFileDefinitions } from "./themeTypographyMigration/migrationFileDefinitions";
 import { migrateFile } from "./themeTypographyMigration/migrateFile";
+import { createThemeUpgradeBackup } from "./themeTypographyMigration/createThemeUpgradeBackup";
 
 interface Params {
     files: Files;
@@ -52,6 +53,8 @@ export const updateThemeTypography = async (params: Params): Promise<void> => {
     }
 
     context.log.debug(`Legacy typography object structure can be migrated.`);
+    context.log.info(`Back up legacy theme files...`);
+    const backupResult = createThemeUpgradeBackup();
 
     /*
      * MIGRATE THE THEME OBJECT

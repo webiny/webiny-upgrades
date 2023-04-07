@@ -120,9 +120,7 @@ const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefin
             }),
             migrationInstructions: {
                 statements: {
-                    variables: [
-                        { name: "Field", syntaxKind: SyntaxKind.ElementAccessExpression }
-                    ]
+                    variables: [{ name: "Field", syntaxKind: SyntaxKind.ElementAccessExpression }]
                 }
             }
         },
@@ -137,9 +135,7 @@ const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefin
             }),
             migrationInstructions: {
                 statements: {
-                    variables: [
-                        { name: "Wrapper", syntaxKind: SyntaxKind.TemplateSpan }
-                    ]
+                    variables: [{ name: "Wrapper", syntaxKind: SyntaxKind.TemplateSpan }]
                 }
             }
         },
@@ -154,9 +150,7 @@ const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefin
             }),
             migrationInstructions: {
                 statements: {
-                    variables: [
-                        { name: "FieldHelperMessage", syntaxKind: SyntaxKind.TemplateSpan }
-                    ]
+                    variables: [{ name: "FieldHelperMessage", syntaxKind: SyntaxKind.TemplateSpan }]
                 }
             }
         },
@@ -168,13 +162,15 @@ const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefin
             }),
             migrationInstructions: {
                 statements: {
-                    variables: [
-                        { name: "FooterLogo", syntaxKind: SyntaxKind.TemplateSpan }
-                    ]
+                    variables: [{ name: "FooterLogo", syntaxKind: SyntaxKind.TemplateSpan }]
                 },
                 imports: {
                     declarations: [
-                        { moduleSpecifier: "../../../theme", insertDefaultImport: "theme", removeNamedImports: ["typography"] }
+                        {
+                            moduleSpecifier: "../../../theme",
+                            insertDefaultImport: "theme",
+                            removeNamedImports: ["typography"]
+                        }
                     ]
                 }
             }
@@ -187,13 +183,15 @@ const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefin
             }),
             migrationInstructions: {
                 statements: {
-                    variables: [
-                        { name: "HeaderWrapper", syntaxKind: SyntaxKind.TemplateSpan }
-                    ]
+                    variables: [{ name: "HeaderWrapper", syntaxKind: SyntaxKind.TemplateSpan }]
                 },
                 imports: {
                     declarations: [
-                        { moduleSpecifier: "../../../theme", insertDefaultImport: "theme", removeNamedImports: ["typography"] }
+                        {
+                            moduleSpecifier: "../../../theme",
+                            insertDefaultImport: "theme",
+                            removeNamedImports: ["typography"]
+                        }
                     ]
                 }
             }
@@ -213,8 +211,9 @@ const appFormBuilderDefinitions = (context: Context): ThemeFileMigrationDefiniti
                 name: "/app-form-builder/src/page-builder/components/BeforeFormRender.tsx"
             }),
             migrationInstructions: {
-                expressions: {},
-                imports: {}
+                statements: {
+                    variables: [{ name: "Before", syntaxKind: SyntaxKind.TemplateSpan }]
+                }
             }
         }
     ];
@@ -243,7 +242,21 @@ const appPageBuilderElementsDefinitions = (context: Context): ThemeFileMigration
                 name: "/app-page-builder-elements/src/renderers/pagesList/pagesListComponents/defaultPagesListComponent.tsx"
             }),
             migrationInstructions: {
-                expressions: {},
+                expressions: {
+                    variables: [
+                        {
+                            name: "styles",
+                            syntaxKind: SyntaxKind.PropertyAssignment,
+                            child: {
+                                name: "pb-pages-list-default-list-li-info",
+                                syntaxKind: SyntaxKind.PropertyAssignment,
+                                // node attached to the current child that contains the props
+                                initializerKind: SyntaxKind.PropertyAccessExpression,
+                                updatePropsNames: ["h3", "p"]
+                            }
+                        }
+                    ]
+                },
                 imports: {},
                 types: {}
             }

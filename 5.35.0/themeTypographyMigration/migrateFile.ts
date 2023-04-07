@@ -1,8 +1,9 @@
-import {Project, SourceFile, SyntaxKind} from "ts-morph";
-import {ThemeFileMigrationDefinition} from "./migrationFileDefinitions";
-import {getSourceFile} from "../../utils";
-import {StyleIdToTypographyTypeMap} from "./definitions";
-import {Context} from "../../types";
+import { Project, SourceFile, SyntaxKind } from "ts-morph";
+import { ThemeFileMigrationDefinition } from "./migrationFileDefinitions";
+import { getSourceFile } from "../../utils";
+import { StyleIdToTypographyTypeMap } from "./definitions";
+import { Context } from "../../types";
+import { updatePropertyAssigment } from "./tsmorhHelpers";
 
 const migrateStatements = (
     sourceFile: SourceFile,
@@ -10,19 +11,28 @@ const migrateStatements = (
     map: StyleIdToTypographyTypeMap,
     context: Context
 ): void => {
-
     const instructions = migrationDefinition.migrationInstructions?.statements;
     // Variable declaration
     // example: Heading = styled.div(theme.styles.typography["heading1"])
     if (!!instructions?.variables?.length) {
-        instructions?.variables.forEach(item => {
-            const statement = sourceFile.getVariableStatement(item.name);
+        for (const varInstruction of instructions?.variables) {
+            const statement = sourceFile.getVariableStatement(varInstruction.name);
 
             let styleKey = undefined;
             let typographyType = undefined;
 
+            if (varInstruction.syntaxKind === SyntaxKind.PropertyAssignment) {
+                updatePropertyAssigment(
+                    statement,
+                    instructions,
+                    map,
+                    context,
+                    migrationDefinition.file.path
+                );
+            }
+
             // Element access expression. Example: theme.styles.typography["heading1"]
-            if (item.syntaxKind === SyntaxKind.ElementAccessExpression) {
+            if (varInstruction.syntaxKind === SyntaxKind.ElementAccessExpression) {
                 // Filter all children that have element access expression and access to typography
                 const allExpressions = statement
                     .forEachChildAsArray()
@@ -45,9 +55,12 @@ const migrateStatements = (
 
                         // Typography type like headings, paragraphs...
                         typographyType = map[styleKey];
-                        if(!typographyType){
-                            context.log.warning(`Expression can't be updated, style key '${styleKey}' doesn't exist. /n 
-                            File: ${migrationDefinition.file.path}, line: ${elementAccess.getStartLineNumber()}.`)
+                        if (!typographyType) {
+                            context.log
+                                .warning(`Expression can't be updated, style key '${styleKey}' doesn't exist. /n 
+                            File: ${
+                                migrationDefinition.file.path
+                            }, line: ${elementAccess.getStartLineNumber()}.`);
                         }
                         if (typographyType && styleKey) {
                             elementAccess.setExpression(
@@ -60,7 +73,7 @@ const migrateStatements = (
 
             // For styled templates and property access expression.
             // example: const Wrapper = styled.div`${theme.styles.typography.paragraph2}`;
-            if (item.syntaxKind === SyntaxKind.TemplateSpan) {
+            if (varInstruction.syntaxKind === SyntaxKind.TemplateSpan) {
                 const allTemplateSpans = statement
                     .forEachChildAsArray()
                     .filter(
@@ -76,9 +89,12 @@ const migrateStatements = (
                         styleKey = expression.getExpression().getKindName();
                         // Typography type like headings, paragraphs...
                         typographyType = map[styleKey];
-                        if(!typographyType){
-                            context.log.warning(`Expression can't be updated, style key '${styleKey}' doesn't exist. /n 
-                            File: ${migrationDefinition.file.path}, line: ${expression.getStartLineNumber()}.`)
+                        if (!typographyType) {
+                            context.log
+                                .warning(`Expression can't be updated, style key '${styleKey}' doesn't exist. /n 
+                            File: ${
+                                migrationDefinition.file.path
+                            }, line: ${expression.getStartLineNumber()}.`);
                             return;
                         }
                         if (typographyType && styleKey) {
@@ -89,40 +105,49 @@ const migrateStatements = (
                     }
                 }
             }
-        });
+        }
     }
 };
 
-const migrateImports = (sourceFile: SourceFile,
-                            migrationDefinition: ThemeFileMigrationDefinition,
-                            map: StyleIdToTypographyTypeMap,
-                            context: Context): void => {
-
+const migrateImports = (
+    sourceFile: SourceFile,
+    migrationDefinition: ThemeFileMigrationDefinition,
+    map: StyleIdToTypographyTypeMap,
+    context: Context
+): void => {
     const instructions = migrationDefinition.migrationInstructions?.imports;
 
     // Variable declaration
     // example: Heading = styled.div(theme.styles.typography["heading1"])
     if (!!instructions?.declarations?.length) {
         for (const importInstruction of instructions?.declarations) {
-            const importDeclaration = sourceFile.getImportDeclaration(i => i.getModuleSpecifierValue() === importInstruction.moduleSpecifier)
-             if(!importDeclaration){
-                 context.log.warning(`Theme import module can't be found. File: ${migrationDefinition.file.path}`)
-                 return;
-             }
-
-            if(importInstruction?.insertDefaultImport) {
-                importDeclaration.setDefaultImport(importInstruction.insertDefaultImport)
+            const importDeclaration = sourceFile.getImportDeclaration(
+                i => i.getModuleSpecifierValue() === importInstruction.moduleSpecifier
+            );
+            if (!importDeclaration) {
+                context.log.warning(
+                    `Theme import module can't be found. File: ${migrationDefinition.file.path}`
+                );
+                return;
             }
 
-            if(importInstruction?.removeNamedImports) {
+            if (importInstruction?.insertDefaultImport) {
+                importDeclaration.setDefaultImport(importInstruction.insertDefaultImport);
+            }
+
+            if (importInstruction?.removeNamedImports) {
                 // Get all imports that are not present in the remove list
-                const filteredNamedImports = importDeclaration.getNamedImports().
-                filter(namedImport => !importInstruction.removeNamedImports.includes(namedImport.getName()));
+                const filteredNamedImports = importDeclaration
+                    .getNamedImports()
+                    .filter(
+                        namedImport =>
+                            !importInstruction.removeNamedImports.includes(namedImport.getName())
+                    );
                 // Remove all
                 importDeclaration.removeNamedImports();
                 // Add all named imports. Example of named imports:
                 // import defaultImport, { namedImport1, namedImport2 } from "../../../theme";
-                if(!!filteredNamedImports?.length) {
+                if (!!filteredNamedImports?.length) {
                     importDeclaration.addNamedImports(filteredNamedImports.map(i => i.getName));
                 }
             }
@@ -133,7 +158,6 @@ const migrateImports = (sourceFile: SourceFile,
 const migrateInterfaces = (source: SourceFile): void => {};
 
 const migrateTypes = (source: SourceFile): void => {};
-
 
 export type ThemeFileMigrationResult = {
     isSuccessfullyMigrated: boolean;
