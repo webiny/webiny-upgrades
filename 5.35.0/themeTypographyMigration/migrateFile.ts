@@ -1,9 +1,13 @@
 import { Project, SourceFile, SyntaxKind } from "ts-morph";
-import {ImportDeclarationDefinition, ThemeFileMigrationDefinition} from "./migrationFileDefinitions";
+import {
+    ImportDeclarationDefinition,
+    InterfaceDefinition,
+    ThemeFileMigrationDefinition
+} from "./migrationFileDefinitions";
 import { getSourceFile } from "../../utils";
 import { StyleIdToTypographyTypeMap } from "./definitions";
 import { Context } from "../../types";
-import { migrateVariableStatement } from "./tsmorhHelpers";
+import {migrateVariableStatement, updateInterfacePropertySignature} from "./tsmorhHelpers";
 
 const migrateStatements = (
     sourceFile: SourceFile,
@@ -162,7 +166,29 @@ const migrateImports = (
     }
 };
 
-const migrateInterfaces = (source: SourceFile): void => {};
+const migrateInterfaces = (source: SourceFile,
+                           migrationDefinition: ThemeFileMigrationDefinition,
+                           context: Context): void => {
+    if(!source){
+        return;
+    }
+
+    const instructions = migrationDefinition.migrationInstructions?.interfaces as InterfaceDefinition[];
+    const interfaces = source.getInterfaces();
+
+    for (const interfaceDeclaration of interfaces) {
+        const instruction = instructions.find(i => i.name === interfaceDeclaration.getName());
+
+        if(instruction) {
+            updateInterfacePropertySignature(
+                interfaceDeclaration,
+                instruction,
+                context,
+                migrationDefinition.file.path)
+        }
+    }
+
+};
 
 const migrateTypes = (source: SourceFile): void => {};
 
@@ -192,7 +218,7 @@ export const migrateFile = (
     }
 
     if (migrateDefinition.migrationInstructions?.interfaces) {
-        migrateInterfaces(source);
+        migrateInterfaces(source, migrateDefinition, context);
     }
 
     if (migrateDefinition.migrationInstructions?.types) {

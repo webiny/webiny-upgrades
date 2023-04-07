@@ -1,6 +1,14 @@
-import {Node, PropertyAssignment, SpreadAssignment, SyntaxKind, VariableStatement} from "ts-morph";
+import {
+    InterfaceDeclaration,
+    Node,
+    PropertyAssignment,
+    SpreadAssignment,
+    SyntaxKind,
+    VariableStatement
+} from "ts-morph";
 import {Context} from "../../types";
 import {StyleIdToTypographyTypeMap} from "./definitions";
+import {InterfaceDefinition} from "./migrationFileDefinitions";
 
 /*
  * Update all props and assignments in the declared variable object.
@@ -176,3 +184,12 @@ export const updateSpreadAssignment = (assigment: SpreadAssignment, map: StyleId
     }
     assigment.setExpression(`...theme.styles.typography.${typographyType}.cssBy("${styleKey}")`);
 };
+
+
+export const updateInterfacePropertySignature = (interfaceDeclaration: InterfaceDeclaration,
+                                                 instruction: InterfaceDefinition,
+                                                 context: Context,
+                                                 filePath: string) => {
+   // interfaceDeclaration.getProperties();
+
+}

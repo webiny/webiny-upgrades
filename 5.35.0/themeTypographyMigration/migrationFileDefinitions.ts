@@ -21,6 +21,13 @@ export type ImportDeclarationDefinition = {
     addNamedImports?: string[];
 }
 
+
+export type InterfaceDefinition = {
+    name: string,
+    propertySignatures: [{ name: string, updateTypeTo?: string, updateNameTo?: string }]
+}
+
+
 export type ThemeFileMigrationDefinition = {
     file: FileDefinition;
     /*
@@ -244,7 +251,13 @@ const appPageBuilderElementsDefinitions = (context: Context): ThemeFileMigration
                             addNamedImports: ['DecoratedTheme']
                         }
                     ] as ImportDeclarationDefinition[]
-                }
+                },
+                interfaces: [
+                    {
+                        name: "PageElementsProviderProps",
+                        propertySignatures: [{ name: "theme", updateTypeTo: 'DecoratedTheme' }]
+                    }
+                ] as InterfaceDefinition[]
             }
         },
         {
