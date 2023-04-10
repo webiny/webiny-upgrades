@@ -18,8 +18,8 @@ export const updateDefaultFormLayout = async (params: Params) => {
     const { context } = params;
 
     context.log.info(
-        "Migrating existing default form layout code (%s).",
-        "apps/theme/layouts/forms",
+        "Migrating form layouts located in the %s folder.",
+        "apps/theme/layouts/forms"
     );
 
     const from = path.join(__dirname, "updateDefaultFormLayout");
@@ -32,17 +32,14 @@ export const updateDefaultFormLayout = async (params: Params) => {
             "Page Builder - Page Rendering Engine Migration"
         );
 
-        return
+        return;
     }
 
     context.log.info(
-        "Creating a backup of the existing default form layout code (%s → %s).",
+        "Creating a backup of the form layouts folder (%s → %s).",
         "apps/theme/layouts/forms",
         "apps/theme/layouts/_backup_forms"
     );
-
-
-
 
     const toBackup = path.join(context.project.root, "apps", "theme", "layouts", "_backup_forms");
 
@@ -56,16 +53,15 @@ export const updateDefaultFormLayout = async (params: Params) => {
     } else {
         fs.renameSync(to, toBackup);
         backupDone = true;
-
-        context.log.success("A backup of the existing default form layout code has been created.");
     }
 
     if (backupDone) {
         context.log.info(
-            "Generating latest default form layout code (%s).",
+            "Generating latest code in the form layouts folder (%s).",
             "apps/theme/layouts/forms"
         );
         await ncp(from, to);
-        context.log.success("Latest default form layout code has been generated.");
     }
+
+    context.log.success("Form layouts migration completed.");
 };
