@@ -8,6 +8,7 @@ import { StyleIdToTypographyTypeMap } from "./definitions";
 import { Context } from "../../types";
 import { migrateVariableStatement } from "./tsmorhHelpers";
 import { InterfaceMigrationDefinition, migrateInterface } from "./migrateInterface";
+import {migrateTypes} from "./migrateType";
 
 const migrateStatements = (
     sourceFile: SourceFile,
@@ -216,8 +217,6 @@ const migrateInterfaces = (
     }
 };
 
-const migrateTypes = (source: SourceFile): void => {};
-
 export type ThemeFileMigrationResult = {
     isSuccessfullyMigrated: boolean;
     skipped: boolean;
@@ -248,7 +247,9 @@ export const migrateFile = (
     }
 
     if (migrateDefinition.migrationInstructions?.types) {
-        migrateTypes(source);
+        migrateTypes(source,
+            migrateDefinition.migrationInstructions?.types,
+            context);
     }
 
     if (migrateDefinition.migrationInstructions?.statements) {

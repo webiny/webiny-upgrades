@@ -1,5 +1,4 @@
 import {
-    InterfaceDeclaration,
     Node,
     PropertyAssignment,
     SpreadAssignment,
@@ -8,7 +7,6 @@ import {
 } from "ts-morph";
 import { Context } from "../../types";
 import { StyleIdToTypographyTypeMap } from "./definitions";
-import { InterfaceMigrationDefinition } from "./migrationFileDefinitions";
 
 /*
  * Update all props and assignments in the declared variable object.

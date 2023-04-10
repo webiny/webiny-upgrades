@@ -3,7 +3,7 @@ import {
     migrateFunctionType,
     TypeReferenceInstruction
 } from "./migrateInterface";
-import { FunctionTypeNode, SyntaxKind, TypeAliasDeclaration } from "ts-morph";
+import {FunctionTypeNode, SourceFile, SyntaxKind} from "ts-morph";
 import { Context } from "../../types";
 
 export type TypeAliasMigrationDefinition = {
@@ -11,24 +11,32 @@ export type TypeAliasMigrationDefinition = {
     typeInstruction: FunctionTypeInstruction | TypeReferenceInstruction;
 };
 
-const migrateTypeAlias = (
-    typeAliasDeclaration: TypeAliasDeclaration,
-    migrationInstruction: TypeAliasMigrationDefinition,
+export const migrateTypes = (
+    sourceCode: SourceFile,
+    migrationInstructions: TypeAliasMigrationDefinition[],
     context: Context
 ) => {
-    if (!typeAliasDeclaration) {
-        return;
-    }
 
-    const migrateTypeNode = typeAliasDeclaration.getTypeNode();
+    const typeAliasDeclarations = sourceCode.getTypeAliases();
 
-    if (
-        migrateTypeNode.getKind() === SyntaxKind.FunctionType &&
-        migrationInstruction.typeInstruction.syntaxKind === SyntaxKind.FunctionType
-    ) {
-        migrateFunctionType(
-            migrateTypeNode as FunctionTypeNode,
-            migrationInstruction.typeInstruction
-        );
+    for (const typeAliasDeclaration of typeAliasDeclarations) {
+
+        const foundTypeAliasInstruction = migrationInstructions.find(i => i.name === typeAliasDeclaration.getName());
+
+        if(foundTypeAliasInstruction) {
+            const migrateTypeNode = typeAliasDeclaration.getTypeNode();
+            const instructionKind = foundTypeAliasInstruction.typeInstruction.syntaxKind
+
+            if (
+                migrateTypeNode.getKind() === SyntaxKind.FunctionType &&
+                instructionKind === SyntaxKind.FunctionType
+            ) {
+                migrateFunctionType(
+                    migrateTypeNode as FunctionTypeNode,
+                    foundTypeAliasInstruction.typeInstruction,
+                    context
+                );
+            }
+        }
     }
 };

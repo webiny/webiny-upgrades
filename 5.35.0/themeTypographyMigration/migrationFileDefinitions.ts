@@ -1,13 +1,16 @@
-import { Context } from "../../types";
-import { createFilePath, FileDefinition } from "../../utils";
-import { SyntaxKind } from "ts-morph";
+import {Context} from "../../types";
+import {createFilePath, FileDefinition} from "../../utils";
+import {SyntaxKind} from "ts-morph";
 import {
+    FunctionTypeInstruction,
     InterfaceMigrationDefinition,
     PropertySignatureInstruction,
     TypeLiteralInstruction,
-    TypeReferenceInstruction
+    TypeReferenceInstruction,
+    UnionTypeInstruction
 } from "./migrateInterface";
-import { TypeAliasMigrationDefinition } from "./migrateType";
+
+import {TypeAliasMigrationDefinition} from "./migrateType";
 
 export type TypographyUpgradeType =
     | "imports"
@@ -16,8 +19,12 @@ export type TypographyUpgradeType =
     | "types"
     | "classes"
     | "statements";
+
 export type MigrationInstructions = {
-    [key in TypographyUpgradeType]?: Record<string, any>;
+    imports?: { declarations: ImportDeclarationDefinition[] };
+    types?: TypeAliasMigrationDefinition[];
+    interfaces?: InterfaceMigrationDefinition[];
+    statements?: Record<string, any>;
 };
 
 export type ImportDeclarationDefinition = {
@@ -294,7 +301,60 @@ const appPageBuilderElementsDefinitions = (context: Context): ThemeFileMigration
                 ] as InterfaceMigrationDefinition[],
                 types: [
                     {
+                        name: "GetStyles",
+                        typeInstruction: {
+                            syntaxKind: SyntaxKind.FunctionType,
+                            params: [
+                                {
+                                    name: "styles",
+                                    typeInstruction: {
+                                        syntaxKind: SyntaxKind.UnionType,
+                                        unionTypes: [
+                                            {
+                                             syntaxKind: SyntaxKind.FunctionType,
+                                             params: [
+                                                 {
+                                                     name: "theme",
+                                                     typeInstruction: {
+                                                         syntaxKind: SyntaxKind.TypeReference,
+                                                         typeName: "Theme",
+                                                         updateToTypeName: "DecoratedTheme",
+                                                     }
+                                                 }
+                                             ]
+                                            }
+                                        ]
+                                    } as UnionTypeInstruction
+                                }
+                            ]
+                        } as FunctionTypeInstruction
+                    },
+                    {
                         name: "ElementAttributesModifier",
+                        typeInstruction: {
+                            syntaxKind: SyntaxKind.FunctionType,
+                            params: [
+                                {
+                                    name: "args",
+                                    typeInstruction: {
+                                        syntaxKind: SyntaxKind.TypeLiteral,
+                                        members: [
+                                            {
+                                                name: "theme",
+                                                typeInstruction: {
+                                                    syntaxKind: SyntaxKind.TypeReference,
+                                                    typeName: "Theme",
+                                                    updateToTypeName: "DecoratedTheme"
+                                                }
+                                            }
+                                        ] as PropertySignatureInstruction[]
+                                    } as TypeLiteralInstruction
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        name: "ElementStylesModifier",
                         typeInstruction: {
                             syntaxKind: SyntaxKind.FunctionType,
                             params: [

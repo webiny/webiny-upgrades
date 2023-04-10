@@ -1,7 +1,6 @@
 import {
     FunctionTypeNode,
     InterfaceDeclaration,
-    LiteralTypeNode,
     ParenthesizedTypeNode,
     PropertySignature,
     SyntaxKind,
@@ -10,8 +9,7 @@ import {
     TypeReferenceNode,
     UnionTypeNode
 } from "ts-morph";
-import { Context } from "../../types";
-import * as console from "console";
+import {Context} from "../../types";
 
 export type TypeReferenceInstruction = {
     syntaxKind: SyntaxKind.TypeReference;
@@ -302,7 +300,16 @@ export const migrateFunctionType = (
 
     // update parameters
     for (const param of params) {
-        const typeNode = param.getTypeNode();
+        let typeNode = param.getTypeNode();
+
+        //export type GetStyles = (
+        //     styles: StylesObject | ((theme: DecoratedTheme) => StylesObject)
+        // ) => CSSObject;
+        // in this example the second type is ParenthesizedType. We need to go and take his type(child node)
+        // to get to the Function type
+        if(typeNode.getKind() === SyntaxKind.ParenthesizedType) {
+            typeNode = (typeNode as ParenthesizedTypeNode).getTypeNode();
+        }
         const typeNodeKind = typeNode.getKind();
 
         const foundInstruction = functionInstruction.params.find(p => p.name === param.getName());
