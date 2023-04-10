@@ -1,13 +1,13 @@
-import {Context} from "../../types";
-import {createFilePath, FileDefinition} from "../../utils";
-import {SyntaxKind} from "ts-morph";
+import { Context } from "../../types";
+import { createFilePath, FileDefinition } from "../../utils";
+import { SyntaxKind } from "ts-morph";
 import {
     InterfaceMigrationDefinition,
     PropertySignatureInstruction,
     TypeLiteralInstruction,
     TypeReferenceInstruction
 } from "./migrateInterface";
-import {TypeAliasMigrationDefinition} from "./migrateType";
+import { TypeAliasMigrationDefinition } from "./migrateType";
 
 export type TypographyUpgradeType =
     | "imports"
@@ -317,7 +317,7 @@ const appPageBuilderElementsDefinitions = (context: Context): ThemeFileMigration
                             ]
                         }
                     }
-                    ] as TypeAliasMigrationDefinition[],
+                ] as TypeAliasMigrationDefinition[]
             }
         },
         {

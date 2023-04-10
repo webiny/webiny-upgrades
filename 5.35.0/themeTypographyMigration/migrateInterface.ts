@@ -1,6 +1,7 @@
 import {
     FunctionTypeNode,
-    InterfaceDeclaration, LiteralTypeNode,
+    InterfaceDeclaration,
+    LiteralTypeNode,
     ParenthesizedTypeNode,
     PropertySignature,
     SyntaxKind,
@@ -9,7 +10,7 @@ import {
     TypeReferenceNode,
     UnionTypeNode
 } from "ts-morph";
-import {Context} from "../../types";
+import { Context } from "../../types";
 import * as console from "console";
 
 export type TypeReferenceInstruction = {
@@ -25,12 +26,14 @@ export type UnionTypeInstruction = {
 
 export type FunctionTypeInstruction = {
     syntaxKind: SyntaxKind.FunctionType;
-    params: { name: string; typeInstruction:
-            TypeReferenceInstruction | UnionTypeInstruction | TypeLiteralInstruction }[];
+    params: {
+        name: string;
+        typeInstruction: TypeReferenceInstruction | UnionTypeInstruction | TypeLiteralInstruction;
+    }[];
 };
 
 export type PropertySignatureInstruction = {
-    syntaxKind: SyntaxKind.PropertySignature
+    syntaxKind: SyntaxKind.PropertySignature;
     name: string;
     typeInstruction: TypeReferenceInstruction | UnionTypeInstruction | FunctionTypeInstruction;
 };
@@ -87,7 +90,7 @@ export const migratePropertySignature = (
         return;
     }
 
-    if(propSignature.getKind() !== SyntaxKind.PropertySignature) {
+    if (propSignature.getKind() !== SyntaxKind.PropertySignature) {
         return;
     }
 
@@ -99,11 +102,11 @@ export const migratePropertySignature = (
 
     // for parenthesized type we need to make a correction and take the type node
     // and the syntax kind to get the parameter type
-        if(updateTypeNode.getKind() === SyntaxKind.ParenthesizedType){
-            updateTypeNode = propSignature.getTypeNode();
-        }
+    if (updateTypeNode.getKind() === SyntaxKind.ParenthesizedType) {
+        updateTypeNode = propSignature.getTypeNode();
+    }
 
-        const updateTypeNodeKind = updateTypeNode.getKind();
+    const updateTypeNodeKind = updateTypeNode.getKind();
 
     switch (propSignatureInstruction.typeInstruction.syntaxKind) {
         case SyntaxKind.TypeReference:
@@ -138,10 +141,9 @@ export const migratePropertySignature = (
     }
 };
 
-
 const getParenthesizedTypeNode = (node: ParenthesizedTypeNode): TypeNode => {
     return node.getTypeNode();
-}
+};
 
 const findInterfaceInstructionByMemberName = (
     propSignature: PropertySignature,
@@ -286,7 +288,7 @@ export const migrateTypeReference = (
 export const migrateFunctionType = (
     functionTypeNode: FunctionTypeNode,
     functionInstruction: FunctionTypeInstruction,
-    context: Context,
+    context: Context
 ): void => {
     if (!functionTypeNode) {
         return;
@@ -303,43 +305,48 @@ export const migrateFunctionType = (
         const typeNode = param.getTypeNode();
         const typeNodeKind = typeNode.getKind();
 
-        const foundInstruction = functionInstruction.params.find(
-            p => p.name === param.getName()
-        );
+        const foundInstruction = functionInstruction.params.find(p => p.name === param.getName());
         const typeInstructionKind = foundInstruction.typeInstruction.syntaxKind;
 
-        if (foundInstruction){
-            if (typeNodeKind === SyntaxKind.TypeReference && typeInstructionKind === SyntaxKind.TypeReference)
-                 {
-                    migrateTypeReference(
-                        typeNode as TypeReferenceNode,
-                        foundInstruction.typeInstruction
-                    );
-                }
-            }
-
-            if(typeNodeKind === SyntaxKind.TypeLiteral && typeInstructionKind === SyntaxKind.TypeLiteral) {
-                migrateLiteralType(typeNode as TypeLiteralNode, foundInstruction.typeInstruction, context);
+        if (foundInstruction) {
+            if (
+                typeNodeKind === SyntaxKind.TypeReference &&
+                typeInstructionKind === SyntaxKind.TypeReference
+            ) {
+                migrateTypeReference(
+                    typeNode as TypeReferenceNode,
+                    foundInstruction.typeInstruction
+                );
             }
         }
 
-
+        if (
+            typeNodeKind === SyntaxKind.TypeLiteral &&
+            typeInstructionKind === SyntaxKind.TypeLiteral
+        ) {
+            migrateLiteralType(
+                typeNode as TypeLiteralNode,
+                foundInstruction.typeInstruction,
+                context
+            );
+        }
     }
 };
 
-export const migrateLiteralType = (typeLiteralNode: TypeLiteralNode,
-                                   instruction: TypeLiteralInstruction,
-                                   context: Context): void => {
-
-    if(!typeLiteralNode){
+export const migrateLiteralType = (
+    typeLiteralNode: TypeLiteralNode,
+    instruction: TypeLiteralInstruction,
+    context: Context
+): void => {
+    if (!typeLiteralNode) {
         return;
     }
 
-    if(!typeLiteralNode?.getMembers()?.length){
+    if (!typeLiteralNode?.getMembers()?.length) {
         return;
     }
 
-    if(!instruction) {
+    if (!instruction) {
         return;
     }
 
@@ -348,13 +355,17 @@ export const migrateLiteralType = (typeLiteralNode: TypeLiteralNode,
     }
 
     for (const memberNode of typeLiteralNode.getMembers()) {
-        if(memberNode.getKind() === SyntaxKind.PropertySignature) {
+        if (memberNode.getKind() === SyntaxKind.PropertySignature) {
             const propertySignature = memberNode as PropertySignature;
-            const propertyInstruction = instruction.members.find(i => i.name === propertySignature.getName());
-            if(propertyInstruction && propertyInstruction.syntaxKind === SyntaxKind.PropertySignature) {
+            const propertyInstruction = instruction.members.find(
+                i => i.name === propertySignature.getName()
+            );
+            if (
+                propertyInstruction &&
+                propertyInstruction.syntaxKind === SyntaxKind.PropertySignature
+            ) {
                 migratePropertySignature(propertySignature, propertyInstruction, context);
             }
         }
     }
-
-}
+};
