@@ -1,14 +1,16 @@
 import {
     FunctionTypeNode,
-    InterfaceDeclaration,
+    InterfaceDeclaration, LiteralTypeNode,
     ParenthesizedTypeNode,
     PropertySignature,
     SyntaxKind,
+    TypeLiteralNode,
     TypeNode,
     TypeReferenceNode,
     UnionTypeNode
 } from "ts-morph";
-import { Context } from "../../types";
+import {Context} from "../../types";
+import * as console from "console";
 
 export type TypeReferenceInstruction = {
     syntaxKind: SyntaxKind.TypeReference;
@@ -23,17 +25,23 @@ export type UnionTypeInstruction = {
 
 export type FunctionTypeInstruction = {
     syntaxKind: SyntaxKind.FunctionType;
-    params: { name: string; typeInstruction: TypeReferenceInstruction | UnionTypeInstruction }[];
+    params: { name: string; typeInstruction:
+            TypeReferenceInstruction | UnionTypeInstruction | TypeLiteralInstruction }[];
 };
 
 export type PropertySignatureInstruction = {
+    syntaxKind: SyntaxKind.PropertySignature
     name: string;
-
     typeInstruction: TypeReferenceInstruction | UnionTypeInstruction | FunctionTypeInstruction;
 };
 
 export type InterfaceMigrationDefinition = {
     name: string;
+    members: PropertySignatureInstruction[];
+};
+
+export type TypeLiteralInstruction = {
+    syntaxKind: SyntaxKind.TypeLiteral;
     members: PropertySignatureInstruction[];
 };
 
@@ -65,12 +73,12 @@ export const migrateInterface = (
         );
 
         if (propSignatureInstruction) {
-            updateInterfacePropertySignature(propSignature, propSignatureInstruction, context);
+            migratePropertySignature(propSignature, propSignatureInstruction, context);
         }
     }
 };
 
-export const updateInterfacePropertySignature = (
+export const migratePropertySignature = (
     propSignature: PropertySignature,
     propSignatureInstruction: PropertySignatureInstruction,
     context: Context
@@ -79,43 +87,48 @@ export const updateInterfacePropertySignature = (
         return;
     }
 
+    if(propSignature.getKind() !== SyntaxKind.PropertySignature) {
+        return;
+    }
+
     if (!propSignatureInstruction) {
         return;
     }
 
-    let propSignatureKind = propSignature.getKind();
-
-    // property assigment type node this act like a child node attached to the signature
-    const propTypeNode = propSignature.getTypeNode();
+    let updateTypeNode = propSignature.getTypeNode();
 
     // for parenthesized type we need to make a correction and take the type node
     // and the syntax kind to get the parameter type
-    if (propSignatureKind === SyntaxKind.ParenthesizedType) {
-        propSignatureKind = propTypeNode.getKind();
-    }
+        if(updateTypeNode.getKind() === SyntaxKind.ParenthesizedType){
+            updateTypeNode = propSignature.getTypeNode();
+        }
+
+        const updateTypeNodeKind = updateTypeNode.getKind();
 
     switch (propSignatureInstruction.typeInstruction.syntaxKind) {
         case SyntaxKind.TypeReference:
-            if (propSignatureKind === SyntaxKind.TypeReference) {
+            if (updateTypeNodeKind === SyntaxKind.TypeReference) {
                 migrateTypeReference(
-                    propTypeNode as TypeReferenceNode,
+                    updateTypeNode as TypeReferenceNode,
                     propSignatureInstruction.typeInstruction
                 );
             }
             break;
         case SyntaxKind.UnionType:
-            if (propSignatureKind === SyntaxKind.UnionType) {
+            if (updateTypeNodeKind === SyntaxKind.UnionType) {
                 migrateUnionType(
-                    propTypeNode as UnionTypeNode,
-                    propSignatureInstruction.typeInstruction
+                    updateTypeNode as UnionTypeNode,
+                    propSignatureInstruction.typeInstruction,
+                    context
                 );
             }
             break;
         case SyntaxKind.FunctionType:
-            if (propSignatureKind === SyntaxKind.FunctionType) {
+            if (updateTypeNodeKind === SyntaxKind.FunctionType) {
                 migrateFunctionType(
-                    propTypeNode as FunctionTypeNode,
-                    propSignatureInstruction.typeInstruction
+                    updateTypeNode as FunctionTypeNode,
+                    propSignatureInstruction.typeInstruction,
+                    context
                 );
             }
         default:
@@ -124,6 +137,11 @@ export const updateInterfacePropertySignature = (
             );
     }
 };
+
+
+const getParenthesizedTypeNode = (node: ParenthesizedTypeNode): TypeNode => {
+    return node.getTypeNode();
+}
 
 const findInterfaceInstructionByMemberName = (
     propSignature: PropertySignature,
@@ -225,7 +243,8 @@ const shouldFunctionTypeBeMigrated = (
  * */
 export const migrateUnionType = (
     unionTypeNode: UnionTypeNode,
-    unionInstruction: UnionTypeInstruction
+    unionInstruction: UnionTypeInstruction,
+    context: Context
 ): void => {
     if (unionTypeNode.getKind() !== SyntaxKind.UnionType) {
         return;
@@ -242,7 +261,7 @@ export const migrateUnionType = (
             }
 
             if (typeInstruction.syntaxKind === SyntaxKind.FunctionType) {
-                migrateFunctionType(typeNode as FunctionTypeNode, typeInstruction);
+                migrateFunctionType(typeNode as FunctionTypeNode, typeInstruction, context);
             }
         }
     }
@@ -266,7 +285,8 @@ export const migrateTypeReference = (
 
 export const migrateFunctionType = (
     functionTypeNode: FunctionTypeNode,
-    functionInstruction: FunctionTypeInstruction
+    functionInstruction: FunctionTypeInstruction,
+    context: Context,
 ): void => {
     if (!functionTypeNode) {
         return;
@@ -281,20 +301,60 @@ export const migrateFunctionType = (
     // update parameters
     for (const param of params) {
         const typeNode = param.getTypeNode();
-        // this can be extended for other syntax types like union or function with other conditions for example
-        if (typeNode.getKind() === SyntaxKind.TypeReference) {
-            const foundInstruction = functionInstruction.params.find(
-                p => p.name === param.getName()
-            );
-            if (
-                foundInstruction &&
-                foundInstruction.typeInstruction.syntaxKind === SyntaxKind.TypeReference
-            ) {
-                migrateTypeReference(
-                    typeNode as TypeReferenceNode,
-                    foundInstruction.typeInstruction
-                );
+        const typeNodeKind = typeNode.getKind();
+
+        const foundInstruction = functionInstruction.params.find(
+            p => p.name === param.getName()
+        );
+        const typeInstructionKind = foundInstruction.typeInstruction.syntaxKind;
+
+        if (foundInstruction){
+            if (typeNodeKind === SyntaxKind.TypeReference && typeInstructionKind === SyntaxKind.TypeReference)
+                 {
+                    migrateTypeReference(
+                        typeNode as TypeReferenceNode,
+                        foundInstruction.typeInstruction
+                    );
+                }
+            }
+
+            if(typeNodeKind === SyntaxKind.TypeLiteral && typeInstructionKind === SyntaxKind.TypeLiteral) {
+                migrateLiteralType(typeNode as TypeLiteralNode, foundInstruction.typeInstruction, context);
+            }
+        }
+
+
+    }
+};
+
+export const migrateLiteralType = (typeLiteralNode: TypeLiteralNode,
+                                   instruction: TypeLiteralInstruction,
+                                   context: Context): void => {
+
+    if(!typeLiteralNode){
+        return;
+    }
+
+    if(!typeLiteralNode?.getMembers()?.length){
+        return;
+    }
+
+    if(!instruction) {
+        return;
+    }
+
+    if (!instruction?.members?.length) {
+        return;
+    }
+
+    for (const memberNode of typeLiteralNode.getMembers()) {
+        if(memberNode.getKind() === SyntaxKind.PropertySignature) {
+            const propertySignature = memberNode as PropertySignature;
+            const propertyInstruction = instruction.members.find(i => i.name === propertySignature.getName());
+            if(propertyInstruction && propertyInstruction.syntaxKind === SyntaxKind.PropertySignature) {
+                migratePropertySignature(propertySignature, propertyInstruction, context);
             }
         }
     }
-};
+
+}

@@ -1,7 +1,13 @@
-import { Context } from "../../types";
-import { createFilePath, FileDefinition } from "../../utils";
-import { SyntaxKind } from "ts-morph";
-import { InterfaceMigrationDefinition, TypeReferenceInstruction } from "./migrateInterface";
+import {Context} from "../../types";
+import {createFilePath, FileDefinition} from "../../utils";
+import {SyntaxKind} from "ts-morph";
+import {
+    InterfaceMigrationDefinition,
+    PropertySignatureInstruction,
+    TypeLiteralInstruction,
+    TypeReferenceInstruction
+} from "./migrateInterface";
+import {TypeAliasMigrationDefinition} from "./migrateType";
 
 export type TypographyUpgradeType =
     | "imports"
@@ -285,7 +291,33 @@ const appPageBuilderElementsDefinitions = (context: Context): ThemeFileMigration
                             }
                         ]
                     }
-                ] as InterfaceMigrationDefinition[]
+                ] as InterfaceMigrationDefinition[],
+                types: [
+                    {
+                        name: "ElementAttributesModifier",
+                        typeInstruction: {
+                            syntaxKind: SyntaxKind.FunctionType,
+                            params: [
+                                {
+                                    name: "args",
+                                    typeInstruction: {
+                                        syntaxKind: SyntaxKind.TypeLiteral,
+                                        members: [
+                                            {
+                                                name: "theme",
+                                                typeInstruction: {
+                                                    syntaxKind: SyntaxKind.TypeReference,
+                                                    typeName: "Theme",
+                                                    updateToTypeName: "DecoratedTheme"
+                                                }
+                                            }
+                                        ] as PropertySignatureInstruction[]
+                                    } as TypeLiteralInstruction
+                                }
+                            ]
+                        }
+                    }
+                    ] as TypeAliasMigrationDefinition[],
             }
         },
         {
