@@ -18,13 +18,31 @@ export const updateDefaultFormLayout = async (params: Params) => {
     const { context } = params;
 
     context.log.info(
+        "Migrating existing default form layout code (%s).",
+        "apps/theme/layouts/forms",
+    );
+
+    const from = path.join(__dirname, "updateDefaultFormLayout");
+    const to = path.join(context.project.root, "apps", "theme", "layouts", "forms");
+
+    if (!fs.existsSync(to)) {
+        log.warning(
+            "Cannot perform migration because the %s folder doesn't exist. This could be because the %s wasn't performed. To learn more, visit https://www.webiny.com/docs/release-notes/5.34.0/page-builder-pe-rendering-engine-migration.",
+            "apps/theme/layouts/forms",
+            "Page Builder - Page Rendering Engine Migration"
+        );
+
+        return
+    }
+
+    context.log.info(
         "Creating a backup of the existing default form layout code (%s → %s).",
         "apps/theme/layouts/forms",
         "apps/theme/layouts/_backup_forms"
     );
 
-    const from = path.join(__dirname, "updateDefaultFormLayout");
-    const to = path.join(context.project.root, "apps", "theme", "layouts", "forms");
+
+
 
     const toBackup = path.join(context.project.root, "apps", "theme", "layouts", "_backup_forms");
 
