@@ -1,13 +1,13 @@
 import { Project, SourceFile, SyntaxKind } from "ts-morph";
 import {
     ImportDeclarationDefinition,
-    InterfaceDefinition,
     ThemeFileMigrationDefinition
 } from "./migrationFileDefinitions";
 import { getSourceFile } from "../../utils";
 import { StyleIdToTypographyTypeMap } from "./definitions";
 import { Context } from "../../types";
-import {migrateVariableStatement, updateInterfacePropertySignature} from "./tsmorhHelpers";
+import { migrateVariableStatement } from "./tsmorhHelpers";
+import { InterfaceMigrationDefinition, migrateInterface } from "./migrateInterface";
 
 const migrateStatements = (
     sourceFile: SourceFile,
@@ -19,7 +19,6 @@ const migrateStatements = (
     // Variable declaration
     // example: Heading = styled.div(theme.styles.typography["heading1"])
     if (!!instructions?.variables?.length) {
-
         for (const varInstruction of instructions?.variables) {
             const statement = sourceFile.getVariableStatement(varInstruction.name);
 
@@ -166,28 +165,55 @@ const migrateImports = (
     }
 };
 
-const migrateInterfaces = (source: SourceFile,
-                           migrationDefinition: ThemeFileMigrationDefinition,
-                           context: Context): void => {
-    if(!source){
+const migrateInterfaces = (
+    source: SourceFile,
+    migrationDefinition: ThemeFileMigrationDefinition,
+    context: Context
+): void => {
+    if (!source) {
+        context.log.debug("Source file for interfaces migration was not found.");
         return;
     }
 
-    const instructions = migrationDefinition.migrationInstructions?.interfaces as InterfaceDefinition[];
+    const instructions = migrationDefinition.migrationInstructions
+        ?.interfaces as InterfaceMigrationDefinition[];
+    if (!instructions?.length) {
+        context.log.debug("No interface migration instructions found.");
+        return;
+    }
+
+    // create a copy for array manipulation
+    const instructionsCopy = [...instructions];
+
+    // get all interfaces
     const interfaces = source.getInterfaces();
 
-    for (const interfaceDeclaration of interfaces) {
-        const instruction = instructions.find(i => i.name === interfaceDeclaration.getName());
+    if (!interfaces?.length) {
+        context.log.debug("The file does not contain any interface declaration");
+        return;
+    }
 
-        if(instruction) {
-            updateInterfacePropertySignature(
-                interfaceDeclaration,
-                instruction,
-                context,
-                migrationDefinition.file.path)
+    for (const interfaceDeclaration of interfaces) {
+        const instructionIndex = instructionsCopy.findIndex(
+            i => i.name === interfaceDeclaration.getName()
+        );
+        if (instructionIndex >= 0) {
+            // Migrate only the interfaces that have instruction
+            const instruction = instructionsCopy[instructionIndex];
+            if (instruction) {
+                migrateInterface(interfaceDeclaration, instruction, context);
+            }
+
+            // remove the instructions for the migrated interface
+            instructionsCopy.splice(instructionIndex, 1);
         }
     }
 
+    // output for none migrated interfaces
+    if (instructionsCopy.length > 0) {
+        context.log.debug(`Following interfaces was not found in the file for migration: 
+        ${instructionsCopy.map(i => i.name).join(", ")}`);
+    }
 };
 
 const migrateTypes = (source: SourceFile): void => {};

@@ -1,7 +1,7 @@
 import { Context } from "../../types";
 import { createFilePath, FileDefinition } from "../../utils";
-import { ElementAccessExpression, SyntaxKind } from "ts-morph";
-import {string} from "fast-glob/out/utils";
+import { SyntaxKind } from "ts-morph";
+import { InterfaceMigrationDefinition, TypeReferenceInstruction } from "./migrateInterface";
 
 export type TypographyUpgradeType =
     | "imports"
@@ -19,14 +19,7 @@ export type ImportDeclarationDefinition = {
     moduleSpecifier?: string;
     removeNamedImports?: string[];
     addNamedImports?: string[];
-}
-
-
-export type InterfaceDefinition = {
-    name: string,
-    propertySignatures: [{ name: string, updateTypeTo?: string, updateNameTo?: string }]
-}
-
+};
 
 export type ThemeFileMigrationDefinition = {
     file: FileDefinition;
@@ -248,16 +241,51 @@ const appPageBuilderElementsDefinitions = (context: Context): ThemeFileMigration
                         {
                             moduleSpecifier: "../../../theme",
                             removeNamedImports: ["Theme"],
-                            addNamedImports: ['DecoratedTheme']
+                            addNamedImports: ["DecoratedTheme"]
                         }
                     ] as ImportDeclarationDefinition[]
                 },
                 interfaces: [
                     {
                         name: "PageElementsProviderProps",
-                        propertySignatures: [{ name: "theme", updateTypeTo: 'DecoratedTheme' }]
+                        members: [
+                            {
+                                name: "theme",
+                                typeInstruction: {
+                                    typeName: "Theme",
+                                    updateTypeNameTo: "DecoratedTheme",
+                                    syntaxKind: SyntaxKind.TypeReference
+                                } as TypeReferenceInstruction
+                            }
+                        ]
+                    },
+                    {
+                        name: "SetStylesCallbackParams",
+                        members: [
+                            {
+                                name: "styles",
+                                typeInstruction: {
+                                    syntaxKind: SyntaxKind.UnionType,
+                                    unionTypes: [
+                                        {
+                                            syntaxKind: SyntaxKind.FunctionType,
+                                            params: [
+                                                {
+                                                    name: "theme",
+                                                    instruction: {
+                                                        syntaxKind: SyntaxKind.TypeReference,
+                                                        typeName: "Theme",
+                                                        updateTypeNameTo: "DecoratedTheme"
+                                                    } as TypeReferenceInstruction
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
                     }
-                ] as InterfaceDefinition[]
+                ] as InterfaceMigrationDefinition[]
             }
         },
         {

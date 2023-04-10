@@ -6,9 +6,9 @@ import {
     SyntaxKind,
     VariableStatement
 } from "ts-morph";
-import {Context} from "../../types";
-import {StyleIdToTypographyTypeMap} from "./definitions";
-import {InterfaceDefinition} from "./migrationFileDefinitions";
+import { Context } from "../../types";
+import { StyleIdToTypographyTypeMap } from "./definitions";
+import { InterfaceMigrationDefinition } from "./migrationFileDefinitions";
 
 /*
  * Update all props and assignments in the declared variable object.
@@ -29,7 +29,6 @@ export const migrateVariableStatement = (
     }
 
     if (instructions?.nodesUpdates) {
-
         const nodesForUpdate = takeAllNodesForMigration(statement, instructions?.nodesUpdates);
 
         for (const node of nodesForUpdate) {
@@ -52,7 +51,6 @@ export const migrateVariableStatement = (
                 const spreadAssignment = node as SpreadAssignment;
                 updateSpreadAssignment(spreadAssignment, map, context, filePath);
             }
-
         }
     }
 };
@@ -165,8 +163,13 @@ export const updatePropertyAccessExpression = (
     }
 };
 
-export const updateSpreadAssignment = (assigment: SpreadAssignment, map: StyleIdToTypographyTypeMap, context, filePath): void => {
-    if(!assigment) {
+export const updateSpreadAssignment = (
+    assigment: SpreadAssignment,
+    map: StyleIdToTypographyTypeMap,
+    context,
+    filePath
+): void => {
+    if (!assigment) {
         return;
     }
 
@@ -184,12 +187,3 @@ export const updateSpreadAssignment = (assigment: SpreadAssignment, map: StyleId
     }
     assigment.setExpression(`...theme.styles.typography.${typographyType}.cssBy("${styleKey}")`);
 };
-
-
-export const updateInterfacePropertySignature = (interfaceDeclaration: InterfaceDeclaration,
-                                                 instruction: InterfaceDefinition,
-                                                 context: Context,
-                                                 filePath: string) => {
-   // interfaceDeclaration.getProperties();
-
-}
