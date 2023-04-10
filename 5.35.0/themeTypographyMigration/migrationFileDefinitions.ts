@@ -253,7 +253,7 @@ const appPageBuilderElementsDefinitions = (context: Context): ThemeFileMigration
                                 name: "theme",
                                 typeInstruction: {
                                     typeName: "Theme",
-                                    updateTypeNameTo: "DecoratedTheme",
+                                    updateToTypeName: "DecoratedTheme",
                                     syntaxKind: SyntaxKind.TypeReference
                                 } as TypeReferenceInstruction
                             }
@@ -272,10 +272,10 @@ const appPageBuilderElementsDefinitions = (context: Context): ThemeFileMigration
                                             params: [
                                                 {
                                                     name: "theme",
-                                                    instruction: {
+                                                    typeInstruction: {
                                                         syntaxKind: SyntaxKind.TypeReference,
                                                         typeName: "Theme",
-                                                        updateTypeNameTo: "DecoratedTheme"
+                                                        updateToTypeName: "DecoratedTheme"
                                                     } as TypeReferenceInstruction
                                                 }
                                             ]
