@@ -20,11 +20,28 @@ export type TypographyUpgradeType =
     | "classes"
     | "statements";
 
+export type StatementMigrationDefinition = {
+    variables: {
+        name: string | undefined,
+        syntaxKind: SyntaxKind.ElementAccessExpression | SyntaxKind.TemplateSpan | SyntaxKind.PropertyAssignment,
+        nodeUpdates?:
+            // first level properties update
+            {
+                symbolEscapedName?: string,
+                syntaxKind: SyntaxKind.PropertyAssignment | SyntaxKind.SpreadAssignment,
+                // node attached to the current child that contains the props
+                initializerKind?: SyntaxKind.PropertyAccessExpression,
+                matchText?: string
+                expression?: SyntaxKind.PropertyAccessExpression
+            }[]
+    }[]
+}
+
 export type MigrationInstructions = {
     imports?: { declarations: ImportDeclarationDefinition[] };
     types?: TypeAliasMigrationDefinition[];
     interfaces?: InterfaceMigrationDefinition[];
-    statements?: Record<string, any>;
+    statements?: StatementMigrationDefinition;
 };
 
 export type ImportDeclarationDefinition = {
@@ -33,6 +50,8 @@ export type ImportDeclarationDefinition = {
     removeNamedImports?: string[];
     addNamedImports?: string[];
 };
+
+
 
 export type ThemeFileMigrationDefinition = {
     file: FileDefinition;
@@ -413,7 +432,6 @@ const appPageBuilderElementsDefinitions = (context: Context): ThemeFileMigration
                                 },
                                 {
                                     // spread assignments do not have name
-                                    name: undefined,
                                     syntaxKind: SyntaxKind.SpreadAssignment,
                                     // expression attached to the current child that contains the props
                                     expression: SyntaxKind.PropertyAccessExpression,
@@ -440,7 +458,16 @@ const cwpTemplateAwsDefinitions = (context: Context): ThemeFileMigrationDefiniti
                 name: "/cwp-template-aws/template/common/apps/theme/layouts/forms/DefaultFormLayout/SuccessMessage.tsx"
             }),
             migrationInstructions: {
-                expressions: {}
+                statements: {
+                    variables: [
+                        {
+                            name: "Heading", syntaxKind: SyntaxKind.ElementAccessExpression
+                        },
+                        {
+                            name: "Message", syntaxKind: SyntaxKind.ElementAccessExpression
+                        }
+                    ]
+                }
             }
         },
         {
@@ -453,20 +480,13 @@ const cwpTemplateAwsDefinitions = (context: Context): ThemeFileMigrationDefiniti
                 name: "/cwp-template-aws/template/common/apps/theme/layouts/forms/DefaultFormLayout/TermsOfServiceSection.tsx"
             }),
             migrationInstructions: {
-                expressions: {}
-            }
-        },
-        {
-            file: new FileDefinition({
-                path: createFilePath(
-                    context,
-                    "${package}/cwp-template-aws/template/common/apps/theme/layouts/forms/DefaultFormLayout/fields/Select.tsx"
-                ),
-                tag: "cwp",
-                name: "/cwp-template-aws/template/common/apps/theme/layouts/forms/DefaultFormLayout/fields/Select.tsx"
-            }),
-            migrationInstructions: {
-                expressions: {}
+                statements: {
+                    variables: [
+                        {
+                            name: "RteFieldLabel", syntaxKind: SyntaxKind.ElementAccessExpression
+                        }
+                    ]
+                }
             }
         },
         {
@@ -479,7 +499,9 @@ const cwpTemplateAwsDefinitions = (context: Context): ThemeFileMigrationDefiniti
                 name: "/cwp-template-aws/template/common/apps/theme/layouts/forms/DefaultFormLayout/fields/Input.tsx"
             }),
             migrationInstructions: {
-                expressions: {}
+                statements: {
+                    variables:  [ { name: "StyledInput", syntaxKind: SyntaxKind.TemplateSpan } ]
+                }
             }
         },
         {
@@ -492,7 +514,9 @@ const cwpTemplateAwsDefinitions = (context: Context): ThemeFileMigrationDefiniti
                 name: "/cwp-template-aws/template/common/apps/theme/layouts/forms/DefaultFormLayout/fields/Select.tsx"
             }),
             migrationInstructions: {
-                expressions: {}
+                statements: {
+                    variables:  [ { name: "StyledInput", syntaxKind: SyntaxKind.TemplateSpan } ]
+                }
             }
         },
         {
@@ -505,7 +529,11 @@ const cwpTemplateAwsDefinitions = (context: Context): ThemeFileMigrationDefiniti
                 name: "/cwp-template-aws/template/common/apps/theme/layouts/forms/DefaultFormLayout/fields/Textarea.tsx"
             }),
             migrationInstructions: {
-                expressions: {}
+                statements: {
+                    variables: [{
+                        name: "StyledTextarea", syntaxKind: SyntaxKind.ElementAccessExpression
+                    }]
+                }
             }
         },
         {
@@ -518,7 +546,11 @@ const cwpTemplateAwsDefinitions = (context: Context): ThemeFileMigrationDefiniti
                 name: "/cwp-template-aws/template/common/apps/theme/layouts/forms/DefaultFormLayout/fields/components/Field.tsx"
             }),
             migrationInstructions: {
-                expressions: {}
+                statements: {
+                    variables: [
+                        { name: "Field", syntaxKind: SyntaxKind.ElementAccessExpression }
+                    ]
+                }
             }
         },
         {
@@ -531,8 +563,19 @@ const cwpTemplateAwsDefinitions = (context: Context): ThemeFileMigrationDefiniti
                 name: "/cwp-template-aws/template/common/apps/theme/layouts/forms/DefaultFormLayout/fields/components/FieldErrorMessage.tsx"
             }),
             migrationInstructions: {
-                expressions: {},
-                interfaces: {}
+                statements: {
+                    variables: [{
+                        name: "Wrapper", syntaxKind: SyntaxKind.TemplateSpan
+                    }]
+                },
+                imports: {
+                    declarations: [
+                            {
+                                insertDefaultImport: "theme",
+                                removeNamedImports: ["typography"]
+                            }
+                        ]
+                }
             }
         },
         {
@@ -545,8 +588,21 @@ const cwpTemplateAwsDefinitions = (context: Context): ThemeFileMigrationDefiniti
                 name: "/cwp-template-aws/template/common/apps/theme/layouts/forms/DefaultFormLayout/fields/components/FieldHelperMessage.tsx"
             }),
             migrationInstructions: {
-                expressions: {},
-                imports: {}
+                statements: {
+                    variables: [
+                        {
+                            name: "FieldHelperMessage", syntaxKind: SyntaxKind.TemplateSpan
+                        }
+                    ]
+                },
+                imports: {
+                    declarations: [
+                        {
+                            insertDefaultImport: "theme",
+                            removeNamedImports: ["typography"]
+                        }
+                    ]
+                }
             }
         },
         {
@@ -559,8 +615,17 @@ const cwpTemplateAwsDefinitions = (context: Context): ThemeFileMigrationDefiniti
                 name: "/cwp-template-aws/template/common/apps/theme/layouts/pages/Static/Footer.tsx"
             }),
             migrationInstructions: {
-                expressions: {},
-                imports: {}
+                statements: {
+                    variables: [{ name: "FooterLogo", syntaxKind: SyntaxKind.TemplateSpan }]
+                },
+                imports: {
+                    declarations: [
+                        {
+                            insertDefaultImport: "theme",
+                            removeNamedImports: ["typography"]
+                        }
+                    ]
+                }
             }
         },
         {
@@ -573,8 +638,17 @@ const cwpTemplateAwsDefinitions = (context: Context): ThemeFileMigrationDefiniti
                 name: "/cwp-template-aws/template/common/apps/theme/layouts/pages/Static/Header.tsx"
             }),
             migrationInstructions: {
-                expressions: {},
-                imports: {}
+                statements: {
+                    variables: [{ name: "HeaderWrapper", syntaxKind: SyntaxKind.TemplateSpan }]
+                },
+                imports: {
+                    declarations: [
+                        {
+                            insertDefaultImport: "theme",
+                            removeNamedImports: ["typography"]
+                        }
+                    ]
+                }
             }
         }
     ];
