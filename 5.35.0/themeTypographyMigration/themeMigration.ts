@@ -8,7 +8,7 @@ import {
     typographyKeyToHtmlTagMapping,
     TypographyStyle,
     TypographyType
-} from "./definitions";
+} from "./migrationTypes";
 
 const APP_THEME_FILE_PATH = "${theme}/theme.ts";
 

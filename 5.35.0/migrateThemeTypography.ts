@@ -10,7 +10,7 @@ import {
     setMigratedTypographyInSourceFile,
     typographyIsAlreadyMigrated
 } from "./themeTypographyMigration/themeMigration";
-import { migrationFileDefinitions } from "./themeTypographyMigration/migrationFileDefinitions";
+import { themeMigrationSetupFiles } from "./themeTypographyMigration/themeMigrationSetupFiles";
 import { migrateFile } from "./themeTypographyMigration/migrateFile";
 import { createThemeUpgradeBackup } from "./themeTypographyMigration/createThemeUpgradeBackup";
 
@@ -20,7 +20,7 @@ interface Params {
     context: Context;
 }
 
-export const updateThemeTypography = async (params: Params): Promise<void> => {
+export const migrateThemeTypography = async (params: Params): Promise<void> => {
     const { context, project } = params;
 
     context.log.info(`Upgrading Webiny theme to new typography styles...`);
@@ -106,7 +106,7 @@ export const updateThemeTypography = async (params: Params): Promise<void> => {
     const styleIdToTypographyTypeMap = createStyleIdToTypographyTypeMap(migratedTypography);
 
     context.log.debug(`Migrate the legacy typography statements, imports and interfaces...`);
-    const migrationDefinitions = migrationFileDefinitions(context);
+    const migrationDefinitions = themeMigrationSetupFiles(context);
     for (const definition of migrationDefinitions) {
         const result = migrateFile(definition, styleIdToTypographyTypeMap, project, context);
         // log message if file is not successfully migrated

@@ -1,4 +1,5 @@
 import { SyntaxKind } from "ts-morph";
+import {FileDefinition} from "../../utils";
 
 export type TypographyStyle = {
     id: string;
@@ -87,4 +88,46 @@ export type TypeLiteralInstruction = {
 export type TypeAliasMigrationDefinition = {
     name: string;
     typeInstruction: FunctionTypeInstruction | TypeReferenceInstruction;
+};
+
+
+export type StatementMigrationDefinition = {
+    variables: {
+        name: string | undefined;
+        syntaxKind:
+            | SyntaxKind.ElementAccessExpression
+            | SyntaxKind.TemplateSpan
+            | SyntaxKind.PropertyAssignment;
+        nodeUpdates?: // first level properties update
+            {
+                symbolEscapedName?: string;
+                syntaxKind: SyntaxKind.PropertyAssignment | SyntaxKind.SpreadAssignment;
+                // node attached to the current child that contains the props
+                initializerKind?: SyntaxKind.PropertyAccessExpression;
+                matchText?: string;
+                expression?: SyntaxKind.PropertyAccessExpression;
+            }[];
+    }[];
+};
+
+export type MigrationInstructions = {
+    imports?: { declarations: ImportDeclarationDefinition[] };
+    types?: TypeAliasMigrationDefinition[];
+    interfaces?: InterfaceMigrationDefinition[];
+    statements?: StatementMigrationDefinition;
+};
+
+export type ImportDeclarationDefinition = {
+    insertDefaultImport: string;
+    moduleSpecifier?: string;
+    removeNamedImports?: string[];
+    addNamedImports?: string[];
+};
+
+export type ThemeFileMigrationDefinition = {
+    file: FileDefinition;
+    /*
+     * Detailed instructions about code changes
+     * */
+    migrationInstructions: MigrationInstructions;
 };

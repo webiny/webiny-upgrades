@@ -8,57 +8,8 @@ import {
     TypeLiteralInstruction,
     TypeReferenceInstruction,
     UnionTypeInstruction,
-    TypeAliasMigrationDefinition
+    TypeAliasMigrationDefinition, ThemeFileMigrationDefinition, ImportDeclarationDefinition
 } from "./migrationTypes";
-
-export type TypographyUpgradeType =
-    | "imports"
-    | "expressions"
-    | "interfaces"
-    | "types"
-    | "classes"
-    | "statements";
-
-export type StatementMigrationDefinition = {
-    variables: {
-        name: string | undefined;
-        syntaxKind:
-            | SyntaxKind.ElementAccessExpression
-            | SyntaxKind.TemplateSpan
-            | SyntaxKind.PropertyAssignment;
-        nodeUpdates?: // first level properties update
-        {
-            symbolEscapedName?: string;
-            syntaxKind: SyntaxKind.PropertyAssignment | SyntaxKind.SpreadAssignment;
-            // node attached to the current child that contains the props
-            initializerKind?: SyntaxKind.PropertyAccessExpression;
-            matchText?: string;
-            expression?: SyntaxKind.PropertyAccessExpression;
-        }[];
-    }[];
-};
-
-export type MigrationInstructions = {
-    imports?: { declarations: ImportDeclarationDefinition[] };
-    types?: TypeAliasMigrationDefinition[];
-    interfaces?: InterfaceMigrationDefinition[];
-    statements?: StatementMigrationDefinition;
-};
-
-export type ImportDeclarationDefinition = {
-    insertDefaultImport: string;
-    moduleSpecifier?: string;
-    removeNamedImports?: string[];
-    addNamedImports?: string[];
-};
-
-export type ThemeFileMigrationDefinition = {
-    file: FileDefinition;
-    /*
-     * Detailed instructions about code changes
-     * */
-    migrationInstructions: MigrationInstructions;
-};
 
 const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefinition[] => {
     return [
@@ -661,18 +612,11 @@ const cwpTemplateAwsDefinitions = (context: Context): ThemeFileMigrationDefiniti
     ];
 };
 
-export const migrationFileDefinitions = (context: Context): ThemeFileMigrationDefinition[] => {
+export const themeMigrationSetupFiles = (context: Context): ThemeFileMigrationDefinition[] => {
     return [
         ...themeLayoutUpgradeDefinition(context),
         ...appFormBuilderDefinitions(context),
         ...appPageBuilderElementsDefinitions(context),
         ...cwpTemplateAwsDefinitions(context)
     ];
-};
-
-export const getVariableNodeUpdateInstructions = (
-    symbolEscapedName: string,
-    nodeUpdates: Record<string, any>[]
-): Record<string, any> | undefined => {
-    return nodeUpdates.find(x => x.symbolEscapedName === symbolEscapedName);
 };

@@ -1,7 +1,6 @@
 import { Project } from "ts-morph";
-import { ThemeFileMigrationDefinition } from "./migrationFileDefinitions";
 import { getSourceFile } from "../../utils";
-import { StyleIdToTypographyTypeMap } from "./migrationTypes";
+import {StyleIdToTypographyTypeMap, ThemeFileMigrationDefinition} from "./migrationTypes";
 import { Context } from "../../types";
 import { migrateTypesAliases } from "./migrateTypesAliases";
 import { migrateImports } from "./migrateImports";

@@ -1,5 +1,6 @@
 import { Context } from "../types";
 import { createFilePath, Files, FileDefinition } from "../utils";
+import {themeMigrationSetupFiles} from "./themeTypographyMigration/themeMigrationSetupFiles";
 
 export const setupFiles = (context: Context): Files => {
     /**
@@ -25,7 +26,8 @@ export const setupFiles = (context: Context): Files => {
             path: createFilePath(context, "${admin}/src/plugins/pageBuilder/editorPlugins.ts"),
             tag: "admin",
             name: "admin/plugins/pageBuilder/editorPlugins.ts"
-        })
+        }),
+        ...themeMigrationSetupFiles(context).map(t => t.file)
     ]);
 
     return files.relevant();

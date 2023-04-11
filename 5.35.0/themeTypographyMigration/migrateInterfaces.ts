@@ -5,7 +5,7 @@ import { Context } from "../../types";
 import {
     InterfaceMigrationDefinition,
 } from "./migrationTypes";
-import {ThemeFileMigrationDefinition} from "./migrationFileDefinitions";
+import {ThemeFileMigrationDefinition} from "./themeMigrationSetupFiles";
 import {migrateInterfaceDeclaration} from "./migrateInterfaceDeclaration";
 
 

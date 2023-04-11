@@ -1,5 +1,5 @@
 import { SourceFile, SyntaxKind } from "ts-morph";
-import { ThemeFileMigrationDefinition } from "./migrationFileDefinitions";
+import { ThemeFileMigrationDefinition } from "./themeMigrationSetupFiles";
 import { StyleIdToTypographyTypeMap } from "./migrationTypes";
 import { Context } from "../../types";
 import { migrateVariableStatement } from "./migrateVariableStatement";
