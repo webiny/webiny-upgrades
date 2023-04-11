@@ -1,3 +1,5 @@
+import { SyntaxKind } from "ts-morph";
+
 export type TypographyStyle = {
     id: string;
     name: string; // display name for the user
@@ -45,4 +47,44 @@ export const htmlTagToTypographyTypeMapping = {
  * */
 export type StyleIdToTypographyTypeMap = {
     [key in string]: TypographyType;
+};
+
+export type TypeReferenceInstruction = {
+    syntaxKind: SyntaxKind.TypeReference;
+    typeName: string;
+    updateToTypeName?: string;
+};
+
+export type UnionTypeInstruction = {
+    syntaxKind: SyntaxKind.UnionType;
+    unionTypes: (TypeReferenceInstruction | FunctionTypeInstruction)[];
+};
+
+export type FunctionTypeInstruction = {
+    syntaxKind: SyntaxKind.FunctionType;
+    params: {
+        name: string;
+        typeInstruction: TypeReferenceInstruction | UnionTypeInstruction | TypeLiteralInstruction;
+    }[];
+};
+
+export type PropertySignatureInstruction = {
+    syntaxKind: SyntaxKind.PropertySignature;
+    name: string;
+    typeInstruction: TypeReferenceInstruction | UnionTypeInstruction | FunctionTypeInstruction;
+};
+
+export type InterfaceMigrationDefinition = {
+    name: string;
+    members: PropertySignatureInstruction[];
+};
+
+export type TypeLiteralInstruction = {
+    syntaxKind: SyntaxKind.TypeLiteral;
+    members: PropertySignatureInstruction[];
+};
+
+export type TypeAliasMigrationDefinition = {
+    name: string;
+    typeInstruction: FunctionTypeInstruction | TypeReferenceInstruction;
 };

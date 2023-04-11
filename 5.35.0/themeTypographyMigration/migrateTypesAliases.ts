@@ -1,31 +1,23 @@
-import {
-    FunctionTypeInstruction,
-    migrateFunctionType,
-    TypeReferenceInstruction
-} from "./migrateInterface";
-import {FunctionTypeNode, SourceFile, SyntaxKind} from "ts-morph";
+import { TypeAliasMigrationDefinition } from "./migrationTypes";
+import { FunctionTypeNode, SourceFile, SyntaxKind } from "ts-morph";
 import { Context } from "../../types";
+import { migrateFunctionType } from "./migrateInterfaces";
 
-export type TypeAliasMigrationDefinition = {
-    name: string;
-    typeInstruction: FunctionTypeInstruction | TypeReferenceInstruction;
-};
-
-export const migrateTypes = (
+export const migrateTypesAliases = (
     sourceCode: SourceFile,
     migrationInstructions: TypeAliasMigrationDefinition[],
     context: Context
 ) => {
-
     const typeAliasDeclarations = sourceCode.getTypeAliases();
 
     for (const typeAliasDeclaration of typeAliasDeclarations) {
+        const foundTypeAliasInstruction = migrationInstructions.find(
+            i => i.name === typeAliasDeclaration.getName()
+        );
 
-        const foundTypeAliasInstruction = migrationInstructions.find(i => i.name === typeAliasDeclaration.getName());
-
-        if(foundTypeAliasInstruction) {
+        if (foundTypeAliasInstruction) {
             const migrateTypeNode = typeAliasDeclaration.getTypeNode();
-            const instructionKind = foundTypeAliasInstruction.typeInstruction.syntaxKind
+            const instructionKind = foundTypeAliasInstruction.typeInstruction.syntaxKind;
 
             if (
                 migrateTypeNode.getKind() === SyntaxKind.FunctionType &&

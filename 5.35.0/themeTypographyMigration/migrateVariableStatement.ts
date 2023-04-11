@@ -41,7 +41,7 @@ export const migrateVariableStatement = (
                     propertyAssignment.getInitializer().getKind() ===
                     SyntaxKind.PropertyAccessExpression
                 ) {
-                    updatePropertyAccessExpression(propertyAssignment, map, context, filePath);
+                    migratePropertyAccessExpression(propertyAssignment, map, context, filePath);
                 }
             }
 
@@ -124,7 +124,7 @@ export const isNodeToUpdate = (node: Node, nodeUpdates: Record<string, any>): bo
     return false;
 };
 
-export const updatePropertyAccessExpression = (
+export const migratePropertyAccessExpression = (
     assigment: PropertyAssignment,
     map: StyleIdToTypographyTypeMap,
     context: Context,

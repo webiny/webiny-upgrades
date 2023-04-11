@@ -12,14 +12,11 @@ export type ThemeBackupResult = {
     info?: string;
 };
 
-
-
 /*
  *TODO: Create backup of the files and theme for the user.
  * Creates folder named 'legacy_theme_backup'
  * */
 export const createThemeUpgradeBackup = async (context: Context): Promise<ThemeBackupResult> => {
-
     const currentProjectVersion = findVersion(path.join(context.project.root, "package.json"));
 
     log.info(
@@ -66,7 +63,7 @@ export const createThemeUpgradeBackup = async (context: Context): Promise<ThemeB
         );
         return {
             isSuccessful: true
-        }
+        };
     }
 
     return {

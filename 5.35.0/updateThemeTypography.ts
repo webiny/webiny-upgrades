@@ -54,19 +54,16 @@ export const updateThemeTypography = async (params: Params): Promise<void> => {
 
     context.log.debug(`Back up legacy theme files...`);
     const backupResult = await createThemeUpgradeBackup(context);
-    if(backupResult.isSuccessful){
+    if (backupResult.isSuccessful) {
         context.log.info(
             `Theme backup for the legacy typography styles successfully created. 
             Backup folder path: /apps/_theme_typography_backup`
         );
         return;
     } else {
-        context.log.info(
-            `Theme migrations is canceled, can't create backup fot the legacy theme`
-        );
+        context.log.info(`Theme migrations is canceled, can't create backup fot the legacy theme`);
         return;
     }
-
 
     /*
      * MIGRATE THE THEME OBJECT

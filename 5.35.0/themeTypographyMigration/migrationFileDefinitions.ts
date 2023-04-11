@@ -1,16 +1,15 @@
-import {Context} from "../../types";
-import {createFilePath, FileDefinition} from "../../utils";
-import {SyntaxKind} from "ts-morph";
+import { Context } from "../../types";
+import { createFilePath, FileDefinition } from "../../utils";
+import { SyntaxKind } from "ts-morph";
 import {
     FunctionTypeInstruction,
     InterfaceMigrationDefinition,
     PropertySignatureInstruction,
     TypeLiteralInstruction,
     TypeReferenceInstruction,
-    UnionTypeInstruction
-} from "./migrateInterface";
-
-import {TypeAliasMigrationDefinition} from "./migrateType";
+    UnionTypeInstruction,
+    TypeAliasMigrationDefinition
+} from "./migrationTypes";
 
 export type TypographyUpgradeType =
     | "imports"
@@ -22,20 +21,22 @@ export type TypographyUpgradeType =
 
 export type StatementMigrationDefinition = {
     variables: {
-        name: string | undefined,
-        syntaxKind: SyntaxKind.ElementAccessExpression | SyntaxKind.TemplateSpan | SyntaxKind.PropertyAssignment,
-        nodeUpdates?:
-            // first level properties update
-            {
-                symbolEscapedName?: string,
-                syntaxKind: SyntaxKind.PropertyAssignment | SyntaxKind.SpreadAssignment,
-                // node attached to the current child that contains the props
-                initializerKind?: SyntaxKind.PropertyAccessExpression,
-                matchText?: string
-                expression?: SyntaxKind.PropertyAccessExpression
-            }[]
-    }[]
-}
+        name: string | undefined;
+        syntaxKind:
+            | SyntaxKind.ElementAccessExpression
+            | SyntaxKind.TemplateSpan
+            | SyntaxKind.PropertyAssignment;
+        nodeUpdates?: // first level properties update
+        {
+            symbolEscapedName?: string;
+            syntaxKind: SyntaxKind.PropertyAssignment | SyntaxKind.SpreadAssignment;
+            // node attached to the current child that contains the props
+            initializerKind?: SyntaxKind.PropertyAccessExpression;
+            matchText?: string;
+            expression?: SyntaxKind.PropertyAccessExpression;
+        }[];
+    }[];
+};
 
 export type MigrationInstructions = {
     imports?: { declarations: ImportDeclarationDefinition[] };
@@ -50,8 +51,6 @@ export type ImportDeclarationDefinition = {
     removeNamedImports?: string[];
     addNamedImports?: string[];
 };
-
-
 
 export type ThemeFileMigrationDefinition = {
     file: FileDefinition;
@@ -330,17 +329,17 @@ const appPageBuilderElementsDefinitions = (context: Context): ThemeFileMigration
                                         syntaxKind: SyntaxKind.UnionType,
                                         unionTypes: [
                                             {
-                                             syntaxKind: SyntaxKind.FunctionType,
-                                             params: [
-                                                 {
-                                                     name: "theme",
-                                                     typeInstruction: {
-                                                         syntaxKind: SyntaxKind.TypeReference,
-                                                         typeName: "Theme",
-                                                         updateToTypeName: "DecoratedTheme",
-                                                     }
-                                                 }
-                                             ]
+                                                syntaxKind: SyntaxKind.FunctionType,
+                                                params: [
+                                                    {
+                                                        name: "theme",
+                                                        typeInstruction: {
+                                                            syntaxKind: SyntaxKind.TypeReference,
+                                                            typeName: "Theme",
+                                                            updateToTypeName: "DecoratedTheme"
+                                                        }
+                                                    }
+                                                ]
                                             }
                                         ]
                                     } as UnionTypeInstruction
@@ -461,10 +460,12 @@ const cwpTemplateAwsDefinitions = (context: Context): ThemeFileMigrationDefiniti
                 statements: {
                     variables: [
                         {
-                            name: "Heading", syntaxKind: SyntaxKind.ElementAccessExpression
+                            name: "Heading",
+                            syntaxKind: SyntaxKind.ElementAccessExpression
                         },
                         {
-                            name: "Message", syntaxKind: SyntaxKind.ElementAccessExpression
+                            name: "Message",
+                            syntaxKind: SyntaxKind.ElementAccessExpression
                         }
                     ]
                 }
@@ -483,7 +484,8 @@ const cwpTemplateAwsDefinitions = (context: Context): ThemeFileMigrationDefiniti
                 statements: {
                     variables: [
                         {
-                            name: "RteFieldLabel", syntaxKind: SyntaxKind.ElementAccessExpression
+                            name: "RteFieldLabel",
+                            syntaxKind: SyntaxKind.ElementAccessExpression
                         }
                     ]
                 }
@@ -500,7 +502,7 @@ const cwpTemplateAwsDefinitions = (context: Context): ThemeFileMigrationDefiniti
             }),
             migrationInstructions: {
                 statements: {
-                    variables:  [ { name: "StyledInput", syntaxKind: SyntaxKind.TemplateSpan } ]
+                    variables: [{ name: "StyledInput", syntaxKind: SyntaxKind.TemplateSpan }]
                 }
             }
         },
@@ -515,7 +517,7 @@ const cwpTemplateAwsDefinitions = (context: Context): ThemeFileMigrationDefiniti
             }),
             migrationInstructions: {
                 statements: {
-                    variables:  [ { name: "StyledInput", syntaxKind: SyntaxKind.TemplateSpan } ]
+                    variables: [{ name: "StyledInput", syntaxKind: SyntaxKind.TemplateSpan }]
                 }
             }
         },
@@ -530,9 +532,12 @@ const cwpTemplateAwsDefinitions = (context: Context): ThemeFileMigrationDefiniti
             }),
             migrationInstructions: {
                 statements: {
-                    variables: [{
-                        name: "StyledTextarea", syntaxKind: SyntaxKind.ElementAccessExpression
-                    }]
+                    variables: [
+                        {
+                            name: "StyledTextarea",
+                            syntaxKind: SyntaxKind.ElementAccessExpression
+                        }
+                    ]
                 }
             }
         },
@@ -547,9 +552,7 @@ const cwpTemplateAwsDefinitions = (context: Context): ThemeFileMigrationDefiniti
             }),
             migrationInstructions: {
                 statements: {
-                    variables: [
-                        { name: "Field", syntaxKind: SyntaxKind.ElementAccessExpression }
-                    ]
+                    variables: [{ name: "Field", syntaxKind: SyntaxKind.ElementAccessExpression }]
                 }
             }
         },
@@ -564,17 +567,20 @@ const cwpTemplateAwsDefinitions = (context: Context): ThemeFileMigrationDefiniti
             }),
             migrationInstructions: {
                 statements: {
-                    variables: [{
-                        name: "Wrapper", syntaxKind: SyntaxKind.TemplateSpan
-                    }]
+                    variables: [
+                        {
+                            name: "Wrapper",
+                            syntaxKind: SyntaxKind.TemplateSpan
+                        }
+                    ]
                 },
                 imports: {
                     declarations: [
-                            {
-                                insertDefaultImport: "theme",
-                                removeNamedImports: ["typography"]
-                            }
-                        ]
+                        {
+                            insertDefaultImport: "theme",
+                            removeNamedImports: ["typography"]
+                        }
+                    ]
                 }
             }
         },
@@ -591,7 +597,8 @@ const cwpTemplateAwsDefinitions = (context: Context): ThemeFileMigrationDefiniti
                 statements: {
                     variables: [
                         {
-                            name: "FieldHelperMessage", syntaxKind: SyntaxKind.TemplateSpan
+                            name: "FieldHelperMessage",
+                            syntaxKind: SyntaxKind.TemplateSpan
                         }
                     ]
                 },
