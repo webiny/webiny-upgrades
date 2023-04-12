@@ -1,13 +1,7 @@
-import {
-    SourceFile
-} from "ts-morph";
+import { SourceFile } from "ts-morph";
 import { Context } from "../../types";
-import {
-    InterfaceMigrationDefinition,
-} from "./migrationTypes";
-import {ThemeFileMigrationDefinition} from "./themeMigrationSetupFiles";
-import {migrateInterfaceDeclaration} from "./migrateInterfaceDeclaration";
-
+import { InterfaceMigrationDefinition, ThemeFileMigrationDefinition } from "./migrationTypes";
+import { migrateInterfaceDeclaration } from "./migrateInterfaceDeclaration";
 
 export const migrateInterfaces = (
     source: SourceFile,

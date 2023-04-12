@@ -8,7 +8,9 @@ import {
     TypeLiteralInstruction,
     TypeReferenceInstruction,
     UnionTypeInstruction,
-    TypeAliasMigrationDefinition, ThemeFileMigrationDefinition, ImportDeclarationDefinition
+    TypeAliasMigrationDefinition,
+    ThemeFileMigrationDefinition,
+    ImportDeclarationDefinition
 } from "./migrationTypes";
 
 const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefinition[] => {

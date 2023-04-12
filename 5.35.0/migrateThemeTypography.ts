@@ -4,7 +4,7 @@ import { Files } from "../utils";
 import {
     createStyleIdToTypographyTypeMap,
     getAppThemeSourceFile,
-    getTypographyObject,
+    getTypographyVariableDeclaration,
     legacyTypographyCanBeMigrated,
     mapToNewTypographyStyles,
     setMigratedTypographyInSourceFile,
@@ -28,30 +28,43 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
     context.log.debug(`Checking the legacy theme object...`);
     // Get the theme file and typography object
     const themeSourceFile = getAppThemeSourceFile(context, project);
-    const legacyTypography = getTypographyObject(themeSourceFile);
 
-    /*
-     * CHECK AND VALIDATE THE LEGACY THEME BEFORE MIGRATION
-     */
-    if (!legacyTypography) {
+    if (!themeSourceFile) {
         context.log.info(
-            `Constant with name 'typography', can't be found in App/Theme/theme.ts file.`
+            `Theme typography styles upgrade is canceled. Can't find App/Theme/theme.ts file`
         );
         return;
     }
 
-    if (typographyIsAlreadyMigrated(legacyTypography)) {
+    const legacyTypographyVar = getTypographyVariableDeclaration(themeSourceFile);
+    if (!legacyTypographyVar) {
+        context.log.info(
+            `Theme's typography styles can't be found in App/Theme/theme.ts file. So you can your own custom implementation? 
+            PLease check the 3.53.0 release docs`
+        );
+        return;
+    }
+
+    const alreadyMigratedResult = typographyIsAlreadyMigrated(legacyTypographyVar)
+    if (alreadyMigratedResult.isFullyMigrated) {
         context.log.info(`Theme's typography styles are already migrated.`);
         return;
     }
 
-    if (!legacyTypographyCanBeMigrated(legacyTypography)) {
+    /* We can't proceed with the migration to not mess the object */
+    if(alreadyMigratedResult.isPartlyMigrated) {
+        context.log.info(alreadyMigratedResult.info);
+        return;
+    }
+
+    const result = legacyTypographyCanBeMigrated(legacyTypographyVar)
+    if (!legacyTypographyCanBeMigrated(legacyTypographyVar)) {
         context.log.info(
             `Current theme typography can't be migrated, detected custom object structure.`
         );
         return;
     }
-
+    return;
     context.log.debug(`Back up legacy theme files...`);
     const backupResult = await createThemeUpgradeBackup(context);
     if (backupResult.isSuccessful) {
@@ -69,7 +82,7 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
      * MIGRATE THE THEME OBJECT
      */
     context.log.debug(`Map legacy typography object to new structure...`);
-    const typographyMappingResult = mapToNewTypographyStyles(legacyTypography, context);
+    const typographyMappingResult = mapToNewTypographyStyles(legacyTypographyVar, context);
 
     if (!typographyMappingResult.isSuccessfullyMapped) {
         context.log.info(typographyMappingResult.info);

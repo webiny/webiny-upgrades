@@ -1,6 +1,10 @@
-import {ParenthesizedTypeNode, SyntaxKind, TypeNode} from "ts-morph";
-import {FunctionTypeInstruction, TypeReferenceInstruction, UnionTypeInstruction} from "../migrationTypes";
-import {shouldFunctionTypeBeMigrated} from "./shouldFunctionTypeBeMigrated";
+import { ParenthesizedTypeNode, SyntaxKind, TypeNode } from "ts-morph";
+import {
+    FunctionTypeInstruction,
+    TypeReferenceInstruction,
+    UnionTypeInstruction
+} from "../migrationTypes";
+import { shouldFunctionTypeBeMigrated } from "./shouldFunctionTypeBeMigrated";
 
 export const findTypeInstructionInUnion = (
     unionTypeNode: TypeNode,

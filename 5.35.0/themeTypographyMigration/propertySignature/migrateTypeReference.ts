@@ -1,5 +1,5 @@
-import {SyntaxKind, TypeReferenceNode} from "ts-morph";
-import {TypeReferenceInstruction} from "../migrationTypes";
+import { SyntaxKind, TypeReferenceNode } from "ts-morph";
+import { TypeReferenceInstruction } from "../migrationTypes";
 
 export const migrateTypeReference = (
     typeReferenceNode: TypeReferenceNode,

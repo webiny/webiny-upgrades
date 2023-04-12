@@ -1,7 +1,7 @@
-import {PropertySignature, SyntaxKind, TypeLiteralNode} from "ts-morph";
-import {TypeLiteralInstruction} from "../migrationTypes";
-import {Context} from "../../../types";
-import {migratePropertySignature} from "./migratePropertySignature";
+import { PropertySignature, SyntaxKind, TypeLiteralNode } from "ts-morph";
+import { TypeLiteralInstruction } from "../migrationTypes";
+import { Context } from "../../../types";
+import { migratePropertySignature } from "./migratePropertySignature";
 
 export const migrateLiteralType = (
     typeLiteralNode: TypeLiteralNode,

@@ -1,8 +1,7 @@
-
 /*
  * Checks if the function type has all instruction param names
  */
-import {FunctionTypeNode, SyntaxKind} from "ts-morph";
+import { FunctionTypeNode, SyntaxKind } from "ts-morph";
 
 export const shouldFunctionTypeBeMigrated = (
     functionTypeNode: FunctionTypeNode,

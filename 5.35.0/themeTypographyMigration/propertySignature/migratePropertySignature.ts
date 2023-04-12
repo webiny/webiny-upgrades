@@ -1,9 +1,15 @@
-import {FunctionTypeNode, PropertySignature, SyntaxKind, TypeReferenceNode, UnionTypeNode} from "ts-morph";
-import {PropertySignatureInstruction} from "../migrationTypes";
-import {Context} from "../../../types";
-import {migrateUnionType} from "./migrateUnionType";
-import {migrateFunctionType} from "./migrateFunctionType";
-import {migrateTypeReference} from "./migrateTypeReference";
+import {
+    FunctionTypeNode,
+    PropertySignature,
+    SyntaxKind,
+    TypeReferenceNode,
+    UnionTypeNode
+} from "ts-morph";
+import { PropertySignatureInstruction } from "../migrationTypes";
+import { Context } from "../../../types";
+import { migrateUnionType } from "./migrateUnionType";
+import { migrateFunctionType } from "./migrateFunctionType";
+import { migrateTypeReference } from "./migrateTypeReference";
 
 export const migratePropertySignature = (
     propSignature: PropertySignature,

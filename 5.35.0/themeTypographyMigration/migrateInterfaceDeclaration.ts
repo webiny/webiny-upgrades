@@ -1,8 +1,8 @@
-import {InterfaceDeclaration} from "ts-morph";
-import {InterfaceMigrationDefinition} from "./migrationTypes";
-import {Context} from "../../types";
-import {findInterfaceInstructionByMemberName} from "./propertySignature/findInterfaceInstructionByMemberName";
-import {migratePropertySignature} from "./propertySignature/migratePropertySignature";
+import { InterfaceDeclaration } from "ts-morph";
+import { InterfaceMigrationDefinition } from "./migrationTypes";
+import { Context } from "../../types";
+import { findInterfaceInstructionByMemberName } from "./propertySignature/findInterfaceInstructionByMemberName";
+import { migratePropertySignature } from "./propertySignature/migratePropertySignature";
 
 export const migrateInterfaceDeclaration = (
     interfaceDeclaration: InterfaceDeclaration,
@@ -36,4 +36,3 @@ export const migrateInterfaceDeclaration = (
         }
     }
 };
-

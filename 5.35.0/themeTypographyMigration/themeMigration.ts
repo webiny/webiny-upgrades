@@ -1,6 +1,13 @@
-import { Context } from "../../types";
-import { Project, SourceFile, ts } from "ts-morph";
-import { createFilePath, FileDefinition, getSourceFile } from "../../utils";
+import {Context} from "../../types";
+import {
+    ArrayLiteralExpression,
+    ObjectLiteralExpression,
+    Project,
+    PropertyAssignment,
+    SourceFile,
+    SyntaxKind,
+    VariableDeclaration
+} from "ts-morph";
 import {
     htmlTagToTypographyTypeMapping,
     StyleIdToTypographyTypeMap,
@@ -9,49 +16,71 @@ import {
     TypographyStyle,
     TypographyType
 } from "./migrationTypes";
-
-const APP_THEME_FILE_PATH = "${theme}/theme.ts";
+import {getObjectLiteralExpressionValue} from "./propertyAsigment/getObjectLiteralExpressionValue";
+import {validate} from "json-schema";
 
 /*
  * ----- SOURCE FILE SETUP FOR THEME ----- ß
  */
 
 export const getAppThemeSourceFile = (context: Context, project: Project): SourceFile => {
-    const file = new FileDefinition({
-        path: createFilePath(context, APP_THEME_FILE_PATH),
-        tag: "theme",
-        name: "/theme.ts"
-    });
-    return getSourceFile(project, file.path);
+    return project.getSourceFile("theme.ts");
 };
 
 // Extract theme object from the source file
 /*
  * Get theme object from theme file
  **/
-export const getTypographyObject = (
+export const getTypographyVariableDeclaration = (
     appThemeSourceFile: SourceFile
-): Record<string, any> | undefined => {
+): VariableDeclaration | undefined => {
     if (!appThemeSourceFile) {
         return undefined;
     }
 
-    const variable = appThemeSourceFile.getVariableDeclarationOrThrow("typography");
+    const variable = appThemeSourceFile.getVariableDeclaration("typography");
     if (!variable) {
         return undefined;
     }
+    return variable;
+    //TODO: check one more place as inline declaration inside the createTheme factory function
+};
 
-    const typographyVariable = variable.getInitializerIfKindOrThrow(
-        ts.SyntaxKind.ObjectLiteralExpression
+export const mapLegacyTypographyObject = (
+    variable: VariableDeclaration,
+    context: Context
+): Record<string, ObjectLiteralExpression> => {
+    const typographyObject: Record<string, any> = {};
+    const typographyObjetExpression = variable.getInitializerIfKind(
+        SyntaxKind.ObjectLiteralExpression
     );
 
-    // Parse the typography object
-    let typographyObject;
-    try {
-        typographyObject = JSON.parse(typographyVariable?.getFullText()) ?? undefined;
-    } catch (e) {
-        typographyObject = undefined;
+    if (!typographyObjetExpression) {
+        context.log.info(
+            "Typography styles upgrade is canceled, typography object has custom data structure."
+        );
+        return undefined;
     }
+    const props = typographyObjetExpression.getProperties();
+
+    // map the first level props to object literal property,
+    // with that we can manipulate the object
+    for (const objectProp of props) {
+        if (objectProp.getKind() === SyntaxKind.PropertyAssignment) {
+            const propAssigment = objectProp as PropertyAssignment;
+            const propName = propAssigment.getSymbol().getName();
+            const propInitializer = propAssigment.getInitializer();
+
+            if (propInitializer) {
+                const propInitializerKind = propInitializer.getKind();
+                if (propName && propInitializerKind === SyntaxKind.ObjectLiteralExpression) {
+                    typographyObject[propName] = objectProp;
+                }
+            }
+        }
+    }
+
+    // create the
     return typographyObject;
 };
 
@@ -74,7 +103,7 @@ export const setMigratedTypographyInSourceFile = (
         return undefined;
     }
     // take the variable
-    const variable = appThemeSourceFile.getVariableDeclarationOrThrow("typography");
+    const variable = appThemeSourceFile.getVariableDeclaration("typography");
     if (!variable) {
         return {
             isSuccessful: false,
@@ -219,35 +248,104 @@ export const mapToNewTypographyStyles = (
     };
 };
 
-export const typographyIsAlreadyMigrated = (typography: Record<string, any>): boolean => {
+type AlreadyMigratedResult = {
+    isFullyMigrated: boolean,
+    isPartlyMigrated: boolean,
+    isNotMigrated: boolean;
+    info?: string;
+}
+
+export const typographyIsAlreadyMigrated = (typography: VariableDeclaration): AlreadyMigratedResult | undefined => {
+
     if (!typography) {
-        return false;
+        return undefined;
     }
 
-    // check if typography has at least one key
-    if (!!Object.keys(typography).length) {
-        for (const key in typography) {
-            const typographyStyle = typography[key];
-            // Must be object and not array
-            if (Array.isArray(typographyStyle) && typographyStyle?.length > 0) {
-                for (let i = 0; i < typographyStyle.length - 1; i++) {
-                    const style = typographyStyle[i];
-                    if (
-                        !(
-                            style.hasOwnProperty("id") &&
-                            style.hasOwnProperty("name") &&
-                            style.hasOwnProperty("tag") &&
-                            style.hasOwnProperty("css")
-                        )
-                    ) {
-                        return false;
+    const typographyObjetExpression = typography.getInitializerIfKind(
+        SyntaxKind.ObjectLiteralExpression
+    );
+
+    const validation = {
+        headings: {},
+        paragraphs: { },
+        lists: {  },
+        quotes: { }
+    };
+
+    const partialMigration: string[] = [];
+    const fullMigration: string[] = [];
+
+
+    const props = typographyObjetExpression.getProperties();
+
+    // map the first level props to object literal property,
+    // with that we can manipulate the object
+    for (const objectProp of props) {
+
+        if (objectProp.getKind() === SyntaxKind.PropertyAssignment) {
+            const propAssigment = objectProp as PropertyAssignment;
+            const propName = propAssigment.getSymbol().getName();
+            // Check if that property have array as value
+            const arrayLiteralExpression = propAssigment.getInitializerIfKind(SyntaxKind.ArrayLiteralExpression);
+
+            // headings and other props are arrays in the new mapped type
+            if(arrayLiteralExpression) {
+                if (!validation[propName]) {
+                    continue;
+                }
+
+                const validationObject = validation[propName];
+                validationObject.partialMigration = true;
+
+                const elements = arrayLiteralExpression.getElements();
+                if(elements.length === 0) {
+                    // for empty array we consider full migration
+                    if (validation[propName]) {
+                        validation[propName].fullMigration = true;
+                        fullMigration.push(propName);
+                    }
+                    continue;
+                }
+                    for (const element of elements) {
+                        let allStylesAreMigrated = true;
+                        if(element.getKind() === SyntaxKind.ObjectLiteralExpression) {
+                            const style = getObjectLiteralExpressionValue(element as ObjectLiteralExpression);
+                            if (
+                                !(
+                                    style.hasOwnProperty("id") &&
+                                    style.hasOwnProperty("name") &&
+                                    style.hasOwnProperty("tag") &&
+                                    style.hasOwnProperty("css")
+                                )
+                            ) {
+                                if(allStylesAreMigrated) {
+                                    allStylesAreMigrated = false;
+                                }
+                            }
+                        }
+
+                        if(allStylesAreMigrated) {
+                            fullMigration.push(propName);
+                        } else {
+                            // match name or match for some objects in the array
+                            partialMigration.push(propName);
+                        }
                     }
                 }
             }
-        }
-        return true;
     }
-    return false;
+
+    const isPartlyMigrated = !!partialMigration?.length;
+    const info = isPartlyMigrated ? `Theme's typography style upgrade canceled. /n` +
+        `Typography styles are partially migrated, please check the following properties: ${partialMigration.join(" ,")}` :
+        "";
+
+    return {
+        isFullyMigrated: fullMigration.length === Object.keys(validation).length,
+        isNotMigrated: !partialMigration?.length && !fullMigration?.length,
+        isPartlyMigrated,
+        info
+    };
 };
 
 /*

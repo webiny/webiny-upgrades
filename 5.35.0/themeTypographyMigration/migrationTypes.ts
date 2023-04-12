@@ -1,5 +1,5 @@
 import { SyntaxKind } from "ts-morph";
-import {FileDefinition} from "../../utils";
+import { FileDefinition } from "../../utils";
 
 export type TypographyStyle = {
     id: string;
@@ -90,7 +90,6 @@ export type TypeAliasMigrationDefinition = {
     typeInstruction: FunctionTypeInstruction | TypeReferenceInstruction;
 };
 
-
 export type StatementMigrationDefinition = {
     variables: {
         name: string | undefined;
@@ -99,14 +98,14 @@ export type StatementMigrationDefinition = {
             | SyntaxKind.TemplateSpan
             | SyntaxKind.PropertyAssignment;
         nodeUpdates?: // first level properties update
-            {
-                symbolEscapedName?: string;
-                syntaxKind: SyntaxKind.PropertyAssignment | SyntaxKind.SpreadAssignment;
-                // node attached to the current child that contains the props
-                initializerKind?: SyntaxKind.PropertyAccessExpression;
-                matchText?: string;
-                expression?: SyntaxKind.PropertyAccessExpression;
-            }[];
+        {
+            symbolEscapedName?: string;
+            syntaxKind: SyntaxKind.PropertyAssignment | SyntaxKind.SpreadAssignment;
+            // node attached to the current child that contains the props
+            initializerKind?: SyntaxKind.PropertyAccessExpression;
+            matchText?: string;
+            expression?: SyntaxKind.PropertyAccessExpression;
+        }[];
     }[];
 };
 

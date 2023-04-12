@@ -1,8 +1,8 @@
-import {FunctionTypeNode, SyntaxKind, TypeReferenceNode, UnionTypeNode} from "ts-morph";
-import {UnionTypeInstruction} from "../migrationTypes";
-import {Context} from "../../../types";
-import {migrateFunctionType, migrateTypeReference} from "../migrateInterfaces";
-import {findTypeInstructionInUnion} from "./findTypeInstructionInUnion";
+import { FunctionTypeNode, SyntaxKind, TypeReferenceNode, UnionTypeNode } from "ts-morph";
+import { UnionTypeInstruction } from "../migrationTypes";
+import { Context } from "../../../types";
+import { migrateFunctionType, migrateTypeReference } from "../migrateInterfaces";
+import { findTypeInstructionInUnion } from "./findTypeInstructionInUnion";
 
 /*
  * @desc Union type contains multiple types that can be migrated

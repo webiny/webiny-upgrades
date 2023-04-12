@@ -1,8 +1,14 @@
-import {FunctionTypeNode, ParenthesizedTypeNode, SyntaxKind, TypeLiteralNode, TypeReferenceNode} from "ts-morph";
-import {FunctionTypeInstruction} from "../migrationTypes";
-import {Context} from "../../../types";
-import {migrateTypeReference} from "./migrateTypeReference";
-import {migrateLiteralType} from "./migrateLiteralType";
+import {
+    FunctionTypeNode,
+    ParenthesizedTypeNode,
+    SyntaxKind,
+    TypeLiteralNode,
+    TypeReferenceNode
+} from "ts-morph";
+import { FunctionTypeInstruction } from "../migrationTypes";
+import { Context } from "../../../types";
+import { migrateTypeReference } from "./migrateTypeReference";
+import { migrateLiteralType } from "./migrateLiteralType";
 
 export const migrateFunctionType = (
     functionTypeNode: FunctionTypeNode,

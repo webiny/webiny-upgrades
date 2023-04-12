@@ -1,11 +1,11 @@
 import { Project } from "ts-morph";
 import { getSourceFile } from "../../utils";
-import {StyleIdToTypographyTypeMap, ThemeFileMigrationDefinition} from "./migrationTypes";
+import { StyleIdToTypographyTypeMap, ThemeFileMigrationDefinition } from "./migrationTypes";
 import { Context } from "../../types";
 import { migrateTypesAliases } from "./migrateTypesAliases";
 import { migrateImports } from "./migrateImports";
 import { migrateStatements } from "./migrateStatements";
-import {migrateInterfaces} from "./migrateInterfaces";
+import { migrateInterfaces } from "./migrateInterfaces";
 
 export type ThemeFileMigrationResult = {
     isSuccessfullyMigrated: boolean;
@@ -50,4 +50,3 @@ export const migrateFile = (
         isSuccessfullyMigrated: true
     };
 };
-

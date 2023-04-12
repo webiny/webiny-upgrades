@@ -1,5 +1,5 @@
-import {PropertySignature} from "ts-morph";
-import {InterfaceMigrationDefinition, PropertySignatureInstruction} from "../migrationTypes";
+import { PropertySignature } from "ts-morph";
+import { InterfaceMigrationDefinition, PropertySignatureInstruction } from "../migrationTypes";
 
 export const findInterfaceInstructionByMemberName = (
     propSignature: PropertySignature,
