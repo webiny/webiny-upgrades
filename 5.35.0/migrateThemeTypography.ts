@@ -46,7 +46,7 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
 
     context.log.debug(`Legacy typography object is found, proceed with migration...`);
 
-   /* context.log.debug("Check if theme is already migrated...");
+    context.log.debug("Check if theme is already migrated...");
     const alreadyMigratedResult = typographyIsAlreadyMigrated(legacyTypographyVar);
     context.log.debug(alreadyMigratedResult);
 
@@ -55,7 +55,7 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
         return;
     }
 
-    /!* We can't proceed with the migration to not mess the object *!/
+    //We can't proceed with the migration to not mess the object
     if(alreadyMigratedResult.isPartlyMigrated) {
         context.log.info(alreadyMigratedResult.info);
         return;
@@ -67,7 +67,7 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
     if (!result.isReadyForMigration) {
         context.log.info(result.info);
         return;
-    }*/
+    }
 
     context.log.debug("Theme's typography styles are ready to be migrated...");
 
@@ -90,11 +90,12 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
     context.log.debug(`Map legacy typography object to new structure...`);
     const typographyMappingResult = mapToNewTypographyStyles(legacyTypographyVar, context);
 
-    // if (!typographyMappingResult.isSuccessfullyMapped) {
-    //     context.log.info(typographyMappingResult.info);
-    //     return;
-    // }
-    // context.log.debug(`Legacy typography object is successfully mapped.`);
+    if (!typographyMappingResult.isSuccessfullyMapped) {
+         context.log.info(typographyMappingResult.info);
+         return;
+    }
+    context.log.debug(`Legacy typography object is successfully mapped.`);
+    return ;
 
     /*
     /* ---- SET THE MAPPED OBJECT IN SOURCE FILE ----

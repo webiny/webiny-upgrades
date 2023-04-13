@@ -310,8 +310,6 @@ export const mapToNewTypographyStyles = (
         };
     }
 
-    // context.log.debug("typographyObjetExpression", mapToTypographyStructure(propertyAssignments[0], context));
-
     // Keeps the names of the properties with custom objects that not match the
     // migration policy
     const customPropNames = [];
@@ -323,7 +321,6 @@ export const mapToNewTypographyStyles = (
     for (const propAssignment of propertyAssignments) {
         const newObject = mapToTypographyStructure(propAssignment, context);
         if(newObject) {
-            context.log.debug(newObject);
             newTypography[newObject.typographyType].push(newObject.stricture);
             if(newObject.isCustom){
                 customPropNames.push(newObject.propName);
