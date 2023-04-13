@@ -1,9 +1,8 @@
 import {Context} from "../../types";
 import {
-    ArrayLiteralExpression,
-    ObjectLiteralExpression,
+    ObjectLiteralExpression, ObjectLiteralExpressionPropertyStructures,
     Project,
-    PropertyAssignment,
+    PropertyAssignment, PropertyAssignmentStructure,
     SourceFile,
     SyntaxKind,
     VariableDeclaration
@@ -13,11 +12,9 @@ import {
     StyleIdToTypographyTypeMap,
     Typography,
     typographyKeyToHtmlTagMapping,
-    TypographyStyle,
     TypographyType
 } from "./migrationTypes";
 import {getObjectLiteralExpressionValue} from "./propertyAsigment/getObjectLiteralExpressionValue";
-import {validate} from "json-schema";
 
 /*
  * ----- SOURCE FILE SETUP FOR THEME ----- ß
@@ -202,17 +199,29 @@ export const legacyTypographyCanBeMigrated = (typography: VariableDeclaration): 
     };
 };
 
-export const mapToNewTypographyStyle = (
-    legacyKey: string,
-    css: Record<string, any>,
+
+/*
+* Creates new Property assigment object
+* */
+export const mapToTypographyStructure = (
+    assigment: PropertyAssignment,
     context: Context
-): TypographyStyle | undefined => {
+): {
+    stricture: string,
+    typographyType: string,
+    isCustom: boolean,
+    propName:string
+} | undefined => {
+
+    const legacyKey = assigment.getStructure().name;
     if (!legacyKey) {
         return undefined;
     }
-    if (!css) {
+    if (!assigment) {
         return undefined;
     }
+
+    let isCustom = false;
 
     // Webiny default defined keys and tags
     let tag = typographyKeyToHtmlTagMapping[legacyKey];
@@ -225,24 +234,30 @@ export const mapToNewTypographyStyle = (
         switch (true) {
             case customKey.includes("heading"):
                 tag = typographyKeyToHtmlTagMapping["heading1"];
+                break;
             case customKey.includes("paragraph"):
                 tag = typographyKeyToHtmlTagMapping["paragraph1"];
+                break;
             case customKey.includes("list"):
                 tag = typographyKeyToHtmlTagMapping["list"];
+                break;
             case customKey.includes("quote"):
                 tag = typographyKeyToHtmlTagMapping["quote"];
+                break;
             default:
                 context.log.warning(
                     `We couldn't map your custom key ${customKey} to the new structure, please add manually.`
                 );
+                isCustom = true;
+                tag = "p" // default
         }
     }
 
     return {
-        id: legacyKey,
-        name: legacyKey,
-        tag: tag || "p", // if key is not found by default will be paragraph tag
-        css
+        stricture: `{ id: "${legacyKey}", name: "${legacyKey}", tag: "${tag || "p"}", css: ${assigment.getStructure().initializer} }`,
+        typographyType: htmlTagToTypographyTypeMapping[tag],
+        isCustom,
+        propName: legacyKey
     };
 };
 
@@ -255,37 +270,94 @@ export type TypographyObjectMapResult = {
     info?: string;
 };
 
-export const mapToNewTypographyStyles = (
-    legacyTypography: Record<string, any>,
-    context: Context
-): TypographyObjectMapResult => {
-    if (!legacyTypography) {
-        return {
-            isSuccessfullyMapped: false,
-            info: "Legacy typography object is undefined, migration is canceled."
-        };
-    }
 
-    const newTypography: Typography = {
+export type MapToNewTypographyStylesResult = {
+    isSuccessfullyMapped: boolean
+    typographyVariable?: VariableDeclaration,
+    customPropNames?: string[],
+    info?: string;
+}
+export const mapToNewTypographyStyles = (
+    typographyVar: VariableDeclaration,
+    context: Context
+): MapToNewTypographyStylesResult => {
+
+    const newTypography = {
         headings: [],
         paragraphs: [],
         lists: [],
         quotes: []
     };
 
-    // map all legacy styles
-    for (const key in legacyTypography) {
-        const css = legacyTypography[key];
-        const style = mapToNewTypographyStyle(key, css, context);
-        if (style) {
-            const typographyType = htmlTagToTypographyTypeMapping[style.tag];
-            newTypography[typographyType].push(style);
-        }
+    const typographyObjetExpression = typographyVar.getInitializerIfKind(
+        SyntaxKind.ObjectLiteralExpression
+    );
+
+    if(!typographyObjetExpression){
+        return {
+            isSuccessfullyMapped: false,
+            info: "Mapping process of the typography styles is canceled, typography variable does not contain the legacy typography object structure."
+        };
     }
 
+    const propertyAssignments = typographyObjetExpression.getProperties()
+        .map(prop => prop.asKind(SyntaxKind.PropertyAssignment));
+
+    if(propertyAssignments.length === 0){
+        return {
+            isSuccessfullyMapped: false,
+            info: "Mapping process of the typography styles is canceled, typography variable does not contain style properties."
+        };
+    }
+
+    // context.log.debug("typographyObjetExpression", mapToTypographyStructure(propertyAssignments[0], context));
+
+    // Keeps the names of the properties with custom objects that not match the
+    // migration policy
+    const customPropNames = [];
+
+    /*
+    * To match the legacy object we need to have property with object value
+    * other that we will consider as custom implementation of the typography styles
+    */
+    for (const propAssignment of propertyAssignments) {
+        const newObject = mapToTypographyStructure(propAssignment, context);
+        if(newObject) {
+            context.log.debug(newObject);
+            newTypography[newObject.typographyType].push(newObject.stricture);
+            if(newObject.isCustom){
+                customPropNames.push(newObject.propName);
+            }
+        }
+        // remove the current assigment
+        propAssignment.remove();
+    }
+
+    // add the new mapped typography types
+
+    typographyObjetExpression.addPropertyAssignments([
+        {
+            name: "headings",
+            initializer: `[${newTypography.headings}]`
+        },
+        {
+            name: "paragraphs",
+            initializer: `[${newTypography.paragraphs}]`
+        },
+        {
+            name: "lists",
+            initializer: `[${newTypography.lists}]`
+        },
+        {
+            name: "quotes",
+            initializer: `[${newTypography.quotes}]`
+        }
+    ]);
+
     return {
-        typography: newTypography,
-        isSuccessfullyMapped: true
+        typographyVariable: typographyVar,
+        isSuccessfullyMapped: true,
+        customPropNames
     };
 };
 

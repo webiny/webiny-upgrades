@@ -1,6 +1,6 @@
-import { Project } from "ts-morph";
-import { Context } from "../types";
-import { Files } from "../utils";
+import {Project, StructureKind, SyntaxKind, VariableStatement} from "ts-morph";
+import {Context} from "../types";
+import {Files} from "../utils";
 import {
     createStyleIdToTypographyTypeMap,
     getAppThemeSourceFile,
@@ -10,9 +10,8 @@ import {
     setMigratedTypographyInSourceFile,
     typographyIsAlreadyMigrated
 } from "./themeTypographyMigration/themeMigration";
-import { themeMigrationSetupFiles } from "./themeTypographyMigration/themeMigrationSetupFiles";
-import { migrateFile } from "./themeTypographyMigration/migrateFile";
-import { createThemeUpgradeBackup } from "./themeTypographyMigration/createThemeUpgradeBackup";
+import {themeMigrationSetupFiles} from "./themeTypographyMigration/themeMigrationSetupFiles";
+import {migrateFile} from "./themeTypographyMigration/migrateFile";
 
 interface Params {
     files: Files;
@@ -44,9 +43,10 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
         );
         return;
     }
+
     context.log.debug(`Legacy typography object is found, proceed with migration...`);
 
-    context.log.debug("Check if theme is already migrated...");
+   /* context.log.debug("Check if theme is already migrated...");
     const alreadyMigratedResult = typographyIsAlreadyMigrated(legacyTypographyVar);
     context.log.debug(alreadyMigratedResult);
 
@@ -55,7 +55,7 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
         return;
     }
 
-    /* We can't proceed with the migration to not mess the object */
+    /!* We can't proceed with the migration to not mess the object *!/
     if(alreadyMigratedResult.isPartlyMigrated) {
         context.log.info(alreadyMigratedResult.info);
         return;
@@ -63,12 +63,11 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
 
     context.log.debug("Theme is not migrated, proceed with migration process...");
 
-
     const result = legacyTypographyCanBeMigrated(legacyTypographyVar)
     if (!result.isReadyForMigration) {
         context.log.info(result.info);
         return;
-    }
+    }*/
 
     context.log.debug("Theme's typography styles are ready to be migrated...");
 
@@ -91,27 +90,27 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
     context.log.debug(`Map legacy typography object to new structure...`);
     const typographyMappingResult = mapToNewTypographyStyles(legacyTypographyVar, context);
 
-    if (!typographyMappingResult.isSuccessfullyMapped) {
-        context.log.info(typographyMappingResult.info);
-        return;
-    }
-    context.log.debug(`Legacy typography object is successfully mapped.`);
+    // if (!typographyMappingResult.isSuccessfullyMapped) {
+    //     context.log.info(typographyMappingResult.info);
+    //     return;
+    // }
+    // context.log.debug(`Legacy typography object is successfully mapped.`);
 
     /*
     /* ---- SET THE MAPPED OBJECT IN SOURCE FILE ----
      */
 
-    const migratedTypography = typographyMappingResult.typography;
+ /*   const migratedTypography = typographyMappingResult.typographyVariable;
 
     const setInSourceResult = setMigratedTypographyInSourceFile(
         themeSourceFile,
         migratedTypography
-    );
+    );*/
 
-    if (!setInSourceResult.isSuccessful) {
+/*    if (!setInSourceResult.isSuccessful) {
         context.log.info(setInSourceResult.info);
         return;
-    }
+    }*/
 
     context.log.debug(
         "Mapped typography styles object successfully set in App/theme/theme.ts file."
@@ -123,9 +122,9 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
 
     // This map will help to determinate the typography type (headings, paragraphs...)
     // for user's custom style keys
-    const styleIdToTypographyTypeMap = createStyleIdToTypographyTypeMap(migratedTypography);
+   // const styleIdToTypographyTypeMap = createStyleIdToTypographyTypeMap(migratedTypography);
 
-    context.log.debug(`Migrate the legacy typography statements, imports and interfaces...`);
+/*    context.log.debug(`Migrate the legacy typography statements, imports and interfaces...`);
     const migrationDefinitions = themeMigrationSetupFiles(context);
     for (const definition of migrationDefinitions) {
         const result = migrateFile(definition, styleIdToTypographyTypeMap, project, context);
@@ -134,7 +133,7 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
             context.log.info(result.info);
             return;
         }
-    }
+    }*/
 
     context.log.success(`Cheers! You have successfully upgraded to new Webiny typography styles.`);
 };
