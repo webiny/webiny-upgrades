@@ -135,30 +135,71 @@ export const hasTypographyProp = (typography: Record<string, any>): boolean => {
     return typography !== undefined;
 };
 
+
+export type legacyTypographyCanBeMigratedResult = {
+    isReadyForMigration: boolean
+    info?: string;
+}
+
 /*
  * @desc Check if legacy typography object has at least one key for migration
  * */
-export const legacyTypographyCanBeMigrated = (typography: Record<string, any>): boolean => {
-    if (!hasTypographyProp(typography)) {
-        return false;
+export const legacyTypographyCanBeMigrated = (typography: VariableDeclaration): legacyTypographyCanBeMigratedResult => {
+
+    if (!typography) {
+        return {
+            isReadyForMigration: false,
+            info: "Theme's typography migration is canceled, legacy typography variable not found."
+        };
     }
 
-    // check if typography has at least one key
-    if (!!Object.keys(typography).length) {
-        for (const key in typography) {
-            const typographyObject = typography[key];
-            // Must be object and not array
-            if (!(typeof typographyObject === "object" && !Array.isArray(typographyObject))) {
-                return false;
-            }
-            // Must be object and not an iteration object like Set, Map...
-            if (!(typeof typographyObject === "object" && !(Symbol.iterator in typographyObject))) {
-                return false;
+    const typographyObjetExpression = typography.getInitializerIfKind(
+        SyntaxKind.ObjectLiteralExpression
+    );
+
+    if(!typographyObjetExpression){
+        return {
+            isReadyForMigration: false,
+            info: "Theme's typography migration is canceled, typography variable does not contain the legacy typography object structure."
+        };
+    }
+
+    const props = typographyObjetExpression.getProperties();
+
+    if(props.length === 0){
+        return {
+            isReadyForMigration: false,
+            info: "Theme's typography migration is canceled, typography variable does not contain style properties."
+        };
+    }
+
+    // Keeps the names of the properties with custom objects that not match the
+    // migration policy
+    const customStructureProps = [];
+
+    /*
+    * To match the legacy object we need to have property with object value
+    * other that we will consider as custom implementation of the typography styles
+    */
+    for (const objectProp of props) {
+        if (objectProp.getKind() === SyntaxKind.PropertyAssignment) {
+            const propAssigment = objectProp as PropertyAssignment;
+            const propName = propAssigment.getSymbol().getName();
+            // Check if that property have array as value
+            const propertyInitializer = propAssigment.getInitializerIfKind(SyntaxKind.ObjectLiteralExpression);
+            if(!propertyInitializer) {
+                customStructureProps.push(propName);
             }
         }
-        return true;
     }
-    return false;
+
+    const isReadyForMigration = customStructureProps.length === 0;
+
+    return {
+        isReadyForMigration,
+        info: isReadyForMigration ? "" : `Theme's typography migration is canceled, detected
+         custom implementation for following properties: ${customStructureProps.join(", ")}`
+    };
 };
 
 export const mapToNewTypographyStyle = (
@@ -265,12 +306,12 @@ export const typographyIsAlreadyMigrated = (typography: VariableDeclaration): Al
         SyntaxKind.ObjectLiteralExpression
     );
 
-    const validation = {
-        headings: {},
-        paragraphs: { },
-        lists: {  },
-        quotes: { }
-    };
+    const newThemePropNames = [
+        "headings",
+        "paragraphs",
+        "lists",
+        "quotes"
+    ];
 
     const partialMigration: string[] = [];
     const fullMigration: string[] = [];
@@ -283,67 +324,78 @@ export const typographyIsAlreadyMigrated = (typography: VariableDeclaration): Al
     for (const objectProp of props) {
 
         if (objectProp.getKind() === SyntaxKind.PropertyAssignment) {
+
             const propAssigment = objectProp as PropertyAssignment;
             const propName = propAssigment.getSymbol().getName();
+
+            // if the name is not part of the new property name styles
+            // continue with the next prop
+            if(!newThemePropNames.includes(propName)) {
+                continue;
+            }
+
             // Check if that property have array as value
             const arrayLiteralExpression = propAssigment.getInitializerIfKind(SyntaxKind.ArrayLiteralExpression);
 
             // headings and other props are arrays in the new mapped type
             if(arrayLiteralExpression) {
-                if (!validation[propName]) {
-                    continue;
-                }
-
-                const validationObject = validation[propName];
-                validationObject.partialMigration = true;
 
                 const elements = arrayLiteralExpression.getElements();
                 if(elements.length === 0) {
                     // for empty array we consider full migration
-                    if (validation[propName]) {
-                        validation[propName].fullMigration = true;
-                        fullMigration.push(propName);
-                    }
+                    fullMigration.push(propName);
                     continue;
                 }
+
+                    let allStylesAreMigrated = true;
+                    let hasAtLeastOneStyleMatch = false;
                     for (const element of elements) {
-                        let allStylesAreMigrated = true;
                         if(element.getKind() === SyntaxKind.ObjectLiteralExpression) {
-                            const style = getObjectLiteralExpressionValue(element as ObjectLiteralExpression);
-                            if (
-                                !(
+                            const style = getObjectLiteralExpressionValue(element as ObjectLiteralExpression, true);
+                            if (!(
                                     style.hasOwnProperty("id") &&
                                     style.hasOwnProperty("name") &&
                                     style.hasOwnProperty("tag") &&
                                     style.hasOwnProperty("css")
-                                )
-                            ) {
+
+                            )) {
                                 if(allStylesAreMigrated) {
                                     allStylesAreMigrated = false;
                                 }
+                            } else {
+                                hasAtLeastOneStyleMatch = true;
                             }
                         }
-
-                        if(allStylesAreMigrated) {
-                            fullMigration.push(propName);
-                        } else {
-                            // match name or match for some objects in the array
-                            partialMigration.push(propName);
-                        }
                     }
-                }
+
+                    if(allStylesAreMigrated) {
+                        fullMigration.push(propName);
+                    }
+
+                    if(!allStylesAreMigrated && hasAtLeastOneStyleMatch){
+                        partialMigration.push(propName);
+                    }
             }
+        }
     }
 
-    const isPartlyMigrated = !!partialMigration?.length;
-    const info = isPartlyMigrated ? `Theme's typography style upgrade canceled. /n` +
-        `Typography styles are partially migrated, please check the following properties: ${partialMigration.join(" ,")}` :
-        "";
+    const isFullyMigrated = fullMigration.length >= newThemePropNames.length;
+    const isPartlyMigrated = (fullMigration.length > 0 && partialMigration.length >= 0 || partialMigration.length > 0);
+
+    let info = "";
+    if(isPartlyMigrated) {
+        info = `Theme's typography style upgrade canceled. Typography styles are partially migrated, 
+        following properties match the new styles: ${fullMigration.concat(partialMigration).join(", ")}`
+    }
+
+    if(isFullyMigrated) {
+        info = "Theme's typography styles are already migrated";
+    }
 
     return {
-        isFullyMigrated: fullMigration.length === Object.keys(validation).length,
-        isNotMigrated: !partialMigration?.length && !fullMigration?.length,
+        isFullyMigrated,
         isPartlyMigrated,
+        isNotMigrated: !isFullyMigrated && !isPartlyMigrated,
         info
     };
 };
