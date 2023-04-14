@@ -3,6 +3,7 @@ import { getSourceFile } from "../../utils";
 import { StyleIdToTypographyTypeMap, ThemeFileMigrationDefinition } from "./migrationTypes";
 import { Context } from "../../types";
 import { migrateStatements } from "./migrateStatements";
+import { migrateImports } from "./migrateImports";
 
 export type ThemeFileMigrationResult = {
     isSuccessfullyMigrated: boolean;
@@ -25,6 +26,10 @@ export const migrateFile = (
             skipped: true,
             info: `File does not exist. Path: ${migrateDefinition.file.path}`
         };
+    }
+
+    if (migrateDefinition?.migrationInstructions?.imports) {
+        migrateImports(source, migrateDefinition, context);
     }
 
     migrateStatements(source, migrateDefinition, map, context);

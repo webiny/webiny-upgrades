@@ -40,45 +40,6 @@ export const getTypographyVariableDeclaration = (
         return undefined;
     }
     return variable;
-    //TODO: check one more place as inline declaration inside the createTheme factory function
-};
-
-export const mapLegacyTypographyObject = (
-    variable: VariableDeclaration,
-    context: Context
-): Record<string, ObjectLiteralExpression> => {
-    const typographyObject: Record<string, any> = {};
-    const typographyObjetExpression = variable.getInitializerIfKind(
-        SyntaxKind.ObjectLiteralExpression
-    );
-
-    if (!typographyObjetExpression) {
-        context.log.info(
-            "Typography styles upgrade is canceled, typography object has custom data structure."
-        );
-        return undefined;
-    }
-    const props = typographyObjetExpression.getProperties();
-
-    // map the first level props to object literal property,
-    // with that we can manipulate the object
-    for (const objectProp of props) {
-        if (objectProp.getKind() === SyntaxKind.PropertyAssignment) {
-            const propAssigment = objectProp as PropertyAssignment;
-            const propName = propAssigment.getSymbol().getName();
-            const propInitializer = propAssigment.getInitializer();
-
-            if (propInitializer) {
-                const propInitializerKind = propInitializer.getKind();
-                if (propName && propInitializerKind === SyntaxKind.ObjectLiteralExpression) {
-                    typographyObject[propName] = objectProp;
-                }
-            }
-        }
-    }
-
-    // create the
-    return typographyObject;
 };
 
 /*
