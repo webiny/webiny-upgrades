@@ -75,6 +75,7 @@ export const legacyTypographyCanBeMigrated = (
         };
     }
 
+    // get the property objects heading1, heading2....
     const props = typographyObjetExpression.getProperties();
 
     if (props.length === 0) {
@@ -85,21 +86,23 @@ export const legacyTypographyCanBeMigrated = (
     }
 
     // Keeps the names of the properties with custom objects that not match the
-    // migration policy
+    // webiny default keys/objects
     const customStructureProps = [];
 
-    /*
-     * To match the legacy object we need to have property with object value
-     * other that we will consider as custom implementation of the typography styles
-     */
+    // in order theme object to be ready for mitgration all properties need
+    // to have object as a value
     for (const objectProp of props) {
         if (objectProp.getKind() === SyntaxKind.PropertyAssignment) {
             const propAssigment = objectProp as PropertyAssignment;
             const propName = propAssigment.getSymbol().getName();
-            // Check if that property have array as value
+
+            // Property value like 'heading1' must be object like { fontSize: 23 } for example
             const propertyInitializer = propAssigment.getInitializerIfKind(
                 SyntaxKind.ObjectLiteralExpression
             );
+
+            // if initializer or value of the property is not object (maybe Array, Set, Map...)
+            // this is considered as a custom implementation. We don't know how to parse custom types
             if (!propertyInitializer) {
                 customStructureProps.push(propName);
             }
@@ -118,7 +121,9 @@ export const legacyTypographyCanBeMigrated = (
 };
 
 /*
- * Creates new Property assigment object
+ * Creates new Property assigment object for the new style.
+ * it's creating a single style object
+ * example: headings: [{ id, name, tag, css } -> example of the style object]
  * */
 export const mapToTypographyStyle = (
     assigment: PropertyAssignment,

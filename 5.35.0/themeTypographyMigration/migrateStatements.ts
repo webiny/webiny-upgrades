@@ -65,7 +65,7 @@ export const migrateStatements = (
 
             if (templateSpans.length === 0) {
                 context.log.debug("File migration skipped. There is no template spans found.");
-                return;
+                continue;
             }
 
             for (const templateSpan of templateSpans) {
@@ -125,11 +125,11 @@ const updateTypographyExpression = (
     const typographyType = map[styleKey];
     if (!typographyType) {
         context.log.debug(`Style key '${styleKey}' doesn't exist in typography styles.`);
+    } else {
+        templateSpan.setExpression(
+            `props => props.theme.styles.typography.${typographyType}.cssById("${styleKey}")`
+        );
     }
-
-    templateSpan.setExpression(
-        `props => props.theme.styles.typography.${typographyType}.cssById("${styleKey}")`
-    );
 };
 
 const updateColorExpression = (templateSpan: TemplateSpan, colorName: string) => {
