@@ -80,7 +80,7 @@ const pathConverters: PathConverters = {
     "${dynamoToElastic}": getDynamoDbToElasticsearchPath,
     "${website}": getWebsitePath,
     "${theme}": getThemePath,
-    "${admin}": getAdminPath,
+    "${admin}": getAdminPath
 };
 
 export const createFilePath = (context: Context, file: string): string | null => {

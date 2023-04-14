@@ -16,7 +16,7 @@ export const migrateFile = (
     project: Project,
     context: Context
 ): ThemeFileMigrationResult => {
-    context.log.debug(`Start migrating file: ${migrateDefinition.file.path}`)
+    context.log.debug(`Start migrating file: ${migrateDefinition.file.path}`);
     const source = getSourceFile(project, migrateDefinition.file.path);
 
     if (!source) {
@@ -27,9 +27,7 @@ export const migrateFile = (
         };
     }
 
-    if (migrateDefinition.migrationInstructions?.statements) {
-        migrateStatements(source, migrateDefinition, map, context);
-    }
+    migrateStatements(source, migrateDefinition, map, context);
 
     return {
         skipped: false,

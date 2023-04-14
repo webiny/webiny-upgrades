@@ -128,5 +128,5 @@ export type ThemeFileMigrationDefinition = {
     /*
      * Detailed instructions about code changes
      * */
-    migrationInstructions: MigrationInstructions;
+    migrationInstructions?: MigrationInstructions;
 };

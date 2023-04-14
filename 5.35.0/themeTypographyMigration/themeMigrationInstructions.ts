@@ -12,30 +12,34 @@ const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefin
                 path: createFilePath(context, "${theme}/layouts/pages/Static/Footer.tsx"),
                 tag: "theme",
                 name: "/layouts/pages/Static/Footer.tsx"
-            }),
-            migrationInstructions: {
-                statements: {
-                    variables: [{ name: "FooterLogo", syntaxKind: SyntaxKind.TemplateSpan }]
-                }
-            }
+            })
         },
-       /* {
+        {
             file: new FileDefinition({
                 path: createFilePath(context, "${theme}/layouts/pages/Static/Header.tsx"),
                 tag: "theme",
                 name: "/layouts/pages/Static/Header.tsx"
-            }),
-            migrationInstructions: {
-                statements: {
-                    variables: [{ name: "HeaderWrapper", syntaxKind: SyntaxKind.TemplateSpan }]
-                }
-            }
-        }*/
+            })
+        },
+        {
+            file: new FileDefinition({
+                path: createFilePath(context, "${theme}/layouts/pages/Static/HeaderDesktop.tsx"),
+                tag: "theme",
+                name: "/layouts/pages/Static/HeaderDesktop.tsx"
+            })
+        },
+        {
+            file: new FileDefinition({
+                path: createFilePath(context, "${theme}/layouts/pages/Static/Navigation.tsx"),
+                tag: "theme",
+                name: "/layouts/pages/Static/Navigation.tsx"
+            })
+        }
     ];
 };
 
 
-export const themeMigrationSetupFiles = (context: Context): ThemeFileMigrationDefinition[] => {
+export const themeMigrationInstructions = (context: Context): ThemeFileMigrationDefinition[] => {
     return [
         ...themeLayoutUpgradeDefinition(context)
     ];

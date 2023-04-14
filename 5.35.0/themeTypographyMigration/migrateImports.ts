@@ -2,7 +2,7 @@ import { SourceFile } from "ts-morph";
 import {
     ImportDeclarationDefinition,
     ThemeFileMigrationDefinition
-} from "./themeMigrationSetupFiles";
+} from "./themeMigrationInstructions";
 import { StyleIdToTypographyTypeMap } from "./definitions";
 import { Context } from "../../types";
 
