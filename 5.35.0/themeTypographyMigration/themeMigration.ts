@@ -11,11 +11,10 @@ import {
 import {
     htmlTagToTypographyTypeMapping,
     StyleIdToTypographyTypeMap,
-    Typography,
     typographyKeyToHtmlTagMapping,
     TypographyType
 } from "./migrationTypes";
-import { getObjectLiteralExpressionValue } from "./propertyAsigment/getObjectLiteralExpressionValue";
+import { getObjectLiteralExpressionValue } from "./getObjectLiteralExpressionValue";
 
 /*
  * ----- SOURCE FILE SETUP FOR THEME ----- ß
@@ -226,21 +225,6 @@ export const mapToTypographyStyle = (
     };
 };
 
-export type TypographyObjectMapResult = {
-    /*
-     * @desc: New migrated typography object
-     */
-    typography?: Typography;
-    isSuccessfullyMapped: boolean;
-    info?: string;
-};
-
-export type MapToNewTypographyStylesResult = {
-    isSuccessfullyMapped: boolean;
-    typographyVariable?: VariableDeclaration;
-    styleIdToTypographyType?: StyleIdToTypographyTypeMap;
-    info?: string;
-};
 export const mapToNewTypographyStyles = (
     typographyVar: VariableDeclaration,
     context: Context

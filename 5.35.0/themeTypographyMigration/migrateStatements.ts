@@ -81,8 +81,7 @@ export const migrateStatements = (
                 // Typography type like headings, paragraphs...
                 const typographyType = map[styleKey];
                 if (!typographyType) {
-                    context.log
-                        .debug(`Style key '${styleKey}' doesn't exist in typography styles. 
+                    context.log.debug(`Style key '${styleKey}' doesn't exist in typography styles. 
                         line: ${paExpression.getStartLineNumber()}.`);
                     continue;
                 }
@@ -95,9 +94,6 @@ export const migrateStatements = (
             }
         }
     }
-    context.log.debug(
-        "Expressions for migration found: ",
-        taggedTemplateExpressionsCount
-    );
+    context.log.debug("Expressions for migration found: ", taggedTemplateExpressionsCount);
     context.log.debug("Expressions migrated: ", migratedExpressionCount);
 };

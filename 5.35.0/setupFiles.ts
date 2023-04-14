@@ -1,6 +1,6 @@
 import { Context } from "../types";
 import { createFilePath, Files, FileDefinition } from "../utils";
-import { themeMigrationInstructions } from "./themeTypographyMigration/themeMigrationInstructions";
+import { themeMigrationFilesSetup } from "./themeTypographyMigration/themeMigrationFilesSetup";
 
 export const setupFiles = (context: Context): Files => {
     /**
@@ -32,7 +32,7 @@ export const setupFiles = (context: Context): Files => {
             tag: "theme",
             name: "theme.ts"
         }),
-        ...themeMigrationInstructions(context).map(f => f.file)
+        ...themeMigrationFilesSetup(context).map(f => f.file)
     ]);
 
     return files.relevant();

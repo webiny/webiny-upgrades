@@ -8,9 +8,9 @@ import {
     mapToNewTypographyStyles,
     typographyIsAlreadyMigrated
 } from "./themeTypographyMigration/themeMigration";
-import { themeMigrationInstructions } from "./themeTypographyMigration/themeMigrationInstructions";
+import { themeMigrationFilesSetup } from "./themeTypographyMigration/themeMigrationFilesSetup";
 import { migrateFile } from "./themeTypographyMigration/migrateFile";
-import {createThemeUpgradeBackup} from "./themeTypographyMigration/createThemeUpgradeBackup";
+import { createThemeUpgradeBackup } from "./themeTypographyMigration/createThemeUpgradeBackup";
 
 interface Params {
     files: Files;
@@ -94,7 +94,7 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
 
     const styleIdToTypographyTypeMap = typographyMappingResult.styleIdTopographyType;
     context.log.debug(`Migrate solution files...`);
-    const migrationDefinitions = themeMigrationInstructions(context);
+    const migrationDefinitions = themeMigrationFilesSetup(context);
     for (const definition of migrationDefinitions) {
         const result = migrateFile(definition, styleIdToTypographyTypeMap, project, context);
         // log message if file is not successfully migrated

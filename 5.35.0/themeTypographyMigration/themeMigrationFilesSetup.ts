@@ -1,9 +1,7 @@
 import { Context } from "../../types";
 import { createFilePath, FileDefinition } from "../../utils";
-import { SyntaxKind } from "ts-morph";
-import {
-    ThemeFileMigrationDefinition,
-} from "./migrationTypes";
+
+import { ThemeFileMigrationDefinition } from "./migrationTypes";
 
 const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefinition[] => {
     return [
@@ -38,9 +36,6 @@ const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefin
     ];
 };
 
-
-export const themeMigrationInstructions = (context: Context): ThemeFileMigrationDefinition[] => {
-    return [
-        ...themeLayoutUpgradeDefinition(context)
-    ];
+export const themeMigrationFilesSetup = (context: Context): ThemeFileMigrationDefinition[] => {
+    return [...themeLayoutUpgradeDefinition(context)];
 };
