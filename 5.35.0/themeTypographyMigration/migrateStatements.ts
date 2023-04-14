@@ -124,7 +124,8 @@ const updateTypographyExpression = (
     // Typography type like headings, paragraphs...
     const typographyType = map[styleKey];
     if (!typographyType) {
-        context.log.debug(`Style key '${styleKey}' doesn't exist in typography styles.`);
+        context.log.debug(`Key '${styleKey}' can't be found in typography styles.
+         expression is not migrated. Line: ${templateSpan.getStartLineNumber()}`);
     } else {
         templateSpan.setExpression(
             `props => props.theme.styles.typography.${typographyType}.cssById("${styleKey}")`
