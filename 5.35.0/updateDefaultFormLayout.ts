@@ -36,32 +36,10 @@ export const updateDefaultFormLayout = async (params: Params) => {
     }
 
     context.log.info(
-        "Creating a backup of the form layouts folder (%s → %s).",
-        "apps/theme/layouts/forms",
-        "apps/theme/layouts/_backup_forms"
+        "Generating latest code in the form layouts folder (%s).",
+        "apps/theme/layouts/forms"
     );
-
-    const toBackup = path.join(context.project.root, "apps", "theme", "layouts", "_backup_forms");
-
-    let backupDone = false;
-    if (fs.existsSync(toBackup)) {
-        log.warning(
-            "Cannot create a backup of the %s folder, %s folder already exists.",
-            "apps/theme/layouts/forms",
-            "apps/theme/layouts/_backup_forms"
-        );
-    } else {
-        fs.renameSync(to, toBackup);
-        backupDone = true;
-    }
-
-    if (backupDone) {
-        context.log.info(
-            "Generating latest code in the form layouts folder (%s).",
-            "apps/theme/layouts/forms"
-        );
-        await ncp(from, to);
-    }
+    await ncp(from, to);
 
     context.log.success("Form layouts migration completed.");
 };

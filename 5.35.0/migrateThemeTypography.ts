@@ -96,12 +96,7 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
     context.log.debug(`Migrate solution files...`);
     const migrationDefinitions = themeMigrationFilesSetup(context);
     for (const definition of migrationDefinitions) {
-        const result = migrateFile(definition, styleIdToTypographyTypeMap, project, context);
-        // log message if file is not successfully migrated
-        if (result.skipped || !result.isSuccessfullyMigrated) {
-            context.log.info(result.info);
-            return;
-        }
+        migrateFile(definition, styleIdToTypographyTypeMap, project, context);
     }
 
     context.log.success(`Cheers! You have successfully upgraded to new Webiny typography styles.`);
