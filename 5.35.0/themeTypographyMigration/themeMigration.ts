@@ -1,6 +1,6 @@
 import {Context} from "../../types";
 import {
-    ObjectLiteralExpression, ObjectLiteralExpressionPropertyStructures,
+    ObjectLiteralExpression,
     Project,
     PropertyAssignment, PropertyAssignmentStructure,
     SourceFile,
@@ -81,56 +81,9 @@ export const mapLegacyTypographyObject = (
     return typographyObject;
 };
 
-export type SetMigratedTypographyResult = {
-    isSuccessful: boolean;
-    info?: string;
-};
-
-export const setMigratedTypographyInSourceFile = (
-    appThemeSourceFile: SourceFile,
-    migratedTypography: Record<string, any>
-): SetMigratedTypographyResult => {
-    if (!migratedTypography) {
-        return {
-            isSuccessful: false,
-            info: "New typography object can't be set in source file, 'migratedTypography' is undefined."
-        };
-    }
-    if (!appThemeSourceFile) {
-        return undefined;
-    }
-    // take the variable
-    const variable = appThemeSourceFile.getVariableDeclaration("typography");
-    if (!variable) {
-        return {
-            isSuccessful: false,
-            info: "New typography object can't be set in source file, variable 'typography' is not found."
-        };
-    }
-
-    // set new objet
-    try {
-        const typography = JSON.stringify(migratedTypography);
-        variable.set({ initializer: typography });
-    } catch (e) {
-        return {
-            isSuccessful: false,
-            info: "New typography is not set in source file. Can't be parsed and set to the variable."
-        };
-    }
-    return { isSuccessful: true };
-};
-
 /*
  * ----- MANIPULATION WITH THEME OBJECT ----
  */
-
-/*
- * @desc Check if user have the theme and typography prop
- * */
-export const hasTypographyProp = (typography: Record<string, any>): boolean => {
-    return typography !== undefined;
-};
 
 
 export type legacyTypographyCanBeMigratedResult = {
@@ -203,14 +156,14 @@ export const legacyTypographyCanBeMigrated = (typography: VariableDeclaration): 
 /*
 * Creates new Property assigment object
 * */
-export const mapToTypographyStructure = (
+export const mapToTypographyStyle = (
     assigment: PropertyAssignment,
     context: Context
 ): {
-    stricture: string,
+    structure: string,
     typographyType: string,
     isCustom: boolean,
-    propName:string
+    structureAsObject: { id: string, name: string, tag: string, css: PropertyAssignmentStructure }
 } | undefined => {
 
     const legacyKey = assigment.getStructure().name;
@@ -254,10 +207,10 @@ export const mapToTypographyStructure = (
     }
 
     return {
-        stricture: `{ id: "${legacyKey}", name: "${legacyKey}", tag: "${tag || "p"}", css: ${assigment.getStructure().initializer} }`,
+        structure: `{ id: "${legacyKey}", name: "${legacyKey}", tag: "${tag || "p"}", css: ${assigment.getStructure().initializer} }`,
         typographyType: htmlTagToTypographyTypeMapping[tag],
         isCustom,
-        propName: legacyKey
+        structureAsObject: { id: legacyKey, name: legacyKey, tag, css: assigment.getStructure() }
     };
 };
 
@@ -274,13 +227,17 @@ export type TypographyObjectMapResult = {
 export type MapToNewTypographyStylesResult = {
     isSuccessfullyMapped: boolean
     typographyVariable?: VariableDeclaration,
-    customPropNames?: string[],
+    styleIdToTypographyType?: StyleIdToTypographyTypeMap,
     info?: string;
 }
 export const mapToNewTypographyStyles = (
     typographyVar: VariableDeclaration,
     context: Context
-): MapToNewTypographyStylesResult => {
+): {
+    typographyVariable?: VariableDeclaration;
+    isSuccessfullyMapped: boolean;
+    info?: string,
+    styleIdTopographyType?: StyleIdToTypographyTypeMap } => {
 
     const newTypography = {
         headings: [],
@@ -296,7 +253,7 @@ export const mapToNewTypographyStyles = (
     if(!typographyObjetExpression){
         return {
             isSuccessfullyMapped: false,
-            info: "Mapping process of the typography styles is canceled, typography variable does not contain the legacy typography object structure."
+            info: "Mapping process of the typography styles is canceled, typography variable does not contain the legacy typography object structure.",
         };
     }
 
@@ -312,19 +269,18 @@ export const mapToNewTypographyStyles = (
 
     // Keeps the names of the properties with custom objects that not match the
     // migration policy
-    const customPropNames = [];
+    const styleIdToTypographyType: StyleIdToTypographyTypeMap = {};
 
     /*
     * To match the legacy object we need to have property with object value
     * other that we will consider as custom implementation of the typography styles
     */
     for (const propAssignment of propertyAssignments) {
-        const newObject = mapToTypographyStructure(propAssignment, context);
-        if(newObject) {
-            newTypography[newObject.typographyType].push(newObject.stricture);
-            if(newObject.isCustom){
-                customPropNames.push(newObject.propName);
-            }
+        const style = mapToTypographyStyle(propAssignment, context);
+        if(style) {
+            newTypography[style.typographyType].push(style.structure);
+            const styleObject = style.structureAsObject;
+            styleIdToTypographyType[styleObject.id] = style.typographyType as TypographyType;
         }
         // remove the current assigment
         propAssignment.remove();
@@ -354,7 +310,7 @@ export const mapToNewTypographyStyles = (
     return {
         typographyVariable: typographyVar,
         isSuccessfullyMapped: true,
-        customPropNames
+        styleIdTopographyType: styleIdToTypographyType
     };
 };
 
@@ -469,24 +425,3 @@ export const typographyIsAlreadyMigrated = (typography: VariableDeclaration): Al
     };
 };
 
-/*
- * Map style id to typography type
- * Example { heading1: "headings" }
- * */
-export const createStyleIdToTypographyTypeMap = (
-    migratedTypography: Typography
-): StyleIdToTypographyTypeMap | undefined => {
-    if (!migratedTypography) {
-        return undefined;
-    }
-
-    const map: StyleIdToTypographyTypeMap = {};
-    for (const key in migratedTypography) {
-        const styles = migratedTypography[key];
-        styles.forEach(style => {
-            map[style.id] = key as TypographyType;
-        });
-    }
-
-    return map;
-};

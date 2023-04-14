@@ -1,13 +1,11 @@
-import {Project, StructureKind, SyntaxKind, VariableStatement} from "ts-morph";
+import { Project } from "ts-morph";
 import {Context} from "../types";
 import {Files} from "../utils";
 import {
-    createStyleIdToTypographyTypeMap,
     getAppThemeSourceFile,
     getTypographyVariableDeclaration,
     legacyTypographyCanBeMigrated,
     mapToNewTypographyStyles,
-    setMigratedTypographyInSourceFile,
     typographyIsAlreadyMigrated
 } from "./themeTypographyMigration/themeMigration";
 import {themeMigrationSetupFiles} from "./themeTypographyMigration/themeMigrationSetupFiles";
@@ -35,8 +33,8 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
         return;
     }
 
-    const legacyTypographyVar = getTypographyVariableDeclaration(themeSourceFile);
-    if (!legacyTypographyVar) {
+    const typographyVariable = getTypographyVariableDeclaration(themeSourceFile);
+    if (!typographyVariable) {
         context.log.info(
             `Theme's typography styles can't be found in App/Theme/theme.ts file. Do you have custom implementation? 
             Please check the 3.53.0 release docs`
@@ -47,7 +45,7 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
     context.log.debug(`Legacy typography object is found, proceed with migration...`);
 
     context.log.debug("Check if theme is already migrated...");
-    const alreadyMigratedResult = typographyIsAlreadyMigrated(legacyTypographyVar);
+    const alreadyMigratedResult = typographyIsAlreadyMigrated(typographyVariable);
     context.log.debug(alreadyMigratedResult);
 
     if (alreadyMigratedResult.isFullyMigrated) {
@@ -63,7 +61,7 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
 
     context.log.debug("Theme is not migrated, proceed with migration process...");
 
-    const result = legacyTypographyCanBeMigrated(legacyTypographyVar)
+    const result = legacyTypographyCanBeMigrated(typographyVariable)
     if (!result.isReadyForMigration) {
         context.log.info(result.info);
         return;
@@ -88,34 +86,13 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
      * MIGRATE THE THEME OBJECT
      */
     context.log.debug(`Map legacy typography object to new structure...`);
-    const typographyMappingResult = mapToNewTypographyStyles(legacyTypographyVar, context);
+    const typographyMappingResult = mapToNewTypographyStyles(typographyVariable, context);
 
     if (!typographyMappingResult.isSuccessfullyMapped) {
          context.log.info(typographyMappingResult.info);
          return;
     }
     context.log.debug(`Legacy typography object is successfully mapped.`);
-    return ;
-
-    /*
-    /* ---- SET THE MAPPED OBJECT IN SOURCE FILE ----
-     */
-
- /*   const migratedTypography = typographyMappingResult.typographyVariable;
-
-    const setInSourceResult = setMigratedTypographyInSourceFile(
-        themeSourceFile,
-        migratedTypography
-    );*/
-
-/*    if (!setInSourceResult.isSuccessful) {
-        context.log.info(setInSourceResult.info);
-        return;
-    }*/
-
-    context.log.debug(
-        "Mapped typography styles object successfully set in App/theme/theme.ts file."
-    );
 
     /*
      * MIGRATE THE REST OF SOLUTION THAT HAVE ACCESS TO THE THEME
@@ -123,9 +100,9 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
 
     // This map will help to determinate the typography type (headings, paragraphs...)
     // for user's custom style keys
-   // const styleIdToTypographyTypeMap = createStyleIdToTypographyTypeMap(migratedTypography);
 
-/*    context.log.debug(`Migrate the legacy typography statements, imports and interfaces...`);
+    const styleIdToTypographyTypeMap = typographyMappingResult.styleIdTopographyType;
+    context.log.debug(`Migrate solution files...`);
     const migrationDefinitions = themeMigrationSetupFiles(context);
     for (const definition of migrationDefinitions) {
         const result = migrateFile(definition, styleIdToTypographyTypeMap, project, context);
@@ -134,7 +111,7 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
             context.log.info(result.info);
             return;
         }
-    }*/
+    }
 
     context.log.success(`Cheers! You have successfully upgraded to new Webiny typography styles.`);
 };

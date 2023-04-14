@@ -2,10 +2,7 @@ import { Project } from "ts-morph";
 import { getSourceFile } from "../../utils";
 import { StyleIdToTypographyTypeMap, ThemeFileMigrationDefinition } from "./migrationTypes";
 import { Context } from "../../types";
-import { migrateTypesAliases } from "./migrateTypesAliases";
-import { migrateImports } from "./migrateImports";
 import { migrateStatements } from "./migrateStatements";
-import { migrateInterfaces } from "./migrateInterfaces";
 
 export type ThemeFileMigrationResult = {
     isSuccessfullyMigrated: boolean;
@@ -15,10 +12,11 @@ export type ThemeFileMigrationResult = {
 
 export const migrateFile = (
     migrateDefinition: ThemeFileMigrationDefinition,
-    typographyMap: StyleIdToTypographyTypeMap,
+    map: StyleIdToTypographyTypeMap,
     project: Project,
     context: Context
 ): ThemeFileMigrationResult => {
+    context.log.debug(`Start migrating file: ${migrateDefinition.file.path}`)
     const source = getSourceFile(project, migrateDefinition.file.path);
 
     if (!source) {
@@ -29,20 +27,8 @@ export const migrateFile = (
         };
     }
 
-    if (migrateDefinition.migrationInstructions?.imports) {
-        migrateImports(source, migrateDefinition, typographyMap, context);
-    }
-
-    if (migrateDefinition.migrationInstructions?.interfaces) {
-        migrateInterfaces(source, migrateDefinition, context);
-    }
-
-    if (migrateDefinition.migrationInstructions?.types) {
-        migrateTypesAliases(source, migrateDefinition.migrationInstructions?.types, context);
-    }
-
     if (migrateDefinition.migrationInstructions?.statements) {
-        migrateStatements(source, migrateDefinition, typographyMap, context);
+        migrateStatements(source, migrateDefinition, map, context);
     }
 
     return {

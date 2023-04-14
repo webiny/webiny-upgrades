@@ -31,7 +31,8 @@ export const setupFiles = (context: Context): Files => {
             path: createFilePath(context, "${theme}/theme.ts"),
             tag: "theme",
             name: "theme.ts"
-        })
+        }),
+        ...themeMigrationSetupFiles(context).map(f => f.file)
     ]);
 
     return files.relevant();

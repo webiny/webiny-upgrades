@@ -1,6 +1,5 @@
 import { SourceFile, SyntaxKind } from "ts-morph";
-import { ThemeFileMigrationDefinition } from "./themeMigrationSetupFiles";
-import { StyleIdToTypographyTypeMap } from "./migrationTypes";
+import {StyleIdToTypographyTypeMap, ThemeFileMigrationDefinition} from "./migrationTypes";
 import { Context } from "../../types";
 import { migrateVariableStatement } from "./migrateVariableStatement";
 
@@ -63,7 +62,7 @@ export const migrateStatements = (
                         }
                         if (typographyType && styleKey) {
                             elementAccess.setExpression(
-                                `theme.styles.typography.${elementAccess}.cssById("${styleKey}")`
+                                `props => props.theme.styles.typography.${elementAccess}.cssById("${styleKey}")`
                             );
                         }
                     }
