@@ -23,7 +23,7 @@ export const updateToEmotion11 = async (params: Params): Promise<void> => {
     // 1. Replace @emotion/core with the latest version of @emotion/react, and also
     // upgrade @emotion/styled to the latest version.
     // apps/website/package.json
-    context.log.info(`Upgrading @emotion packages withing the %s application.`, "Website");
+    context.log.info(`Upgrading %s packages within the %s application.`, "@emotion", "Website");
 
     const websitePackageJsonFile = files.byName("website/package.json");
 
@@ -33,7 +33,7 @@ export const updateToEmotion11 = async (params: Params): Promise<void> => {
     });
 
     // 2. Do the same for apps/theme.
-    context.log.info(`Upgrading @emotion packages withing the %s package.`, "Theme");
+    context.log.info(`Upgrading %s packages within the %s package.`, "@emotion", "Theme");
 
     const themePackageJsonFile = files.byName("theme/package.json");
     addPackagesToDependencies(context, themePackageJsonFile.path, {
