@@ -12,26 +12,21 @@ export type ThemeBackupResult = {
     info?: string;
 };
 
-/*
- *TODO: Create backup of the files and theme for the user.
- * Creates folder named 'legacy_theme_backup'
- * */
 export const createThemeUpgradeBackup = async (context: Context): Promise<ThemeBackupResult> => {
     const currentProjectVersion = findVersion(path.join(context.project.root, "package.json"));
 
     log.info(
-        "Backing up %s app and %s folder and generating latest code...",
-        "apps/website",
+        "Backing up %s app theme folder and generating latest code...",
         "apps/theme"
     );
 
     const results = [false];
 
     {
-        const from = path.join(__dirname, "apps", "theme");
+        const from = path.join(context.project.root, "apps", "theme");
         const to = path.join(context.project.root, "apps", "theme");
 
-        const toBackup = path.join(context.project.root, "apps", "_theme_typography_backup");
+        const toBackup = path.join(context.project.root, "apps", "_theme_backup");
         if (fs.existsSync(toBackup)) {
             log.warning(
                 "%s folder already exists, cannot create backup of the %s folder.",
@@ -39,8 +34,8 @@ export const createThemeUpgradeBackup = async (context: Context): Promise<ThemeB
                 "theme"
             );
         } else {
-            fs.renameSync(to, toBackup);
-            await ncp(from, to);
+            fs.mkdirSync(toBackup);
+            await ncp(from, toBackup);
             results[0] = true;
 
             const packageJsonPath = path.join(to, "package.json");
@@ -55,11 +50,7 @@ export const createThemeUpgradeBackup = async (context: Context): Promise<ThemeB
 
     if (!results.includes(false)) {
         log.success(
-            "%s app and %s folder successfully backed up (moved to %s and %s folders). Latest code was generated successfully.",
-            "apps/website",
-            "apps/theme",
-            "apps/_backup_website",
-            "apps/_backup_theme"
+            "%s app theme folder successfully backed up and moved to app/_theme_backup"
         );
         return {
             isSuccessful: true

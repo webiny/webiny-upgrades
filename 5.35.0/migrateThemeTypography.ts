@@ -10,6 +10,7 @@ import {
 } from "./themeTypographyMigration/themeMigration";
 import { themeMigrationInstructions } from "./themeTypographyMigration/themeMigrationInstructions";
 import { migrateFile } from "./themeTypographyMigration/migrateFile";
+import {createThemeUpgradeBackup} from "./themeTypographyMigration/createThemeUpgradeBackup";
 
 interface Params {
     files: Files;
@@ -57,7 +58,13 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
         return;
     }
 
-    context.log.debug("No migrated typography styles found, proceed with migration process...");
+    context.log.debug(`Back up legacy theme files...`);
+    const backupResult = await createThemeUpgradeBackup(context);
+    if (!backupResult.isSuccessful) {
+        return;
+    }
+
+    context.log.debug("Migrated typography styles not found, proceed with migration process...");
     const result = legacyTypographyCanBeMigrated(typographyVariable);
     if (!result.isReadyForMigration) {
         context.log.info(result.info);
@@ -65,19 +72,6 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
     }
 
     context.log.debug("Theme's typography styles are ready to be migrated...");
-
-    //context.log.debug(`Back up legacy theme files...`);
-    /*    const backupResult = await createThemeUpgradeBackup(context);
-    if (backupResult.isSuccessful) {
-        context.log.info(
-            `Theme backup for the legacy typography styles successfully created. 
-            Backup folder path: /apps/_theme_typography_backup`
-        );
-        return;
-    } else {
-        context.log.info(`Theme migrations is canceled, can't create backup fot the legacy theme`);
-        return;
-    }*/
 
     /*
      * MIGRATE THE THEME OBJECT
