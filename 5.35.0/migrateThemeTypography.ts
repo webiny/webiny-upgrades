@@ -28,18 +28,15 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
     const themeSourceFile = getAppThemeSourceFile(context, project);
 
     if (!themeSourceFile) {
-        context.log.info(
-            `Theme typography styles upgrade is canceled. Can't find App/Theme/theme.ts file`
+        context.log.warning(
+            `Theme typography styles upgrade is canceled. Can't find apps/theme/theme.ts file`
         );
         return;
     }
 
     const typographyVariable = getTypographyVariableDeclaration(themeSourceFile);
     if (!typographyVariable) {
-        context.log.info(
-            `Theme's typography styles can't be found in App/Theme/theme.ts file. Do you have custom implementation? 
-            Please check the 3.53.0 release docs`
-        );
+        context.log.info(`Theme's typography styles can't be found in apps/theme/theme.ts file.`);
         return;
     }
     context.log.debug(`Legacy typography object is found, proceed with migration...`);
@@ -83,7 +80,7 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
         context.log.info(typographyMappingResult.info);
         return;
     }
-    context.log.debug(`Legacy typography object is successfully mapped.`);
+    context.log.success(`Legacy typography object is successfully mapped.`);
 
     /*
      * MIGRATE THE REST OF SOLUTION THAT HAVE ACCESS TO THE THEME
@@ -99,5 +96,5 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
         migrateFile(definition, styleIdToTypographyTypeMap, project, context);
     }
 
-    context.log.success(`Cheers! You have successfully upgraded to new Webiny typography styles.`);
+    context.log.success(`Typography styles migrated.`);
 };

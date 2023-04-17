@@ -1,4 +1,5 @@
 import { Project } from "ts-morph";
+import log from "./log";
 
 export const createMorphProject = (files: string[]): Project => {
     const project = new Project();
@@ -6,7 +7,7 @@ export const createMorphProject = (files: string[]): Project => {
         try {
             project.addSourceFileAtPath(file);
         } catch (e) {
-            console.log("file can't be found. File path: ", file);
+            log.warning("Could not add %s file.", file);
         }
     }
     return project;

@@ -1,16 +1,4 @@
-export type Tag =
-    | "fm"
-    | "pb"
-    | "cms"
-    | "gql"
-    | "ps"
-    | "ddb2es"
-    | "theme"
-    | "website"
-    | "admin"
-    | "core"
-    | "fb"
-    | "cwp";
+export type Tag = "fm" | "pb" | "cms" | "gql" | "ps" | "ddb2es" | "theme" | "website" | "admin" | "core";
 
 export interface FileDefinitionParams {
     path: string;
