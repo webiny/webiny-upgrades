@@ -44,6 +44,12 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
     context.log.debug("Check if theme is already migrated...");
     const alreadyMigratedResult = typographyIsAlreadyMigrated(typographyVariable);
 
+    if (!alreadyMigratedResult) {
+        context.log.warning("Fail to check if typography styles are already migrated...");
+        context.log.warning("Type of the typography variable need to be object.");
+        return;
+    }
+
     if (alreadyMigratedResult.isFullyMigrated) {
         context.log.info(alreadyMigratedResult.info);
         return;

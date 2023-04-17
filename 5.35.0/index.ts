@@ -2,28 +2,35 @@ import { createMorphProject, prettierFormat, yarnInstall } from "../utils";
 import { updateGraphQL } from "./updateGraphQL";
 import { updateToEmotion11 } from "./updateToEmotion11";
 import { updateAdminApp } from "./updateAdminApp";
+import { updateDefaultFormLayout } from "./updateDefaultFormLayout";
 import { setupFiles } from "./setupFiles";
 import { Context } from "../types";
-import { updateDefaultFormLayout } from "./updateDefaultFormLayout";
 import { migrateThemeTypography } from "./migrateThemeTypography";
 
 module.exports = async (context: Context) => {
     const files = setupFiles(context);
     const rawFiles = files.paths();
     const project = createMorphProject(rawFiles);
-    await [
+
+    const processors = [
         updateGraphQL,
         updateAdminApp,
         updateToEmotion11,
-        updateDefaultFormLayout,
-        migrateThemeTypography
-    ].reduce(async (_, processor) => {
-        return await processor({
+        migrateThemeTypography,
+        updateDefaultFormLayout
+    ];
+
+    for (let i = 0; i < processors.length; i++) {
+        const processor = processors[i];
+        await processor({
             context,
             project,
             files
         });
-    }, Promise.resolve());
+
+        // Let's have an empty line between chunks of logs produced by processors.
+        console.log();
+    }
 
     // Save file changes.
     await project.save();

@@ -294,6 +294,10 @@ export const typographyIsAlreadyMigrated = (
         SyntaxKind.ObjectLiteralExpression
     );
 
+    if (!typographyObjetExpression) {
+        return undefined;
+    }
+
     const newThemePropNames = ["headings", "paragraphs", "lists", "quotes"];
 
     const partialMigration: string[] = [];
