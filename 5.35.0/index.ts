@@ -35,6 +35,13 @@ module.exports = async (context: Context) => {
     // Save file changes.
     await project.save();
 
+    // Needed to put these here because this step is doing file modifications outside of TS morph tool
+    await updateToEmotion11({
+        context,
+        project,
+        files
+    });
+
     await prettierFormat(rawFiles);
 
     await yarnInstall();
