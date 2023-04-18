@@ -1,5 +1,6 @@
 import { Context } from "../../types";
 import {
+    AsExpression,
     ObjectLiteralExpression,
     Project,
     PropertyAssignment,
@@ -42,6 +43,27 @@ export const getTypographyVariableDeclaration = (
     return variable;
 };
 
+const getObjectLiteralFromVariable = (
+    variable: VariableDeclaration
+): ObjectLiteralExpression | undefined => {
+    if (!variable) {
+        return undefined;
+    }
+
+    const variableInitializer = variable.getInitializer();
+    const variableInitializerKind = variableInitializer.getKind();
+
+    if (variableInitializerKind === SyntaxKind.AsExpression) {
+        return (variableInitializer as AsExpression).getExpression() as ObjectLiteralExpression;
+    }
+
+    if (variableInitializerKind === SyntaxKind.ObjectLiteralExpression) {
+        return variableInitializer as ObjectLiteralExpression;
+    }
+
+    return undefined;
+};
+
 /*
  * ----- MANIPULATION WITH THEME OBJECT ----
  */
@@ -64,9 +86,7 @@ export const legacyTypographyCanBeMigrated = (
         };
     }
 
-    const typographyObjetExpression = typography.getInitializerIfKind(
-        SyntaxKind.ObjectLiteralExpression
-    );
+    const typographyObjetExpression = getObjectLiteralFromVariable(typography);
 
     if (!typographyObjetExpression) {
         return {
@@ -207,18 +227,16 @@ export const mapToNewTypographyStyles = (
         quotes: []
     };
 
-    const typographyObjetExpression = typographyVar.getInitializerIfKind(
-        SyntaxKind.ObjectLiteralExpression
-    );
+    const typographyObjectExpression = getObjectLiteralFromVariable(typographyVar);
 
-    if (!typographyObjetExpression) {
+    if (!typographyObjectExpression) {
         return {
             isSuccessfullyMapped: false,
             info: "Mapping process of the typography styles is canceled, typography variable does not contain the legacy typography object structure."
         };
     }
 
-    const propertyAssignments = typographyObjetExpression
+    const propertyAssignments = typographyObjectExpression
         .getProperties()
         .map(prop => prop.asKind(SyntaxKind.PropertyAssignment));
 
@@ -250,7 +268,7 @@ export const mapToNewTypographyStyles = (
 
     // add the new mapped typography types
 
-    typographyObjetExpression.addPropertyAssignments([
+    typographyObjectExpression.addPropertyAssignments([
         {
             name: "headings",
             initializer: `[${newTypography.headings}]`
@@ -290,9 +308,7 @@ export const typographyIsAlreadyMigrated = (
         return undefined;
     }
 
-    const typographyObjetExpression = typography.getInitializerIfKind(
-        SyntaxKind.ObjectLiteralExpression
-    );
+    const typographyObjetExpression = getObjectLiteralFromVariable(typography);
 
     if (!typographyObjetExpression) {
         return undefined;
