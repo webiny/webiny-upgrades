@@ -397,7 +397,7 @@ export const typographyIsAlreadyMigrated = (
     }
 
     if (isFullyMigrated) {
-        info = "Theme's typography styles are already migrated";
+        info = "Theme's typography styles are already migrated.";
     }
 
     return {

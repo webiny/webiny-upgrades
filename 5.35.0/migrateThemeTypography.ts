@@ -10,7 +10,6 @@ import {
 } from "./themeTypographyMigration/themeMigration";
 import { themeMigrationFilesSetup } from "./themeTypographyMigration/themeMigrationFilesSetup";
 import { migrateFile } from "./themeTypographyMigration/migrateFile";
-import { createThemeUpgradeBackup } from "./themeTypographyMigration/createThemeUpgradeBackup";
 
 interface Params {
     files: Files;
@@ -21,22 +20,25 @@ interface Params {
 export const migrateThemeTypography = async (params: Params): Promise<void> => {
     const { context, project } = params;
 
-    context.log.info(`Upgrading Webiny theme to new typography styles...`);
+    context.log.info(
+        `Migrating existing typography styles in the theme object (%s).`,
+        "apps/theme/theme.ts"
+    );
 
-    context.log.debug(`Checking the legacy theme object...`);
     // Get the theme file and typography object
     const themeSourceFile = getAppThemeSourceFile(context, project);
 
     if (!themeSourceFile) {
         context.log.warning(
-            `Theme typography styles upgrade is canceled. Can't find apps/theme/theme.ts file`
+            "Theme typography styles migration canceled. Cannot find %s file.",
+            "apps/theme/theme.ts"
         );
         return;
     }
 
     const typographyVariable = getTypographyVariableDeclaration(themeSourceFile);
     if (!typographyVariable) {
-        context.log.info(`Theme's typography styles can't be found in apps/theme/theme.ts file.`);
+        context.log.warning(`Theme's typography styles can't be found in apps/theme/theme.ts file.`);
         return;
     }
     context.log.debug(`Legacy typography object is found, proceed with migration...`);
@@ -61,12 +63,6 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
         return;
     }
 
-    context.log.debug(`Back up legacy theme files...`);
-    const backupResult = await createThemeUpgradeBackup(context);
-    if (!backupResult.isSuccessful) {
-        return;
-    }
-
     context.log.debug("Migrated typography styles not found, proceed with migration process...");
     const result = legacyTypographyCanBeMigrated(typographyVariable);
     if (!result.isReadyForMigration) {
@@ -83,10 +79,9 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
     const typographyMappingResult = mapToNewTypographyStyles(typographyVariable, context);
 
     if (!typographyMappingResult.isSuccessfullyMapped) {
-        context.log.info(typographyMappingResult.info);
+        context.log.warning(typographyMappingResult.info);
         return;
     }
-    context.log.success(`Legacy typography object is successfully mapped.`);
 
     /*
      * MIGRATE THE REST OF SOLUTION THAT HAVE ACCESS TO THE THEME
