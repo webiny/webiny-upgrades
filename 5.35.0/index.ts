@@ -6,6 +6,7 @@ import { updateDefaultFormLayout } from "./updateDefaultFormLayout";
 import { setupFiles } from "./setupFiles";
 import { Context } from "../types";
 import { migrateThemeTypography } from "./migrateThemeTypography";
+import { backupThemeFolder } from "./backupThemeFolder";
 
 module.exports = async (context: Context) => {
     const files = setupFiles(context);
@@ -15,7 +16,7 @@ module.exports = async (context: Context) => {
     const processors = [
         updateGraphQL,
         updateAdminApp,
-        updateToEmotion11,
+        backupThemeFolder,
         migrateThemeTypography,
         updateDefaultFormLayout
     ];

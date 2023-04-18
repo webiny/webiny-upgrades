@@ -10,7 +10,6 @@ import {
 } from "./themeTypographyMigration/themeMigration";
 import { themeMigrationFilesSetup } from "./themeTypographyMigration/themeMigrationFilesSetup";
 import { migrateFile } from "./themeTypographyMigration/migrateFile";
-import { createThemeUpgradeBackup } from "./themeTypographyMigration/createThemeUpgradeBackup";
 
 interface Params {
     files: Files;
@@ -61,12 +60,6 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
     //We can't proceed with the migration to not mess the object
     if (alreadyMigratedResult.isPartlyMigrated) {
         context.log.info(alreadyMigratedResult.info);
-        return;
-    }
-
-    context.log.debug(`Back up legacy theme files...`);
-    const backupResult = await createThemeUpgradeBackup(context);
-    if (!backupResult.isSuccessful) {
         return;
     }
 
