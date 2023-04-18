@@ -1,5 +1,5 @@
 import { Context } from "../../types";
-import { findVersion, log } from "../../utils";
+import { log } from "../../utils";
 import path from "path";
 import fs from "fs";
 import ncpBase from "ncp";
@@ -13,16 +13,12 @@ export type ThemeBackupResult = {
 };
 
 export const createThemeUpgradeBackup = async (context: Context): Promise<ThemeBackupResult> => {
-    const currentProjectVersion = findVersion(path.join(context.project.root, "package.json"));
-
     log.info("Backing up %s app theme folder and generating latest code...", "apps/theme");
 
     const results = [false];
 
     {
         const from = path.join(context.project.root, "apps", "theme");
-        const to = path.join(context.project.root, "apps", "theme");
-
         const toBackup = path.join(context.project.root, "apps", "_theme_backup");
         if (fs.existsSync(toBackup)) {
             log.warning(
