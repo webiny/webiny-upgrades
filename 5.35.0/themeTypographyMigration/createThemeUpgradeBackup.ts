@@ -34,14 +34,6 @@ export const createThemeUpgradeBackup = async (context: Context): Promise<ThemeB
             fs.mkdirSync(toBackup);
             await ncp(from, toBackup);
             results[0] = true;
-
-            const packageJsonPath = path.join(to, "package.json");
-            const packageJson = fs.readFileSync(packageJsonPath, "utf8");
-
-            fs.writeFileSync(
-                packageJsonPath,
-                packageJson.replace(/"\^latest"/g, `"${currentProjectVersion}"`)
-            );
         }
     }
 
