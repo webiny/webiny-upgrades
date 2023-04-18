@@ -66,5 +66,5 @@ export const updateToEmotion11 = async (params: Params): Promise<void> => {
     context.log.info(`Creating global theme TypesScript types in %s.`, "types/emotion/index.d.ts");
     await ncp(path.join(__dirname, "updateToEmotion11", "env"), path.join("types", "emotion"));
 
-    context.log.success(`Successfully upgraded Emotion library to version 11.`);
+    context.log.success(`Upgraded Emotion library to version 11.`);
 };

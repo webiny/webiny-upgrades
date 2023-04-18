@@ -13,7 +13,7 @@ export type ThemeBackupResult = {
 };
 
 export const createThemeUpgradeBackup = async (context: Context): Promise<ThemeBackupResult> => {
-    log.info("Backing up %s app theme folder and generating latest code...", "apps/theme");
+    log.info("Backing up %s app theme folder and generating latest code.", "apps/theme");
 
     const results = [false];
 
@@ -34,7 +34,6 @@ export const createThemeUpgradeBackup = async (context: Context): Promise<ThemeB
     }
 
     if (!results.includes(false)) {
-        log.success("%s app theme folder successfully backed up and moved to app/_theme_backup");
         return {
             isSuccessful: true
         };
