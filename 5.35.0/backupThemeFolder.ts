@@ -1,10 +1,10 @@
 import { Context } from "../types";
-import {Files, log} from "../utils";
+import { Files, log } from "../utils";
 import path from "path";
 import fs from "fs";
 import ncpBase from "ncp";
 import util from "util";
-import {Project} from "ts-morph";
+import { Project } from "ts-morph";
 
 const ncp = util.promisify(ncpBase.ncp);
 

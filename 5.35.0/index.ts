@@ -14,8 +14,8 @@ module.exports = async (context: Context) => {
     const project = createMorphProject(rawFiles);
 
     const processors = [
-/*        updateGraphQL,
-        updateAdminApp,*/
+        updateGraphQL,
+        updateAdminApp,
         backupThemeFolder,
         migrateThemeTypography,
         updateDefaultFormLayout

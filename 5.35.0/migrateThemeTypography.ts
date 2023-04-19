@@ -38,7 +38,9 @@ export const migrateThemeTypography = async (params: Params): Promise<void> => {
 
     const typographyVariable = getTypographyVariableDeclaration(themeSourceFile);
     if (!typographyVariable) {
-        context.log.warning(`Theme's typography styles can't be found in apps/theme/theme.ts file.`);
+        context.log.warning(
+            `Theme's typography styles can't be found in apps/theme/theme.ts file.`
+        );
         return;
     }
     context.log.debug(`Legacy typography object is found, proceed with migration...`);
