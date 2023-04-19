@@ -143,7 +143,7 @@ export const legacyTypographyCanBeMigrated = (
 /*
  * Creates new Property assigment object for the new style.
  * it's creating a single style object
- * example: headings: [{ id, name, tag, css } -> example of the style object]
+ * example: headings: [{ id, name, tag, styles } -> example of the style object]
  * */
 export const mapToTypographyStyle = (
     assigment: PropertyAssignment,
@@ -157,7 +157,7 @@ export const mapToTypographyStyle = (
               id: string;
               name: string;
               tag: string;
-              css: PropertyAssignmentStructure;
+              styles: PropertyAssignmentStructure;
           };
       }
     | undefined => {
@@ -202,12 +202,12 @@ export const mapToTypographyStyle = (
     }
 
     return {
-        structure: `{ id: "${legacyKey}", name: "${legacyKey}", tag: "${tag || "p"}", css: ${
+        structure: `{ id: "${legacyKey}", name: "${legacyKey}", tag: "${tag || "p"}", styles: ${
             assigment.getStructure().initializer
         } }`,
         typographyType: htmlTagToTypographyTypeMapping[tag],
         isCustom,
-        structureAsObject: { id: legacyKey, name: legacyKey, tag, css: assigment.getStructure() }
+        structureAsObject: { id: legacyKey, name: legacyKey, tag, styles: assigment.getStructure() }
     };
 };
 
@@ -361,7 +361,7 @@ export const typographyIsAlreadyMigrated = (
                                 style.hasOwnProperty("id") &&
                                 style.hasOwnProperty("name") &&
                                 style.hasOwnProperty("tag") &&
-                                style.hasOwnProperty("css")
+                                style.hasOwnProperty("styles")
                             )
                         ) {
                             if (allStylesAreMigrated) {
