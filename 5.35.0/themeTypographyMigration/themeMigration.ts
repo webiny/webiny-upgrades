@@ -1,3 +1,4 @@
+import trim from "lodash.trim";
 import { Context } from "../../types";
 import {
     AsExpression,
@@ -161,10 +162,13 @@ export const mapToTypographyStyle = (
           };
       }
     | undefined => {
-    const legacyKey = assigment.getStructure().name;
+    let legacyKey = assigment.getStructure().name;
     if (!legacyKey) {
         return undefined;
     }
+
+    legacyKey = trim(legacyKey, '"');
+
     if (!assigment) {
         return undefined;
     }

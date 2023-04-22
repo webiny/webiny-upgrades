@@ -1792,6 +1792,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.trim@npm:^4.5.1":
+  version: 4.5.1
+  resolution: "lodash.trim@npm:4.5.1"
+  checksum: 64b08e97d94d4c7620159371e6fe6cbb706514a41d737db2f189d9ec738305eb08cb772a9bbd2459e90f1c22f96174ec1047ceb8272f2f6040cb5bd63d8f9f2b
+  languageName: node
+  linkType: hard
+
 "loose-envify@npm:^1.4.0":
   version: 1.4.0
   resolution: "loose-envify@npm:1.4.0"
@@ -2375,6 +2382,7 @@ __metadata:
     fs-extra: ^10.0.0
     json5: ^2.2.1
     load-json-file: ^6.0.1
+    lodash.trim: ^4.5.1
     ncp: ^2.0.0
     prettier: ^2.5.1
     replace-in-path: ^1.1.0
