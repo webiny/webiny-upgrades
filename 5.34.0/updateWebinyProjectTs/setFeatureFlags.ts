@@ -44,7 +44,6 @@ export const setFeatureFlags = async ({ files, project }: Params) => {
     });
 
     if (tsMorph.Node.isPropertyAssignment(existingIdProperty)) {
-
         existingIdProperty.setInitializer(FEATURE_FLAGS);
     } else {
         // @ts-ignore `insertProperty` does work, despite the fact that TS is complaining.
