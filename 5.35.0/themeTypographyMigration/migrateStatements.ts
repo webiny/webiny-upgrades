@@ -128,7 +128,7 @@ const updateTypographyExpression = (
          expression is not migrated. Line: ${templateSpan.getStartLineNumber()}`);
     } else {
         templateSpan.setExpression(
-            `props => props.theme.styles.typography.${typographyType}.stylesById("${styleKey}")`
+            `props => props.theme.styles.typography["${typographyType}"].stylesById("${styleKey}")`
         );
     }
 };
