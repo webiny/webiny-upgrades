@@ -111,10 +111,10 @@ export const migrateThemeTypography = {
         ];
 
         if (leftovers.length) {
-            const doc = DOCS_WEBSITE + "/5.35.0/typography-manual-migration";
+            const doc = DOCS_WEBSITE + "/5.35.0/partially-migrated-theme-object-typography";
 
             context.log.warning(
-                `Could not migrate all typography-related code (${doc}). Please check the following files manually:\n%s`,
+                `Could not migrate some of the theme object's typography-related code. (${doc}). Please check the following files manually:\n%s`,
                 leftovers.map(item => `- ${item.path}`).join("\n")
             );
         }

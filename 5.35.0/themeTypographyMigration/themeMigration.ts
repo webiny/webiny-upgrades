@@ -198,8 +198,8 @@ export const mapToTypographyStyle = (
                 tag = typographyKeyToHtmlTagMapping["quote"];
                 break;
             default:
-                const doc = DOCS_WEBSITE + "/5.35.0/custom-key-migration";
-                context.log.warning(`Custom key %s could not be migrated (${doc}).`, customKey);
+                const doc = DOCS_WEBSITE + "/5.35.0/typography-variant-paragraph-categorization";
+                context.log.warning(`Typography variant %s was categorized as a paragraph. Double check if a different category is more appropriate (${doc}).`, customKey);
 
                 isCustom = true;
                 tag = "p"; // default
