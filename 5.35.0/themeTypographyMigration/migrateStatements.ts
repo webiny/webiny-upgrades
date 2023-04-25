@@ -105,6 +105,11 @@ export const migrateStatements = (
 
                 // cover cases for single access like ${borderRadius} or ${breakpoints} for example
                 if (templateSpan.getExpression().getKind() === SyntaxKind.Identifier) {
+                    if (paExpression.getText().includes("borderRadius")) {
+                        updateBorderRadiusExpression(templateSpan);
+                        continue;
+                    }
+
                     updateStringLiteralExpression(
                         templateSpan,
                         (templateSpan.getExpression() as Identifier).getText()
