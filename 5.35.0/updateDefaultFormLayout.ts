@@ -40,6 +40,4 @@ export const updateDefaultFormLayout = async (params: Params) => {
         "apps/theme/layouts/forms"
     );
     await ncp(from, to);
-
-    context.log.success("Form layouts migration completed.");
 };
