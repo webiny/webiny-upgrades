@@ -110,18 +110,9 @@ export type StatementMigrationDefinition = {
 };
 
 export type MigrationInstructions = {
-    imports?: ImportDeclarationDefinition[];
     types?: TypeAliasMigrationDefinition[];
     interfaces?: InterfaceMigrationDefinition[];
     statements?: StatementMigrationDefinition;
-};
-
-export type ImportDeclarationDefinition = {
-    insertDefaultImport?: string;
-    remove?: boolean;
-    moduleSpecifier: string;
-    removeNamedImports?: string[];
-    addNamedImports?: string[];
 };
 
 export type ThemeFileMigrationDefinition = {

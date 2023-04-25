@@ -1,52 +1,63 @@
 import { createMorphProject, prettierFormat, yarnInstall } from "../utils";
 import { updateGraphQL } from "./updateGraphQL";
-import { updateToEmotion11 } from "./updateToEmotion11";
 import { updateAdminApp } from "./updateAdminApp";
+import { updateToEmotion11 } from "./updateToEmotion11";
 import { updateDefaultFormLayout } from "./updateDefaultFormLayout";
 import { setupFiles } from "./setupFiles";
 import { Context } from "../types";
 import { migrateThemeTypography } from "./migrateThemeTypography";
 import { backupThemeFolder } from "./backupThemeFolder";
 
+const SEPARATE = () => console.log();
+
 module.exports = async (context: Context) => {
+    await runProcessors(
+        [
+            // TODO: add some logs here.
+            updateGraphQL,
+            updateAdminApp,
+            SEPARATE,
+
+            migrateThemeTypography.start,
+            backupThemeFolder,
+            migrateThemeTypography.main,
+            migrateThemeTypography.manualTypographyMigration,
+            migrateThemeTypography.removeThemeImports,
+            updateDefaultFormLayout,
+            migrateThemeTypography.finalize,
+
+            SEPARATE,
+            updateToEmotion11
+        ],
+        context
+    );
+
+    SEPARATE();
+
+    // Format files.
     const files = setupFiles(context);
-    const rawFiles = files.paths();
-    const project = createMorphProject(rawFiles);
+    await prettierFormat(files.paths());
 
-    const processors = [
-        updateGraphQL,
-        updateAdminApp,
-        backupThemeFolder,
-        migrateThemeTypography,
-        updateDefaultFormLayout
-    ];
+    // Install dependencies.
+    await yarnInstall();
+};
 
+// Run processors in sequence.
+const runProcessors = async (processors, context) => {
     for (let i = 0; i < processors.length; i++) {
         const processor = processors[i];
+
+        const files = setupFiles(context);
+        const rawFiles = files.paths();
+        const project = createMorphProject(rawFiles);
+
         await processor({
             context,
             project,
             files
         });
 
-        // Let's have an empty line between chunks of logs produced by processors.
-        console.log();
+        // Save file changes.
+        await project.save();
     }
-
-    // Save file changes.
-    await project.save();
-
-    // Let's have an empty line between chunks of logs produced by processors.
-    console.log();
-
-    // Needed to put these here because this step is doing file modifications outside the TS morph tool
-    await updateToEmotion11({
-        context,
-        project,
-        files
-    });
-
-    await prettierFormat(rawFiles);
-
-    await yarnInstall();
 };

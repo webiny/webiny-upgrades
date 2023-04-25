@@ -17,6 +17,7 @@ import {
     TypographyType
 } from "./migrationTypes";
 import { getObjectLiteralExpressionValue } from "./getObjectLiteralExpressionValue";
+import { DOCS_WEBSITE } from "../../utils";
 
 /*
  * ----- SOURCE FILE SETUP FOR THEME ----- ß
@@ -197,9 +198,9 @@ export const mapToTypographyStyle = (
                 tag = typographyKeyToHtmlTagMapping["quote"];
                 break;
             default:
-                context.log.warning(
-                    `We couldn't map your custom key ${customKey} to the new structure, please add manually.`
-                );
+                const doc = DOCS_WEBSITE + "/m/5.35.0/custom-key-migration";
+                context.log.warning(`Custom key %s could not be migrated (${doc}).`, customKey);
+
                 isCustom = true;
                 tag = "p"; // default
         }

@@ -20,7 +20,7 @@ export type ThemeBackupResult = {
 };
 
 export const backupThemeFolder = async (params: Params): Promise<ThemeBackupResult> => {
-    log.info("Backing up %s app theme folder.", "apps/theme");
+    log.info("Backing up %s folder.", "apps/theme");
 
     let isSuccessful = false;
 

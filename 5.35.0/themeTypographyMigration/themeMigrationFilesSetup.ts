@@ -3,84 +3,20 @@ import { createFilePath, FileDefinition } from "../../utils";
 
 import { ThemeFileMigrationDefinition } from "./migrationTypes";
 
+const glob = require("fast-glob");
+
 const themeLayoutUpgradeDefinition = (context: Context): ThemeFileMigrationDefinition[] => {
-    return [
-        {
+    const files = glob.sync(["apps/theme/**/*.{ts,tsx}"]);
+
+    return files.map(item => {
+        return {
             file: new FileDefinition({
-                path: createFilePath(context, "${theme}/layouts/pages/Static/Footer.tsx"),
+                path: createFilePath(context, "${root}" + "/" + item),
                 tag: "theme",
-                name: "/layouts/pages/Static/Footer.tsx"
-            }),
-            migrationInstructions: {
-                imports: [
-                    {
-                        moduleSpecifier: "../../../theme",
-                        remove: true
-                    }
-                ]
-            }
-        },
-        {
-            file: new FileDefinition({
-                path: createFilePath(context, "${theme}/layouts/pages/Static/Header.tsx"),
-                tag: "theme",
-                name: "/layouts/pages/Static/Header.tsx"
-            }),
-            migrationInstructions: {
-                imports: [
-                    {
-                        moduleSpecifier: "../../../theme",
-                        remove: true
-                    }
-                ]
-            }
-        },
-        {
-            file: new FileDefinition({
-                path: createFilePath(context, "${theme}/layouts/pages/Static/HeaderDesktop.tsx"),
-                tag: "theme",
-                name: "/layouts/pages/Static/HeaderDesktop.tsx"
-            }),
-            migrationInstructions: {
-                imports: [
-                    {
-                        moduleSpecifier: "../../../theme",
-                        remove: true
-                    }
-                ]
-            }
-        },
-        {
-            file: new FileDefinition({
-                path: createFilePath(context, "${theme}/layouts/pages/Static/HeaderMobile.tsx"),
-                tag: "theme",
-                name: "/layouts/pages/Static/HeaderMobile.tsx"
-            }),
-            migrationInstructions: {
-                imports: [
-                    {
-                        moduleSpecifier: "../../../theme",
-                        remove: true
-                    }
-                ]
-            }
-        },
-        {
-            file: new FileDefinition({
-                path: createFilePath(context, "${theme}/layouts/pages/Static/Navigation.tsx"),
-                tag: "theme",
-                name: "/layouts/pages/Static/Navigation.tsx"
-            }),
-            migrationInstructions: {
-                imports: [
-                    {
-                        moduleSpecifier: "../../../theme",
-                        remove: true
-                    }
-                ]
-            }
-        }
-    ];
+                name: item
+            })
+        };
+    });
 };
 
 export const themeMigrationFilesSetup = (context: Context): ThemeFileMigrationDefinition[] => {
