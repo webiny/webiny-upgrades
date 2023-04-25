@@ -1,7 +1,12 @@
 import { Project } from "ts-morph";
 import { Context } from "../types";
-import { addPackagesToDependencies, Files } from "../utils";
-import { replaceInPath } from "replace-in-path";
+import {
+    addPackagesToDependencies,
+    replaceInPath,
+    findInPath,
+    Files,
+    DOCS_WEBSITE
+} from "../utils";
 
 import path from "path";
 import util from "util";
@@ -62,7 +67,19 @@ export const updateToEmotion11 = async (params: Params): Promise<void> => {
         }
     ]);
 
-    // 3. Generate global Emotion theme type.
+    // 3. Warn about custom Emotion plugins.
+    const babelPluginEmotionResults = findInPath("**/webiny.config.ts", {
+        find: "babel-plugin-emotion"
+    });
+    if (babelPluginEmotionResults.length) {
+        const doc = DOCS_WEBSITE + "/m/5.35.0/custom-emotion-plugins";
+
+        context.log.warning(
+            `Found custom Emotion plugins in your project. Please make sure to update them to the latest version (${doc}).`
+        );
+    }
+
+    // 4. Generate global Emotion theme type.
     context.log.info(`Creating global theme TypesScript types in %s.`, "types/emotion/index.d.ts");
     await ncp(path.join(__dirname, "updateToEmotion11", "env"), path.join("types", "emotion"));
 
