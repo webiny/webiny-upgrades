@@ -111,7 +111,7 @@ export const migrateThemeTypography = {
         ];
 
         if (leftovers.length) {
-            const doc = DOCS_WEBSITE + "/m/5.35.0/typography-manual-migration";
+            const doc = DOCS_WEBSITE + "/5.35.0/typography-manual-migration";
 
             context.log.warning(
                 `Could not migrate all typography-related code (${doc}). Please check the following files manually:\n%s`,
@@ -132,10 +132,10 @@ export const migrateThemeTypography = {
     },
     start: (params: Params) => {
         const { context } = params;
-        context.log.info(`Migrating %s folder.`, "apps/theme");
+        context.log.info(`Migrating website theme object.`);
     },
     finalize: (params: Params) => {
         const { context } = params;
-        context.log.success(`%s folder folder migrated.`, "apps/theme");
+        context.log.success(`Website theme object migrated.`);
     }
 };

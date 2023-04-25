@@ -198,7 +198,7 @@ export const mapToTypographyStyle = (
                 tag = typographyKeyToHtmlTagMapping["quote"];
                 break;
             default:
-                const doc = DOCS_WEBSITE + "/m/5.35.0/custom-key-migration";
+                const doc = DOCS_WEBSITE + "/5.35.0/custom-key-migration";
                 context.log.warning(`Custom key %s could not be migrated (${doc}).`, customKey);
 
                 isCustom = true;
