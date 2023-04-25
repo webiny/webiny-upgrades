@@ -52,6 +52,11 @@ import {
 export { Files } from "./classes/Files";
 export * from "./classes/FileDefinition";
 
+export * from "./findInPath";
+export * from "./replaceInPath";
+
+const DOCS_WEBSITE = process.env.DOCS_WEBSITE || 'https://www.webiny.com/docs';
+
 export {
     addPluginToCreateHandler,
     addResolutionToRootPackageJson,
@@ -93,5 +98,6 @@ export {
     getRequireFromSourceFile,
     isPre529Project,
     getIsPre529Project,
-    findVersion
+    findVersion,
+    DOCS_WEBSITE
 };
