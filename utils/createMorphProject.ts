@@ -7,7 +7,7 @@ export const createMorphProject = (files: string[]): Project => {
         try {
             project.addSourceFileAtPath(file);
         } catch (e) {
-            log.warning("Could not add %s file.", file);
+            log.debug("Could not add %s file.", file);
         }
     }
     return project;
