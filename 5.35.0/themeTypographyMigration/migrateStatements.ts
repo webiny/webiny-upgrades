@@ -142,12 +142,16 @@ const updateColorExpression = (templateSpan: TemplateSpan, colorName: string) =>
     templateSpan.setExpression(`props => props.theme.styles.colors["${colorName}"]`);
 };
 
+const updateBorderRadiusExpression = (templateSpan: TemplateSpan) => {
+    templateSpan.setExpression(`props => props.theme.styles.borderRadius`);
+};
+
 const updateBreakpointsExpression = (templateSpan: TemplateSpan, breakPointAccessName: string) => {
     templateSpan.setExpression(`props => props.theme.breakpoints["${breakPointAccessName}"]`);
 };
 
 const updateFontsExpression = (templateSpan: TemplateSpan, fontName: string) => {
-    templateSpan.setExpression(`props => props.theme.fonts["${fontName}"]`);
+    templateSpan.setExpression(`props => props.theme.styles["fonts"]["${fontName}"]`);
 };
 
 /*
