@@ -7,7 +7,7 @@ import fs from "fs";
 import log from "./log";
 
 const validateVersion = (version: string) => {
-    if (version === "latest") {
+    if (["latest", "unstable"].includes(version)) {
         return true;
     }
     const coerced = semverCoerce(version);
