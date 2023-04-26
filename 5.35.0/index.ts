@@ -7,6 +7,7 @@ import { setupFiles } from "./setupFiles";
 import { Context } from "../types";
 import { migrateThemeTypography } from "./migrateThemeTypography";
 import { backupThemeFolder } from "./backupThemeFolder";
+import { addNewFormBuilderPlugins } from "./addNewFormBuilderPlugins";
 
 const SEPARATE = () => console.log();
 
@@ -27,7 +28,10 @@ module.exports = async (context: Context) => {
             migrateThemeTypography.finalize,
 
             SEPARATE,
-            updateToEmotion11
+            updateToEmotion11,
+
+            SEPARATE,
+            addNewFormBuilderPlugins,
         ],
         context
     );

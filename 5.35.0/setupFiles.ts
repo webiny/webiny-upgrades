@@ -28,6 +28,11 @@ export const setupFiles = (context: Context): Files => {
             name: "admin/plugins/pageBuilder/editorPlugins.ts"
         }),
         new FileDefinition({
+            path: createFilePath(context, "${admin}/src/plugins/formBuilder.ts"),
+            tag: "admin",
+            name: "admin/plugins/formBuilder.ts"
+        }),
+        new FileDefinition({
             path: createFilePath(context, "${theme}/theme.ts"),
             tag: "theme",
             name: "theme.ts"
