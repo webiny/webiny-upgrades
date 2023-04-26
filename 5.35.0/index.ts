@@ -8,13 +8,16 @@ import { Context } from "../types";
 import { migrateThemeTypography } from "./migrateThemeTypography";
 import { backupThemeFolder } from "./backupThemeFolder";
 import { addNewFormBuilderPlugins } from "./addNewFormBuilderPlugins";
+import { warnAboutLegacyRenderingEngine } from "./warnAboutLegacyRenderingEngine";
+import { usesLatestPbRenderingEngine } from "./utils/usesLatestPbRenderingEngine";
 
 const SEPARATE = () => console.log();
 
 module.exports = async (context: Context) => {
-    await runProcessors(
-        [
-            // TODO: add some logs here.
+    let processors = [];
+
+    if (usesLatestPbRenderingEngine()) {
+        processors = [
             updateGraphQL,
             updateAdminApp,
             SEPARATE,
@@ -31,10 +34,22 @@ module.exports = async (context: Context) => {
             updateToEmotion11,
 
             SEPARATE,
-            addNewFormBuilderPlugins,
-        ],
-        context
-    );
+            addNewFormBuilderPlugins
+        ];
+    } else {
+        processors = [
+            updateGraphQL,
+            updateAdminApp,
+            SEPARATE,
+
+            warnAboutLegacyRenderingEngine,
+
+            SEPARATE,
+            addNewFormBuilderPlugins
+        ];
+    }
+
+    await runProcessors(processors, context);
 
     SEPARATE();
 

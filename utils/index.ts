@@ -54,8 +54,7 @@ export * from "./classes/FileDefinition";
 
 export * from "./findInPath";
 export * from "./replaceInPath";
-
-const DOCS_WEBSITE = process.env.DOCS_WEBSITE || 'https://webiny.com/docs';
+export * from "./getDocsLink";
 
 export {
     addPluginToCreateHandler,

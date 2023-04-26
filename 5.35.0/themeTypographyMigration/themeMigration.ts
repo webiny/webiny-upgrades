@@ -17,7 +17,7 @@ import {
     TypographyType
 } from "./migrationTypes";
 import { getObjectLiteralExpressionValue } from "./getObjectLiteralExpressionValue";
-import { DOCS_WEBSITE } from "../../utils";
+import { getDocsLink } from "../../utils";
 
 /*
  * ----- SOURCE FILE SETUP FOR THEME ----- ß
@@ -198,8 +198,11 @@ export const mapToTypographyStyle = (
                 tag = typographyKeyToHtmlTagMapping["quote"];
                 break;
             default:
-                const doc = DOCS_WEBSITE + "/5.35.0/typography-variant-paragraph-categorization";
-                context.log.warning(`Typography variant %s was categorized as a paragraph. Double check if a different category is more appropriate (${doc}).`, customKey);
+                const doc = getDocsLink("/5.35.0/typography-variant-paragraph-categorization");
+                context.log.warning(
+                    `Typography variant %s was categorized as a paragraph. Double check if a different category is more appropriate (${doc}).`,
+                    customKey
+                );
 
                 isCustom = true;
                 tag = "p"; // default

@@ -5,7 +5,7 @@ import {
     replaceInPath,
     findInPath,
     Files,
-    DOCS_WEBSITE
+    getDocsLink
 } from "../utils";
 
 import path from "path";
@@ -72,7 +72,7 @@ export const updateToEmotion11 = async (params: Params): Promise<void> => {
         find: "babel-plugin-emotion"
     });
     if (babelPluginEmotionResults.length) {
-        const doc = DOCS_WEBSITE + "/5.35.0/custom-emotion-plugins";
+        const doc = getDocsLink('/5.35.0/custom-emotion-plugins');
 
         context.log.warning(
             `Found custom Emotion plugins in your project. Please make sure to update them to the latest version (${doc}).`
