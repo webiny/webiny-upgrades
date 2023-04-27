@@ -198,7 +198,7 @@ export const mapToTypographyStyle = (
                 tag = typographyKeyToHtmlTagMapping["quote"];
                 break;
             default:
-                const doc = getWebinyLink("/5.35.0/typography-variant-categorization");
+                const doc = getWebinyLink("/5.35.0/typography-variant-category");
                 context.log.warning(
                     `Typography variant %s was categorized as a paragraph. Double check if a different category is more appropriate (${doc}).`,
                     customKey
