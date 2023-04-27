@@ -99,5 +99,4 @@ export {
     isPre529Project,
     getIsPre529Project,
     findVersion,
-    DOCS_WEBSITE
 };

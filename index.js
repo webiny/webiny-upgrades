@@ -9,7 +9,7 @@ require("ts-node").register({
 
 const fs = require("fs");
 const path = require("path");
-const { DOCS_WEBSITE } = require("./utils");
+const { getDocsLink } = require("./utils");
 const log = require("./utils/log").default;
 
 const response = data => {
@@ -57,7 +57,7 @@ const response = data => {
         console.log();
 
         log.info("For more information about the upgrade, check out the following article:");
-        log.info(`${DOCS_WEBSITE}/release-notes/${version}/upgrade-guide/`);
+        log.info(getDocsLink(`/release-notes/${version}/upgrade-guide/`));
 
         response({ type: "success", message: "", error: null });
     } catch (e) {
@@ -70,7 +70,7 @@ const response = data => {
             console.log();
 
             log.info("For more information about the upgrade, check out the following article:");
-            log.info(`${DOCS_WEBSITE}/release-notes/${version}/upgrade-guide/`);
+            log.info(getDocsLink(`/release-notes/${version}/upgrade-guide/`));
         }
 
         response({
