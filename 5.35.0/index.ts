@@ -1,4 +1,9 @@
-import { createMorphProject, prettierFormat, yarnInstall } from "../utils";
+import {
+    createMorphProject,
+    prettierFormat,
+    yarnInstall,
+    usesLatestPbRenderingEngine
+} from "../utils";
 import { updateGraphQL } from "./updateGraphQL";
 import { updateAdminApp } from "./updateAdminApp";
 import { updateToEmotion11 } from "./updateToEmotion11";
@@ -9,7 +14,6 @@ import { migrateThemeTypography } from "./migrateThemeTypography";
 import { backupThemeFolder } from "./backupThemeFolder";
 import { addNewFormBuilderPlugins } from "./addNewFormBuilderPlugins";
 import { warnAboutLegacyRenderingEngine } from "./warnAboutLegacyRenderingEngine";
-import { usesLatestPbRenderingEngine } from "./utils/usesLatestPbRenderingEngine";
 
 const SEPARATE = () => console.log();
 

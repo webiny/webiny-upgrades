@@ -55,6 +55,7 @@ export * from "./classes/FileDefinition";
 export * from "./findInPath";
 export * from "./replaceInPath";
 export * from "./getDocsLink";
+export * from "./usesLatestPbRenderingEngine";
 
 export {
     addPluginToCreateHandler,
