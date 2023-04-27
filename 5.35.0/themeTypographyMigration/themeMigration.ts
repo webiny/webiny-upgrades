@@ -17,7 +17,7 @@ import {
     TypographyType
 } from "./migrationTypes";
 import { getObjectLiteralExpressionValue } from "./getObjectLiteralExpressionValue";
-import { getDocsLink } from "../../utils";
+import { getWebinyLink } from "../../utils";
 
 /*
  * ----- SOURCE FILE SETUP FOR THEME ----- ß
@@ -198,7 +198,7 @@ export const mapToTypographyStyle = (
                 tag = typographyKeyToHtmlTagMapping["quote"];
                 break;
             default:
-                const doc = getDocsLink("/5.35.0/typography-variant-paragraph-categorization");
+                const doc = getWebinyLink("/5.35.0/typography-variant-categorization");
                 context.log.warning(
                     `Typography variant %s was categorized as a paragraph. Double check if a different category is more appropriate (${doc}).`,
                     customKey

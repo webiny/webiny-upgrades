@@ -1,6 +1,6 @@
 import { Project } from "ts-morph";
 import { Context } from "../types";
-import { getDocsLink, Files, findInPath } from "../utils";
+import { Files, findInPath, getWebinyLink } from "../utils";
 import {
     getAppThemeSourceFile,
     getTypographyVariableDeclaration,
@@ -111,7 +111,7 @@ export const migrateThemeTypography = {
         ];
 
         if (leftovers.length) {
-            const doc = getDocsLink("/5.35.0/partially-migrated-theme-object-typography");
+            const doc = getWebinyLink("/5.35.0/partially-migrated-theme-object-typography");
 
             context.log.warning(
                 `Could not migrate some of the theme object's typography-related code. (${doc}). Please check the following files manually:\n%s`,
