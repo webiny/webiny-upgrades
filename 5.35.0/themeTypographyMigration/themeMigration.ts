@@ -1,4 +1,6 @@
 import trim from "lodash.trim";
+import startCase from "lodash.startcase";
+
 import { Context } from "../../types";
 import {
     AsExpression,
@@ -210,7 +212,7 @@ export const mapToTypographyStyle = (
     }
 
     return {
-        structure: `{ id: "${legacyKey}", name: "${legacyKey}", tag: "${tag || "p"}", styles: ${
+        structure: `{ id: "${legacyKey}", name: "${startCase(legacyKey)}", tag: "${tag || "p"}", styles: ${
             assigment.getStructure().initializer
         } }`,
         typographyType: htmlTagToTypographyTypeMapping[tag],

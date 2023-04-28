@@ -1792,6 +1792,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.startcase@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "lodash.startcase@npm:4.4.0"
+  checksum: c03a4a784aca653845fe09d0ef67c902b6e49288dc45f542a4ab345a9c406a6dc194c774423fa313ee7b06283950301c1221dd2a1d8ecb2dac8dfbb9ed5606b5
+  languageName: node
+  linkType: hard
+
 "lodash.trim@npm:^4.5.1":
   version: 4.5.1
   resolution: "lodash.trim@npm:4.5.1"
@@ -2382,6 +2389,7 @@ __metadata:
     fs-extra: ^10.0.0
     json5: ^2.2.1
     load-json-file: ^6.0.1
+    lodash.startcase: ^4.4.0
     lodash.trim: ^4.5.1
     ncp: ^2.0.0
     prettier: ^2.5.1
