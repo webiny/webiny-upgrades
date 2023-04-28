@@ -5,7 +5,8 @@ import {
     replaceInPath,
     findInPath,
     Files,
-    getWebinyLink
+    getWebinyLink,
+    addResolutionToRootPackageJson
 } from "../utils";
 
 import path from "path";
@@ -79,7 +80,17 @@ export const updateToEmotion11 = async (params: Params): Promise<void> => {
         );
     }
 
-    // 4. Generate global Emotion theme type.
+    // 4. Add "@emotion/react": "11.10.8" to resolutions.
+    context.log.info(
+        `Adding %s to resolutions in root %s file.`,
+        `"@emotion/react": "11.10.8"`,
+        "package.json"
+    );
+    await addResolutionToRootPackageJson("package.json", {
+        "@emotion/react": "11.10.8"
+    });
+
+    // 5. Generate global Emotion theme type.
     context.log.info(`Creating global theme TypesScript types in %s.`, "types/emotion/index.d.ts");
     await ncp(path.join(__dirname, "updateToEmotion11", "env"), path.join("types", "emotion"));
 
