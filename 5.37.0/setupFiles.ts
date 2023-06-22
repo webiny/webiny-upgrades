@@ -9,7 +9,7 @@ export const setupFiles = (context: Context): Files => {
         new FileDefinition({
             path: createFilePath(context, "${graphql}/src/security.ts"),
             tag: "gql",
-            name: "graphql/security"
+            name: "api/graphql/security"
         })
     ]);
 
