@@ -31,6 +31,7 @@ import { upgradeCreateHandlerToPlugins } from "./upgradeCreateHandlerToPlugins";
 import { removeExtendsFromInterface } from "./removeExtendsFromInterface";
 
 export { removeFromExportDefaultArray } from "./removeFromExportDefaultArray";
+export { movePlugin } from "./movePlugin";
 
 import { getSourceFile, getExistingFiles } from "./files";
 import { addToExportDefaultArray } from "./addToExportDefaultArray";
