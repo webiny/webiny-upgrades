@@ -20,9 +20,21 @@ const response = data => {
 (async () => {
     const start = new Date();
     const { argv } = require("yargs");
+    const [version] = argv._;
+
+    let cliVersion = version;
+    try {
+        const pkgJson = require(path.join(
+            process.cwd(),
+            "node_modules",
+            "@webiny/cli/package.json"
+        ));
+        cliVersion = pkgJson.version;
+    } catch (e) {
+        // Use the version passed through args.
+    }
 
     try {
-        const [version] = argv._;
         if (!version) {
             throw new Error(`Missing positional "version" argument!`);
         }
@@ -45,7 +57,7 @@ const response = data => {
             project: {
                 root: argv.cwd || process.cwd()
             },
-            version,
+            version: cliVersion,
             log: log
         };
 
