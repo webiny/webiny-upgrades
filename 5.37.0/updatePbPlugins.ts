@@ -1,3 +1,214 @@
-export const updatePbPlugins = () => {
-    console.log("TODO");
+import { Project } from "ts-morph";
+import { Files, insertImportToSourceFile, addToExportDefaultArray } from "../utils";
+import { Context } from "../types";
+
+interface Params {
+    files: Files;
+    project: Project;
+    context: Context;
+}
+
+export const updatePbPlugins = async (params: Params) => {
+    const { project, files, context } = params;
+
+    const adminEditorPluginsFile = files.byName("admin/plugins/pageBuilder/editorPlugins");
+    const adminRenderPluginsFile = files.byName("admin/plugins/pageBuilder/renderPlugins");
+    const websiteRenderPluginsFile = files.byName("website/plugins/pageBuilder");
+
+    {
+        // 1. Admin / editor plugins.
+        const source = project.getSourceFile(adminEditorPluginsFile.path);
+
+        context.log.info(`Adding new Page Builder plugins (%s)`, adminEditorPluginsFile.path);
+
+        const imports = [
+            // Carousel plugins.
+            {
+                name: "carousel",
+                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/carousel"
+            },
+            {
+                name: "carouselElement",
+                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/carouselElement"
+            },
+            {
+                name: "carouselSettings",
+                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elementSettings/carousel"
+            },
+            {
+                name: "carouselElementSettings",
+                moduleSpecifier:
+                    "@webiny/app-page-builder/editor/plugins/elementSettings/carouselElementSettings"
+            },
+            {
+                name: "carouselStylesSettings",
+                moduleSpecifier:
+                    "@webiny/app-page-builder/editor/plugins/elementSettings/carouselStyles"
+            },
+
+            // Tabs plugins.
+            {
+                name: "tabs",
+                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/tabs"
+            },
+            {
+                name: "tab",
+                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/tab"
+            },
+            {
+                name: "tabsSettings",
+                moduleSpecifier:
+                    "@webiny/app-page-builder/editor/plugins/elementSettings/tabsSettings"
+            },
+            {
+                name: "tabSettings",
+                moduleSpecifier:
+                    "@webiny/app-page-builder/editor/plugins/elementSettings/tabSettings"
+            },
+
+            // Accordion plugins.
+            {
+                name: "accordion",
+                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/accordion"
+            },
+            {
+                name: "accordionItem",
+                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/accordionItem"
+            },
+            {
+                name: "accordionSettings",
+                moduleSpecifier:
+                    "@webiny/app-page-builder/editor/plugins/elementSettings/accordionSettings"
+            },
+            {
+                name: "accordionItemSettings",
+                moduleSpecifier:
+                    "@webiny/app-page-builder/editor/plugins/elementSettings/accordionItemSettings"
+            },
+
+            // Cell mirroring options (only admin).
+            {
+                name: "mirrorCell",
+                moduleSpecifier:
+                    "@webiny/app-page-builder/editor/plugins/elementSettings/mirror-cell"
+            }
+        ];
+
+        imports.forEach(currentImport => {
+            insertImportToSourceFile({
+                source,
+                after: "@webiny/app-page-builder/editor/plugins/elements/heading",
+                ...currentImport
+            });
+
+            addToExportDefaultArray({
+                source,
+                target: currentImport.name
+            });
+        });
+    }
+
+    {
+        // 2. Admin / render plugins.
+        const source = project.getSourceFile(adminRenderPluginsFile.path);
+
+        context.log.info(`Adding new Page Builder plugins (%s)`, adminRenderPluginsFile.path);
+
+        const imports = [
+            // Carousel plugins.
+            {
+                name: "carousel",
+                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/carousel"
+            },
+            {
+                name: "carouselElement",
+                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/carouselElement"
+            },
+
+            // Tabs plugins.
+            {
+                name: "tabs",
+                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/tabs"
+            },
+            {
+                name: "tab",
+                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/tab"
+            },
+
+            // Accordion plugins.
+            {
+                name: "accordion",
+                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/accordion"
+            },
+            {
+                name: "accordionItem",
+                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/accordionItem"
+            },
+        ];
+
+        imports.forEach(currentImport => {
+            insertImportToSourceFile({
+                source,
+                after: "@webiny/app-page-builder/editor/plugins/elements/heading",
+                ...currentImport
+            });
+
+            addToExportDefaultArray({
+                source,
+                target: currentImport.name
+            });
+        });
+    }
+
+    {
+        // 3. Admin / render plugins.
+        const source = project.getSourceFile(websiteRenderPluginsFile.path);
+
+        context.log.info(`Adding new Page Builder plugins (%s)`, websiteRenderPluginsFile.path);
+
+        const imports = [
+            // Carousel plugins.
+            {
+                name: "carousel",
+                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/carousel"
+            },
+            {
+                name: "carouselElement",
+                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/carouselElement"
+            },
+
+            // Tabs plugins.
+            {
+                name: "tabs",
+                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/tabs"
+            },
+            {
+                name: "tab",
+                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/tab"
+            },
+
+            // Accordion plugins.
+            {
+                name: "accordion",
+                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/accordion"
+            },
+            {
+                name: "accordionItem",
+                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/accordionItem"
+            },
+        ];
+
+        imports.forEach(currentImport => {
+            insertImportToSourceFile({
+                source,
+                after: "@webiny/app-page-builder/editor/plugins/elements/heading",
+                ...currentImport
+            });
+
+            addToExportDefaultArray({
+                source,
+                target: currentImport.name
+            });
+        });
+    }
 };
