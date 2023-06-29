@@ -8,8 +8,8 @@ import { updateFbPlugins } from "./updateFbPlugins";
 
 module.exports = async (context: Context) => {
     const processors = [
-        // updateApiIndexPlugins,
-        // updateApiSecurityPlugins,
+        updateApiIndexPlugins,
+        updateApiSecurityPlugins,
         updatePbPlugins,
         updateFbPlugins
     ];
