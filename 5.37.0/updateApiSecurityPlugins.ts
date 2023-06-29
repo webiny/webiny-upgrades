@@ -1,6 +1,5 @@
-import { Node, ObjectLiteralExpression, Project, SyntaxKind } from "ts-morph";
+import { ObjectLiteralExpression, Project, SyntaxKind } from "ts-morph";
 import {
-    addPluginToCreateHandler,
     Files,
     insertImportToSourceFile,
     removeImportFromSourceFile

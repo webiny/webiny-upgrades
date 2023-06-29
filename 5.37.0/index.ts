@@ -1,17 +1,17 @@
 import { createMorphProject, prettierFormat, yarnInstall } from "../utils";
 import { setupFiles } from "./setupFiles";
 import { Context } from "../types";
-// import { updatePbPlugins } from "./updatePbPlugins";
-// import { updateFbPlugins } from "./updateFbPlugins";
 import { updateApiIndexPlugins } from "./updateApiIndexPlugins";
 import { updateApiSecurityPlugins } from "./updateApiSecurityPlugins";
+import { updatePbPlugins } from "./updatePbPlugins";
+import { updateFbPlugins } from "./updateFbPlugins";
 
 module.exports = async (context: Context) => {
     const processors = [
-        updateApiIndexPlugins,
-        updateApiSecurityPlugins
-        // updatePbPlugins,
-        // updateFbPlugins
+        // updateApiIndexPlugins,
+        // updateApiSecurityPlugins,
+        updatePbPlugins,
+        updateFbPlugins
     ];
 
     const files = setupFiles(context);
