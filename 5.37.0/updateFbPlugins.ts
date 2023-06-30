@@ -140,7 +140,7 @@ export const updateFbPlugins = async (params: Params) => {
             );
 
             addPackagesToDependencies(context, themePackageJsonPath, {
-                "@webiny/utils": "5.37.0"
+                "@webiny/utils": context.version
             });
 
             // Update packages/cwp-template-aws/template/common/apps/theme/layouts/forms/DefaultFormLayout/Field.tsx.
