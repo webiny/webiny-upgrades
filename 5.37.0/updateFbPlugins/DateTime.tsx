@@ -18,6 +18,7 @@ const SelectLabel = styled.div`
 const DateFieldWrapper = styled.div`
     display: flex;
     align-items: flex-start;
+
     & #timeZoneField {
         height: 100%;
         margin-left: 15px;
@@ -25,11 +26,11 @@ const DateFieldWrapper = styled.div`
 `;
 
 const SelectTimeZoneField = ({
-                                 onChange,
-                                 dateTime,
-                                 timeZone,
-                                 setTimeZone
-                             }: {
+    onChange,
+    dateTime,
+    timeZone,
+    setTimeZone
+}: {
     onChange: BindComponentRenderProp["onChange"];
     dateTime: string;
     timeZone: string;
@@ -109,11 +110,11 @@ const DateFieldWithTimeZone = (props: { field: FormRenderFbFormModelField }) => 
 export const DateTimeField = (props: { field: FormRenderFbFormModelField }) => {
     const { settings } = props.field;
 
-    if (settings.format === "time") {
+    if (settings["format"] === "time") {
         return <InputField {...props} type="time" />;
-    } else if (settings.format === "dateTimeWithoutTimezone") {
+    } else if (settings["format"] === "dateTimeWithoutTimezone") {
         return <InputField {...props} type="datetime-local" />;
-    } else if (settings.format === "dateTimeWithTimezone") {
+    } else if (settings["format"] === "dateTimeWithTimezone") {
         return <DateFieldWithTimeZone {...props} />;
     } else {
         return <InputField {...props} type="date" />;
