@@ -38,7 +38,7 @@ export const updatePbPlugins = async (params: Params) => {
             {
                 name: "carouselElementSettings",
                 moduleSpecifier:
-                    "@webiny/app-page-builder/editor/plugins/elementSettings/carouselElementSettings"
+                    "@webiny/app-page-builder/editor/plugins/elementSettings/carouselElement"
             },
             {
                 name: "carouselStylesSettings",
@@ -57,13 +57,11 @@ export const updatePbPlugins = async (params: Params) => {
             },
             {
                 name: "tabsSettings",
-                moduleSpecifier:
-                    "@webiny/app-page-builder/editor/plugins/elementSettings/tabsSettings"
+                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elementSettings/tabs"
             },
             {
                 name: "tabSettings",
-                moduleSpecifier:
-                    "@webiny/app-page-builder/editor/plugins/elementSettings/tabSettings"
+                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elementSettings/tab"
             },
 
             // Accordion plugins.
@@ -77,13 +75,12 @@ export const updatePbPlugins = async (params: Params) => {
             },
             {
                 name: "accordionSettings",
-                moduleSpecifier:
-                    "@webiny/app-page-builder/editor/plugins/elementSettings/accordionSettings"
+                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elementSettings/accordion"
             },
             {
                 name: "accordionItemSettings",
                 moduleSpecifier:
-                    "@webiny/app-page-builder/editor/plugins/elementSettings/accordionItemSettings"
+                    "@webiny/app-page-builder/editor/plugins/elementSettings/accordionItem"
             },
 
             // Cell mirroring options (only admin).
@@ -143,7 +140,7 @@ export const updatePbPlugins = async (params: Params) => {
             {
                 name: "accordionItem",
                 moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/accordionItem"
-            },
+            }
         ];
 
         imports.forEach(currentImport => {
@@ -195,7 +192,7 @@ export const updatePbPlugins = async (params: Params) => {
             {
                 name: "accordionItem",
                 moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/accordionItem"
-            },
+            }
         ];
 
         imports.forEach(currentImport => {
