@@ -56,10 +56,17 @@ export const setupFiles = (context: Context): Files => {
             name: "apps/theme/layouts/forms/DefaultFormLayout/Field"
         }),
         new FileDefinition({
-
-            path: createFilePath(context, "${theme}/layouts/forms/DefaultFormLayout/fields/Select.tsx"),
+            path: createFilePath(
+                context,
+                "${theme}/layouts/forms/DefaultFormLayout/fields/Select.tsx"
+            ),
             tag: "theme",
             name: "apps/theme/layouts/forms/DefaultFormLayout/fields/Select"
+        }),
+        new FileDefinition({
+            path: createFilePath(context, "${root}/webiny.project.ts"),
+            tag: "core",
+            name: "./webiny.project.ts"
         })
     ]);
 
