@@ -10,10 +10,11 @@ export const getDefaultExportedObject = (
         return undefined;
     }
 
-    // find default export
+    // Find default export
     const exportAssigment = source.getExportAssignment(
         assignment => assignment.getExpression().getKind() === SyntaxKind.ObjectLiteralExpression
     );
+
     if (!exportAssigment) {
         return undefined;
     }

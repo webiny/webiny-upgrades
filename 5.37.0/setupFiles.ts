@@ -65,8 +65,8 @@ export const setupFiles = (context: Context): Files => {
         }),
         new FileDefinition({
             path: createFilePath(context, "${root}/webiny.project.ts"),
-            tag: "core",
-            name: "./webiny.project.ts"
+            tag: "cms",
+            name: "webiny.project.ts"
         })
     ]);
 
