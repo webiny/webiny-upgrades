@@ -5,13 +5,15 @@ import { updateApiIndexPlugins } from "./updateApiIndexPlugins";
 import { updateApiSecurityPlugins } from "./updateApiSecurityPlugins";
 import { updatePbPlugins } from "./updatePbPlugins";
 import { updateFbPlugins } from "./updateFbPlugins";
+import { upgradeLegacyRteToCmsFeatureFlag } from "./upgradeLegacyRteToCmsFeatureFlag";
 
 module.exports = async (context: Context) => {
     const processors = [
         updateApiIndexPlugins,
         updateApiSecurityPlugins,
         updatePbPlugins,
-        updateFbPlugins
+        updateFbPlugins,
+        upgradeLegacyRteToCmsFeatureFlag
     ];
 
     const files = setupFiles(context);
