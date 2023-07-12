@@ -1,7 +1,7 @@
 import { Files } from "../utils";
 import { Project } from "ts-morph";
 import { Context } from "../types";
-import { isFeatureFlagExist } from "../utils/isFeatureFlagExist";
+import { FeatureFlagExist } from "../utils/featureFlagExist";
 import { addFeatureFlag } from "../utils/addFeatureFlag";
 
 interface Params {
@@ -9,21 +9,22 @@ interface Params {
     project: Project;
     context: Context;
 }
+const FEATURE_FLAG_NAME = "allowCmsLegacyRichTextInput";
 
 export const upgradeLegacyRteToCmsFeatureFlag = async (params: Params) => {
     const { project, files, context } = params;
 
     context.log.info(
-        "Adding feature flag for legacy Rich Text editor support in the Headless CMS app."
+        "Adding feature flag %s for legacy Rich Text editor support in the Headless CMS app. For more info please check %s",
+        "allowCmsLegacyRichTextInput",
+        "https://webiny.link/hcms-legacy-rte-support"
     );
 
     const webinyProjectFile = files.byName("webiny.project.ts");
     const source = project.getSourceFile(webinyProjectFile.path);
 
-    const FEATURE_FLAG_NAME = "allowCmsLegacyRteInput";
-
-    if (isFeatureFlagExist(source, FEATURE_FLAG_NAME)) {
-        context.log.success("Feature flag is already added.");
+    if (FeatureFlagExist(source, FEATURE_FLAG_NAME)) {
+        context.log.success("Feature flag %s is already added.", "allowCmsLegacyRichTextInput");
         return;
     }
 
@@ -33,6 +34,4 @@ export const upgradeLegacyRteToCmsFeatureFlag = async (params: Params) => {
         context.log.warning(e.message);
         return;
     }
-
-    context.log.success("Feature flag is successfully added.");
 };

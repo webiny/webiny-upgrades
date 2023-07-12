@@ -5,7 +5,7 @@ import { toObjectValue } from "./tsMorph/toObjectValue";
 /*
  * Checks if feature flag property exist in the featureFlag object
  */
-export const isFeatureFlagExist = (source: SourceFile, name: string): boolean => {
+export const FeatureFlagExist = (source: SourceFile, name: string): boolean => {
     const projectObjectLiteral = getDefaultExportedObject(source);
 
     if (!projectObjectLiteral) {
@@ -13,5 +13,5 @@ export const isFeatureFlagExist = (source: SourceFile, name: string): boolean =>
     }
 
     const projectObject = toObjectValue(projectObjectLiteral);
-    return !!projectObject.featureFlags?.[name];
+    return typeof projectObject.featureFlags?.[name] !== "undefined";
 };
