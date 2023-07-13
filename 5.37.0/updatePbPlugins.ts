@@ -24,10 +24,12 @@ export const updatePbPlugins = async (params: Params) => {
         const imports = [
             // Carousel plugins.
             {
+                factory: true,
                 name: "carousel",
                 moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/carousel"
             },
             {
+                factory: true,
                 name: "carouselElement",
                 moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/carouselElement"
             },
@@ -48,10 +50,12 @@ export const updatePbPlugins = async (params: Params) => {
 
             // Tabs plugins.
             {
+                factory: true,
                 name: "tabs",
                 moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/tabs"
             },
             {
+                factory: true,
                 name: "tab",
                 moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/tab"
             },
@@ -66,10 +70,12 @@ export const updatePbPlugins = async (params: Params) => {
 
             // Accordion plugins.
             {
+                factory: true,
                 name: "accordion",
                 moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/accordion"
             },
             {
+                factory: true,
                 name: "accordionItem",
                 moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/accordionItem"
             },
@@ -100,7 +106,7 @@ export const updatePbPlugins = async (params: Params) => {
 
             addToExportDefaultArray({
                 source,
-                target: currentImport.name
+                target: currentImport.factory ? currentImport.name + "()" : currentImport.name
             });
         });
     }
@@ -152,13 +158,13 @@ export const updatePbPlugins = async (params: Params) => {
 
             addToExportDefaultArray({
                 source,
-                target: currentImport.name
+                target: currentImport.name + "()"
             });
         });
     }
 
     {
-        // 3. Admin / render plugins.
+        // 3. Website / render plugins.
         const source = project.getSourceFile(websiteRenderPluginsFile.path);
 
         context.log.info(`Adding new Page Builder plugins (%s)`, websiteRenderPluginsFile.path);
@@ -204,7 +210,7 @@ export const updatePbPlugins = async (params: Params) => {
 
             addToExportDefaultArray({
                 source,
-                target: currentImport.name
+                target: currentImport.name + "()"
             });
         });
     }
