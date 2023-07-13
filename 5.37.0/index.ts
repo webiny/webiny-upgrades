@@ -6,6 +6,7 @@ import { updateApiSecurityPlugins } from "./updateApiSecurityPlugins";
 import { updatePbPlugins } from "./updatePbPlugins";
 import { updateFbPlugins } from "./updateFbPlugins";
 import { upgradeLegacyRteToCmsFeatureFlag } from "./upgradeLegacyRteToCmsFeatureFlag";
+import { deleteCmsFolder } from "./deleteCmsFolder";
 
 module.exports = async (context: Context) => {
     const processors = [
@@ -13,14 +14,13 @@ module.exports = async (context: Context) => {
         updateApiSecurityPlugins,
         updatePbPlugins,
         updateFbPlugins,
-        upgradeLegacyRteToCmsFeatureFlag
+        upgradeLegacyRteToCmsFeatureFlag,
+        deleteCmsFolder
     ];
 
     const files = setupFiles(context);
 
     await runProcessors(files, processors, context);
-
-    console.log();
 
     // Format files.
     await prettierFormat(files.paths());
@@ -37,13 +37,15 @@ const runProcessors = async (files, processors, context) => {
         const rawFiles = files.paths();
         const project = createMorphProject(rawFiles);
 
-        await processor({
+        const result = await processor({
             context,
             project,
             files
         });
 
-        console.log();
+        if (result?.skipped !== true) {
+            console.log();
+        }
 
         // Save file changes.
         await project.save();
