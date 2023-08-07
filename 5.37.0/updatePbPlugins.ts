@@ -121,38 +121,38 @@ export const updatePbPlugins = async (params: Params) => {
             // Carousel plugins.
             {
                 name: "carousel",
-                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/carousel"
+                moduleSpecifier: "@webiny/app-page-builder/render/plugins/elements/carousel"
             },
             {
                 name: "carouselElement",
-                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/carouselElement"
+                moduleSpecifier: "@webiny/app-page-builder/render/plugins/elements/carouselElement"
             },
 
             // Tabs plugins.
             {
                 name: "tabs",
-                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/tabs"
+                moduleSpecifier: "@webiny/app-page-builder/render/plugins/elements/tabs"
             },
             {
                 name: "tab",
-                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/tab"
+                moduleSpecifier: "@webiny/app-page-builder/render/plugins/elements/tab"
             },
 
             // Accordion plugins.
             {
                 name: "accordion",
-                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/accordion"
+                moduleSpecifier: "@webiny/app-page-builder/render/plugins/elements/accordion"
             },
             {
                 name: "accordionItem",
-                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/accordionItem"
+                moduleSpecifier: "@webiny/app-page-builder/render/plugins/elements/accordionItem"
             }
         ];
 
         imports.forEach(currentImport => {
             insertImportToSourceFile({
                 source,
-                after: "@webiny/app-page-builder/editor/plugins/elements/heading",
+                after: "@webiny/app-page-builder/render/plugins/elements/heading",
                 ...currentImport
             });
 
@@ -173,38 +173,38 @@ export const updatePbPlugins = async (params: Params) => {
             // Carousel plugins.
             {
                 name: "carousel",
-                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/carousel"
+                moduleSpecifier: "@webiny/app-page-builder/render/plugins/elements/carousel"
             },
             {
                 name: "carouselElement",
-                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/carouselElement"
+                moduleSpecifier: "@webiny/app-page-builder/render/plugins/elements/carouselElement"
             },
 
             // Tabs plugins.
             {
                 name: "tabs",
-                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/tabs"
+                moduleSpecifier: "@webiny/app-page-builder/render/plugins/elements/tabs"
             },
             {
                 name: "tab",
-                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/tab"
+                moduleSpecifier: "@webiny/app-page-builder/render/plugins/elements/tab"
             },
 
             // Accordion plugins.
             {
                 name: "accordion",
-                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/accordion"
+                moduleSpecifier: "@webiny/app-page-builder/render/plugins/elements/accordion"
             },
             {
                 name: "accordionItem",
-                moduleSpecifier: "@webiny/app-page-builder/editor/plugins/elements/accordionItem"
+                moduleSpecifier: "@webiny/app-page-builder/render/plugins/elements/accordionItem"
             }
         ];
 
         imports.forEach(currentImport => {
             insertImportToSourceFile({
                 source,
-                after: "@webiny/app-page-builder/editor/plugins/elements/heading",
+                after: "@webiny/app-page-builder/render/plugins/elements/heading",
                 ...currentImport
             });
 
