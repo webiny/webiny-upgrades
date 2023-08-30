@@ -18,7 +18,7 @@ const response = data => {
     process.exit(0);
 };
 
-const forceMinorVersion = version => {
+const forcePatchVersion = version => {
     const value = semver.coerce(version);
     if (!value) {
         return version;
@@ -48,7 +48,7 @@ const forceMinorVersion = version => {
             throw new Error(`Missing positional "version" argument!`);
         }
 
-        const forcedVersion = forceMinorVersion(version);
+        const forcedVersion = forcePatchVersion(version);
 
         const scriptsPath = path.join(__dirname, forcedVersion, `index`);
 
