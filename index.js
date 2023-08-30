@@ -38,7 +38,7 @@ const forceMinorVersion = version => {
             "node_modules",
             "@webiny/cli/package.json"
         ));
-        cliVersion = semver.coerce(pkgJson.version).version;
+        cliVersion = pkgJson.version;
     } catch (e) {
         // Use the version passed through args.
     }
