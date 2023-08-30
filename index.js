@@ -66,10 +66,12 @@ const forcePatchVersion = version => {
         /**
          * There is a possibility that input version is not same as cli version.
          * Let's log that so users know that we are running upgrade script for the "0" patch version.
+         *
+         * Debugging purposes only.
          */
         if (forcedVersion !== cliVersion) {
             log.debug(
-                `We are running upgrade with "${forcedVersion}" version, which is different than cli version ${cliVersion}.`
+                `We are running upgrade with "${forcedVersion}" version, which is different than CLI version ${cliVersion}.`
             );
             log.debug(
                 `This is intentional, as we always want to run upgrade script for the "0" patch version.`
