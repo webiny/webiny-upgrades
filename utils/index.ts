@@ -99,5 +99,5 @@ export {
     getRequireFromSourceFile,
     isPre529Project,
     getIsPre529Project,
-    findVersion,
+    findVersion
 };

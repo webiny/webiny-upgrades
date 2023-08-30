@@ -1,9 +1,9 @@
 import { Project, SyntaxKind } from "ts-morph";
 import {
-    Files,
-    insertImportToSourceFile,
+    addPackagesToDependencies,
     addToExportDefaultArray,
-    addPackagesToDependencies
+    Files,
+    insertImportToSourceFile
 } from "../utils";
 import { Context } from "../types";
 import * as fs from "fs";
@@ -154,7 +154,7 @@ export const updateFbPlugins = async (params: Params) => {
             insertImportToSourceFile({
                 source: defaultFormLayoutFieldFileSource,
                 after: "./fields/Hidden",
-                name: "{ DateTimeField }",
+                name: ["DateTimeField"],
                 moduleSpecifier: "./fields/DateTime"
             });
 
@@ -170,19 +170,28 @@ export const updateFbPlugins = async (params: Params) => {
 
                     // Let's replace the first child.
 
+                    const children = node.getChildrenOfKind(SyntaxKind.CaseClause);
+                    for (const child of children) {
+                        const text = child.getText();
+                        if (text.includes("datetime")) {
+                            return;
+                        }
+                    }
+
                     const firstChild = node.getFirstChildByKind(SyntaxKind.CaseClause);
                     if (!firstChild) {
                         return;
                     }
 
-                    if (firstChild.getText().includes("text")) {
-                        firstChild.replaceWithText(
-                            [
-                                `case "text": return <InputField {...props} />;`,
-                                `case "datetime": return <DateTimeField {...props} />;`
-                            ].join("\n")
-                        );
+                    if (firstChild.getText().includes("text") === false) {
+                        return;
                     }
+                    firstChild.replaceWithText(
+                        [
+                            `case "text": return <InputField {...props} />;`,
+                            `case "datetime": return <DateTimeField {...props} />;`
+                        ].join("\n")
+                    );
                 });
 
             // Update packages/cwp-template-aws/template/common/apps/theme/layouts/forms/DefaultFormLayout/fields/Select.tsx
@@ -198,10 +207,16 @@ export const updateFbPlugins = async (params: Params) => {
                 defaultFormLayoutFieldSelectSource.getVariableDeclaration("StyledSelect");
 
             if (styledSelect) {
-                // Export the StyledSelect const.
-                defaultFormLayoutFieldSelectSource.addExportDeclaration({
-                    namedExports: [styledSelect.getName()]
+                const name = styledSelect.getName();
+                const exists = defaultFormLayoutFieldSelectSource.getExportDeclaration(decl => {
+                    return decl.getText().includes(name);
                 });
+                if (!exists) {
+                    // Export the StyledSelect const.
+                    defaultFormLayoutFieldSelectSource.addExportDeclaration({
+                        namedExports: [name]
+                    });
+                }
             }
         }
     }

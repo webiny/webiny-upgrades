@@ -1,5 +1,6 @@
-import { SourceFile, Expression } from "ts-morph";
+import { Expression, SourceFile } from "ts-morph";
 import { getCreateHandlerExpressions } from "./getCreateHandlerExpressions";
+import log from "./log";
 
 interface Params {
     source: SourceFile;
@@ -12,6 +13,23 @@ interface Params {
 const findPlugin = (elements: Expression[], value: string | RegExp) => {
     const match = value instanceof RegExp ? value : new RegExp(value);
     return elements.findIndex(element => element.getText().match(match));
+};
+
+const findElementIndex = (elements, target) => {
+    const re = target instanceof RegExp ? target : new RegExp(target);
+    for (const index in elements) {
+        const element = elements[index];
+        /**
+         * We want to skip if the element was forgotten or moved.
+         */
+        if (element.wasForgotten()) {
+            continue;
+        } else if (element.getText().match(re) === null) {
+            continue;
+        }
+        return Number(index);
+    }
+    return null;
 };
 
 export const movePlugin = (params: Params): void => {
@@ -36,29 +54,35 @@ export const movePlugin = (params: Params): void => {
 
     const pluginElement = elements[pluginIndex];
     const pluginText = pluginElement.getText();
-    arrayExpression.removeElement(pluginIndex);
 
     let index = elements.length;
     if (after) {
-        const re = after instanceof RegExp ? after : new RegExp(after);
-        for (const i in elements) {
-            const element = elements[i];
-            if (element.getText().match(re) === null) {
-                continue;
-            }
-            index = Number(i) + 1;
-            break;
+        index = findElementIndex(elements, after);
+        if (index === null) {
+            return;
+        } else if (pluginIndex > index) {
+            return;
         }
     } else if (before) {
-        const re = before instanceof RegExp ? after : new RegExp(before);
-        for (const i in elements) {
-            const element = elements[i];
-            if (element.getText().match(re) === null) {
-                continue;
-            }
-            index = Number(i);
-            break;
+        index = findElementIndex(elements, before);
+        if (index === null) {
+            return;
+        }
+        /**
+         * Must reduce the target position by 1.
+         */
+        index--;
+        if (pluginIndex < index) {
+            return;
         }
     }
+    /**
+     * Now we can remove the plugin from its original position.
+     */
+    log.debug(`Moving plugin "${value}" to index ${index}.`);
+    arrayExpression.removeElement(pluginIndex);
+    /**
+     * And insert into the new position.
+     */
     arrayExpression.insertElement(index, pluginText);
 };

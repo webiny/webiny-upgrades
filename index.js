@@ -58,7 +58,11 @@ const forcePatchVersion = version => {
             response({
                 type: "error",
                 message: "Script does not exist.",
-                code: "SCRIPT_DOES_NOT_EXIST"
+                code: "SCRIPT_DOES_NOT_EXIST",
+                data: {
+                    version,
+                    forcedVersion
+                }
             });
         }
 
