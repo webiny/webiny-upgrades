@@ -11,10 +11,19 @@ const fs = require("fs");
 const path = require("path");
 const { getDocsLink } = require("./utils");
 const log = require("./utils/log").default;
+const semver = require("semver");
 
 const response = data => {
     console.log(JSON.stringify(data));
     process.exit(0);
+};
+
+const forcePatchVersion = version => {
+    const value = semver.coerce(version);
+    if (!value) {
+        return version;
+    }
+    return `${value.major}.${value.minor}.0`;
 };
 
 (async () => {
@@ -39,7 +48,9 @@ const response = data => {
             throw new Error(`Missing positional "version" argument!`);
         }
 
-        const scriptsPath = path.join(__dirname, version, `index`);
+        const forcedVersion = forcePatchVersion(version);
+
+        const scriptsPath = path.join(__dirname, forcedVersion, `index`);
 
         const scriptsJsPath = `${scriptsPath}.js`;
         const scriptsTsPath = `${scriptsPath}.ts`;
@@ -47,11 +58,29 @@ const response = data => {
             response({
                 type: "error",
                 message: "Script does not exist.",
-                code: "SCRIPT_DOES_NOT_EXIST"
+                code: "SCRIPT_DOES_NOT_EXIST",
+                data: {
+                    version,
+                    forcedVersion
+                }
             });
         }
 
         log.setDebug(argv.debug ?? false);
+        /**
+         * There is a possibility that input version is not same as cli version.
+         * Let's log that so users know that we are running upgrade script for the "0" patch version.
+         *
+         * Debugging purposes only.
+         */
+        if (forcedVersion !== cliVersion) {
+            log.debug(
+                `We are running upgrade with "${forcedVersion}" version, which is different than CLI version ${cliVersion}.`
+            );
+            log.debug(
+                `This is intentional, as we always want to run upgrade script for the "0" patch version.`
+            );
+        }
 
         const context = {
             project: {

@@ -1,9 +1,5 @@
 import { ObjectLiteralExpression, Project, SyntaxKind } from "ts-morph";
-import {
-    Files,
-    insertImportToSourceFile,
-    removeImportFromSourceFile
-} from "../utils";
+import { Files, insertImportToSourceFile, removeImportFromSourceFile } from "../utils";
 import { Context } from "../types";
 
 interface Params {
