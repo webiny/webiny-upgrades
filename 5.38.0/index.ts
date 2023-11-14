@@ -6,11 +6,7 @@ import { updateDefaultFormLayout } from "./updateDefaultFormLayout";
 import { updateApiGraphQl } from "./updateApiGraphQl";
 
 module.exports = async (context: Context) => {
-    const processors = [
-        updateApiSecurityPlugins,
-        updateDefaultFormLayout,
-        updateApiGraphQl
-    ];
+    const processors = [updateApiGraphQl, updateApiSecurityPlugins, updateDefaultFormLayout];
 
     const files = setupFiles(context);
 
