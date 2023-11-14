@@ -1,12 +1,19 @@
-import { createMorphProject, prettierFormat, yarnInstall } from "../utils";
-import { setupFiles } from "./setupFiles";
-import { Context } from "../types";
-import { updateApiSecurityPlugins } from "./updateApiSecurityPlugins";
-import { backupFormLayoutsFolder } from "./backupFormLayoutsFolder";
-import { updateDefaultFormLayout } from "./updateDefaultFormLayout";
+import {createMorphProject, Files, prettierFormat, yarnInstall} from "../utils";
+import {setupFiles} from "./setupFiles";
+import {Context} from "../types";
+import {updateApiSecurityPlugins} from "./updateApiSecurityPlugins";
+import {backupFormLayoutsFolder} from "./backupFormLayoutsFolder";
+import {updateDefaultFormLayout} from "./updateDefaultFormLayout";
+import {updateApiGraphQl} from "./updateApiGraphQl";
+import {Processor} from "./types";
 
 module.exports = async (context: Context) => {
-    const processors = [updateApiSecurityPlugins, backupFormLayoutsFolder, updateDefaultFormLayout];
+    const processors: Processor[] = [
+        updateApiSecurityPlugins,
+        backupFormLayoutsFolder,
+        updateDefaultFormLayout,
+        updateApiGraphQl
+    ];
 
     const files = setupFiles(context);
 
@@ -20,7 +27,7 @@ module.exports = async (context: Context) => {
 };
 
 // Run processors in sequence.
-const runProcessors = async (files, processors, context) => {
+const runProcessors = async (files: Files, processors: Processor[], context: Context) => {
     for (let i = 0; i < processors.length; i++) {
         const processor = processors[i];
 
@@ -32,8 +39,8 @@ const runProcessors = async (files, processors, context) => {
             project,
             files
         });
-
-        if (result?.skipped !== true) {
+        
+        if(result && result?.skipped !== true) {
             console.log();
         }
 

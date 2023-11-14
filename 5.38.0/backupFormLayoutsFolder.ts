@@ -1,25 +1,18 @@
-import { Context } from "../types";
-import { Files, log } from "../utils";
+import {log} from "../utils";
 import path from "path";
 import fs from "fs";
 import ncpBase from "ncp";
 import util from "util";
-import { Project } from "ts-morph";
-
+import {Processor} from "./types";
 const ncp = util.promisify(ncpBase.ncp);
 
-interface Params {
-    files: Files;
-    project: Project;
-    context: Context;
-}
 
 export type ThemeBackupResult = {
     isSuccessful: boolean;
     info?: string;
 };
 
-export const backupFormLayoutsFolder = async (params: Params): Promise<ThemeBackupResult> => {
+export const backupFormLayoutsFolder: Processor<ThemeBackupResult> = async (params) => {
     log.info("Backing up %s folder.", "apps/theme");
 
     let isSuccessful = false;

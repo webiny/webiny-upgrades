@@ -3,14 +3,9 @@ import { Files, insertImportToSourceFile, removeImportFromSourceFile } from "../
 import { Context } from "../types";
 import { addPackagesToDependencies } from "../utils";
 import path from "path";
+import {Processor} from "./types";
 
-interface Params {
-    files: Files;
-    project: Project;
-    context: Context;
-}
-
-export const updateApiSecurityPlugins = async (params: Params) => {
+export const updateApiSecurityPlugins: Processor = async (params) => {
     const { project, files, context } = params;
 
     // Update theme package's package.json.

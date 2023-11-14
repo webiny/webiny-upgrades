@@ -1,20 +1,14 @@
-import { Project } from "ts-morph";
-import { Files, log } from "../utils";
-import { Context } from "../types";
+import {log} from "../utils";
 import path from "path";
 import fs from "fs";
 import util from "util";
 import ncpBase from "ncp";
+import {Processor} from "./types";
 
 const ncp = util.promisify(ncpBase.ncp);
 
-interface Params {
-    files: Files;
-    project: Project;
-    context: Context;
-}
 
-export const updateDefaultFormLayout = async (params: Params) => {
+export const updateDefaultFormLayout: Processor = async (params) => {
     const { context } = params;
 
     context.log.info(
