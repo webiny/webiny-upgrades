@@ -23,3 +23,7 @@ export class FileDefinition implements IFileDefinition {
         this.name = params.name;
     }
 }
+
+export const createFileDefinition = (params: FileDefinitionParams) => {
+    return new FileDefinition(params);
+};

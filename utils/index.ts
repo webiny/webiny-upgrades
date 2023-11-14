@@ -49,7 +49,7 @@ import {
 export { removeFromExportDefaultArray } from "./removeFromExportDefaultArray";
 export { movePlugin } from "./movePlugin";
 
-export { Files } from "./classes/Files";
+export * from "./classes/Files";
 export * from "./classes/FileDefinition";
 
 export * from "./findInPath";
