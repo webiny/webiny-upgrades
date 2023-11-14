@@ -40,7 +40,6 @@ export const updateApiGraphQl = createProcessor(async params => {
 
     addPluginToCreateHandler({
         source,
-        after: "createHeadlessCmsContext",
         value: "createAuditLogs()",
         validate: node => {
             return node.getElements().every(element => {

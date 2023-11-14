@@ -86,5 +86,4 @@ export const updateApiSecurityPlugins = createProcessor(async params => {
     });
 
     context.log.success("New Security plugins added.");
-
 });
