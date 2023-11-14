@@ -61,6 +61,6 @@ export interface IProcessorParams {
 
 export type IProcessorResult<T> = { skipped?: boolean } & T;
 
-export interface IProcessor<T = Record<string, any>> {
+export interface IProcessor<T = any> {
     (params: IProcessorParams): Promise<IProcessorResult<T> | void>;
 }

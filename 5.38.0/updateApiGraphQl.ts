@@ -2,11 +2,11 @@ import path from "path";
 import {
     addPackagesToDependencies,
     addPluginToCreateHandler,
+    createProcessor,
     insertImportToSourceFile
 } from "../utils";
-import { IProcessor } from "../types";
 
-export const updateApiGraphQl: IProcessor = async params => {
+export const updateApiGraphQl = createProcessor(async params => {
     const { project, files, context } = params;
 
     // Update theme package's package.json.
@@ -42,4 +42,4 @@ export const updateApiGraphQl: IProcessor = async params => {
             });
         }
     });
-};
+});
