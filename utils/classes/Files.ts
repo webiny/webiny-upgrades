@@ -1,10 +1,10 @@
-import { Context } from "../../types";
-import { FileDefinition, Tag } from "./FileDefinition";
+import { Context, FileDefinitionTag, IFiles } from "../../types";
+import { FileDefinition } from "./FileDefinition";
 import { getIsPre529Project } from "../isPre529Project";
 import { getIsElasticsearchProject } from "../isElasticsearchProject";
 import { getGraphQLPath } from "../paths";
 
-export class Files {
+export class Files implements IFiles {
     public readonly context: Context;
     private readonly files: FileDefinition[];
 
@@ -25,7 +25,7 @@ export class Files {
         return null;
     }
 
-    public byTag(tag: Tag): Files {
+    public byTag(tag: FileDefinitionTag): IFiles {
         return new Files(
             this.context,
             this.files.filter(file => {
@@ -34,7 +34,7 @@ export class Files {
         );
     }
 
-    public filter(cb: (file: FileDefinition) => boolean): Files {
+    public filter(cb: (file: FileDefinition) => boolean): IFiles {
         return new Files(this.context, this.files.filter(cb));
     }
 

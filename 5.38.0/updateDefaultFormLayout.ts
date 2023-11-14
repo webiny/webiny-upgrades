@@ -1,14 +1,13 @@
-import {log} from "../utils";
+import { log } from "../utils";
 import path from "path";
 import fs from "fs";
 import util from "util";
 import ncpBase from "ncp";
-import {Processor} from "./types";
+import { IProcessor } from "../types";
 
 const ncp = util.promisify(ncpBase.ncp);
 
-
-export const updateDefaultFormLayout: Processor = async (params) => {
+export const updateDefaultFormLayout: IProcessor = async params => {
     const { context } = params;
 
     context.log.info(

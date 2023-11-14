@@ -1,5 +1,5 @@
-import {ArrayLiteralExpression, SourceFile} from "ts-morph";
-import {getCreateHandlerExpressions} from "./getCreateHandlerExpressions";
+import { ArrayLiteralExpression, SourceFile } from "ts-morph";
+import { getCreateHandlerExpressions } from "./getCreateHandlerExpressions";
 
 interface Params {
     source: SourceFile;
@@ -24,8 +24,8 @@ export const addPluginToCreateHandler = (params: Params): void => {
     }
 
     const elements = arrayExpression.getElements();
-    
-    if(params.validate && !params.validate(arrayExpression)) {
+
+    if (params.validate && !params.validate(arrayExpression)) {
         return;
     }
     let index = elements.length;

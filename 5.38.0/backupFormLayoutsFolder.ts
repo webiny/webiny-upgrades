@@ -1,24 +1,30 @@
-import {log} from "../utils";
+import { log } from "../utils";
 import path from "path";
 import fs from "fs";
 import ncpBase from "ncp";
 import util from "util";
-import {Processor} from "./types";
-const ncp = util.promisify(ncpBase.ncp);
+import { IProcessor } from "../types";
 
+const ncp = util.promisify(ncpBase.ncp);
 
 export type ThemeBackupResult = {
     isSuccessful: boolean;
     info?: string;
 };
 
-export const backupFormLayoutsFolder: Processor<ThemeBackupResult> = async (params) => {
+export const backupFormLayoutsFolder: IProcessor<ThemeBackupResult> = async params => {
     log.info("Backing up %s folder.", "apps/theme");
 
     let isSuccessful = false;
 
     const from = path.join(params.context.project.root, "apps", "theme", "layouts", "forms");
-    const toBackup = path.join(params.context.project.root, "apps", "theme", "layouts", "_forms_backup");
+    const toBackup = path.join(
+        params.context.project.root,
+        "apps",
+        "theme",
+        "layouts",
+        "_forms_backup"
+    );
 
     if (fs.existsSync(toBackup)) {
         log.warning(

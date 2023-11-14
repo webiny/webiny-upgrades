@@ -212,9 +212,9 @@ export const mapToTypographyStyle = (
     }
 
     return {
-        structure: `{ id: "${legacyKey}", name: "${startCase(legacyKey)}", tag: "${tag || "p"}", styles: ${
-            assigment.getStructure().initializer
-        } }`,
+        structure: `{ id: "${legacyKey}", name: "${startCase(legacyKey)}", tag: "${
+            tag || "p"
+        }", styles: ${assigment.getStructure().initializer} }`,
         typographyType: htmlTagToTypographyTypeMapping[tag],
         isCustom,
         structureAsObject: { id: legacyKey, name: legacyKey, tag, styles: assigment.getStructure() }

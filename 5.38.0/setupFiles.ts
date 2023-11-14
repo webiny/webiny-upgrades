@@ -1,7 +1,7 @@
 import { Context } from "../types";
-import { createFilePath, Files, FileDefinition } from "../utils";
+import { createFilePath, FileDefinition, Files } from "../utils";
 
-export const setupFiles = (context: Context): Files => {
+export const setupFiles = (context: Context) => {
     /**
      * Add files that will be used at some point in the upgrade process.
      */

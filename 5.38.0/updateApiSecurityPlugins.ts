@@ -1,11 +1,13 @@
-import { ObjectLiteralExpression, Project, SyntaxKind } from "ts-morph";
-import { Files, insertImportToSourceFile, removeImportFromSourceFile } from "../utils";
-import { Context } from "../types";
-import { addPackagesToDependencies } from "../utils";
 import path from "path";
-import {Processor} from "./types";
+import { ObjectLiteralExpression, SyntaxKind } from "ts-morph";
+import {
+    addPackagesToDependencies,
+    insertImportToSourceFile,
+    removeImportFromSourceFile
+} from "../utils";
+import { IProcessor } from "../types";
 
-export const updateApiSecurityPlugins: Processor = async (params) => {
+export const updateApiSecurityPlugins: IProcessor = async params => {
     const { project, files, context } = params;
 
     // Update theme package's package.json.
@@ -43,13 +45,13 @@ export const updateApiSecurityPlugins: Processor = async (params) => {
     insertImportToSourceFile({
         source,
         name: "createAdminUsersApp",
-        moduleSpecifier: "@webiny/api-admin-users",
+        moduleSpecifier: "@webiny/api-admin-users"
     });
 
     insertImportToSourceFile({
         source,
         name: "{ createStorageOperations as createAdminUsersStorageOperations }",
-        moduleSpecifier: "@webiny/api-admin-users-so-ddb",
+        moduleSpecifier: "@webiny/api-admin-users-so-ddb"
     });
 
     const descendantIdentifiers = source.getDescendantsOfKind(SyntaxKind.Identifier);
