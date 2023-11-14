@@ -19,17 +19,18 @@ export const updateApiSecurityPlugins: IProcessor = async params => {
         "package.json"
     );
 
-    addPackagesToDependencies(context, apiPackageJsonPath, {
-        "@webiny/api-admin-users-cognito": null,
-        "@webiny/api-admin-users-cognito-so-ddb": null,
-        "@webiny/api-admin-users": context.version,
-        "@webiny/api-admin-users-so-ddb": context.version
-    });
-
     const securityFile = files.byName("api/graphql/security");
     const source = project.getSourceFile(securityFile.path);
 
-    context.log.info(`Adding new Security plugins in the API app plugins (%s)`, securityFile.path);
+    context.log.info(`Adding new Security plugins (%s)...`, securityFile.path);
+
+    const packageJson = await import(apiPackageJsonPath);
+    if (packageJson.dependencies["@webiny/api-admin-users"]) {
+        context.log.info(
+            "Looks like you already have the latest Security plugins set up. Skipping..."
+        );
+        return;
+    }
 
     removeImportFromSourceFile(source, "@webiny/api-admin-users-cognito");
     removeImportFromSourceFile(source, "@webiny/api-admin-users-cognito/syncWithCognito");
@@ -37,7 +38,7 @@ export const updateApiSecurityPlugins: IProcessor = async params => {
 
     insertImportToSourceFile({
         source,
-        name: "cognitoAuthentication, { syncWithCognito }",
+        name: ["syncWithCognito"],
         moduleSpecifier: "@webiny/api-security-cognito",
         after: "@webiny/api-security-cognito"
     });
@@ -50,7 +51,9 @@ export const updateApiSecurityPlugins: IProcessor = async params => {
 
     insertImportToSourceFile({
         source,
-        name: "{ createStorageOperations as createAdminUsersStorageOperations }",
+        name: {
+            createStorageOperations: "createAdminUsersStorageOperations"
+        },
         moduleSpecifier: "@webiny/api-admin-users-so-ddb"
     });
 
@@ -74,6 +77,13 @@ export const updateApiSecurityPlugins: IProcessor = async params => {
             });
         }
     }
+
+    addPackagesToDependencies(context, apiPackageJsonPath, {
+        "@webiny/api-admin-users-cognito": null,
+        "@webiny/api-admin-users-cognito-so-ddb": null,
+        "@webiny/api-admin-users": context.version,
+        "@webiny/api-admin-users-so-ddb": context.version
+    });
 
     context.log.info("New Security plugins added.");
 };
