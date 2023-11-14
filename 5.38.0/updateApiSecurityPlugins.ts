@@ -1,16 +1,13 @@
-import { ObjectLiteralExpression, Project, SyntaxKind } from "ts-morph";
-import { Files, insertImportToSourceFile, removeImportFromSourceFile } from "../utils";
-import { Context } from "../types";
-import { addPackagesToDependencies } from "../utils";
 import path from "path";
+import { ObjectLiteralExpression, SyntaxKind } from "ts-morph";
+import {
+    addPackagesToDependencies,
+    createProcessor,
+    insertImportToSourceFile,
+    removeImportFromSourceFile
+} from "../utils";
 
-interface Params {
-    files: Files;
-    project: Project;
-    context: Context;
-}
-
-export const updateApiSecurityPlugins = async (params: Params) => {
+export const updateApiSecurityPlugins = createProcessor(async params => {
     const { project, files, context } = params;
 
     // Update theme package's package.json.
@@ -22,17 +19,18 @@ export const updateApiSecurityPlugins = async (params: Params) => {
         "package.json"
     );
 
-    addPackagesToDependencies(context, apiPackageJsonPath, {
-        "@webiny/api-admin-users-cognito": null,
-        "@webiny/api-admin-users-cognito-so-ddb": null,
-        "@webiny/api-admin-users": context.version,
-        "@webiny/api-admin-users-so-ddb": context.version
-    });
-
     const securityFile = files.byName("api/graphql/security");
     const source = project.getSourceFile(securityFile.path);
 
-    context.log.info(`Adding new Security plugins in the API app plugins (%s)`, securityFile.path);
+    context.log.info(`Adding new Security plugins (%s)...`, securityFile.path);
+
+    const packageJson = await import(apiPackageJsonPath);
+    if (packageJson.dependencies["@webiny/api-admin-users"]) {
+        context.log.warning(
+            "Looks like you already have the latest Security plugins set up. Skipping..."
+        );
+        return;
+    }
 
     removeImportFromSourceFile(source, "@webiny/api-admin-users-cognito");
     removeImportFromSourceFile(source, "@webiny/api-admin-users-cognito/syncWithCognito");
@@ -40,7 +38,7 @@ export const updateApiSecurityPlugins = async (params: Params) => {
 
     insertImportToSourceFile({
         source,
-        name: "cognitoAuthentication, { syncWithCognito }",
+        name: ["syncWithCognito"],
         moduleSpecifier: "@webiny/api-security-cognito",
         after: "@webiny/api-security-cognito"
     });
@@ -48,13 +46,15 @@ export const updateApiSecurityPlugins = async (params: Params) => {
     insertImportToSourceFile({
         source,
         name: "createAdminUsersApp",
-        moduleSpecifier: "@webiny/api-admin-users",
+        moduleSpecifier: "@webiny/api-admin-users"
     });
 
     insertImportToSourceFile({
         source,
-        name: "{ createStorageOperations as createAdminUsersStorageOperations }",
-        moduleSpecifier: "@webiny/api-admin-users-so-ddb",
+        name: {
+            createStorageOperations: "createAdminUsersStorageOperations"
+        },
+        moduleSpecifier: "@webiny/api-admin-users-so-ddb"
     });
 
     const descendantIdentifiers = source.getDescendantsOfKind(SyntaxKind.Identifier);
@@ -78,5 +78,12 @@ export const updateApiSecurityPlugins = async (params: Params) => {
         }
     }
 
-    context.log.info("New Security plugins added.");
-};
+    addPackagesToDependencies(context, apiPackageJsonPath, {
+        "@webiny/api-admin-users-cognito": null,
+        "@webiny/api-admin-users-cognito-so-ddb": null,
+        "@webiny/api-admin-users": context.version,
+        "@webiny/api-admin-users-so-ddb": context.version
+    });
+
+    context.log.success("New Security plugins added.");
+});

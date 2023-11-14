@@ -1,28 +1,18 @@
-export type Tag =
-    | "fm"
-    | "pb"
-    | "cms"
-    | "gql"
-    | "ps"
-    | "ddb2es"
-    | "theme"
-    | "website"
-    | "admin"
-    | "core";
+import { FileDefinitionTag, IFileDefinition } from "../../types";
 
 export interface FileDefinitionParams {
     path: string;
     elasticsearch?: boolean;
     pre529?: boolean;
-    tag: Tag;
+    tag: FileDefinitionTag;
     name: string;
 }
 
-export class FileDefinition {
+export class FileDefinition implements IFileDefinition {
     public readonly path: string;
     public readonly elasticsearch: boolean;
     public readonly pre529: boolean;
-    public readonly tag: Tag;
+    public readonly tag: FileDefinitionTag;
     public readonly name: string;
 
     public constructor(params: FileDefinitionParams) {
@@ -33,3 +23,7 @@ export class FileDefinition {
         this.name = params.name;
     }
 }
+
+export const createFileDefinition = (params: FileDefinitionParams) => {
+    return new FileDefinition(params);
+};

@@ -1,21 +1,20 @@
-import { Context } from "../../types";
-import { FileDefinition, Tag } from "./FileDefinition";
+import { Context, FileDefinitionTag, IFileDefinition, IFiles, IFilesFilterCb } from "../../types";
 import { getIsPre529Project } from "../isPre529Project";
 import { getIsElasticsearchProject } from "../isElasticsearchProject";
 import { getGraphQLPath } from "../paths";
 
-export class Files {
+export class Files implements IFiles {
     public readonly context: Context;
-    private readonly files: FileDefinition[];
+    private readonly files: IFileDefinition[];
 
-    public constructor(context: Context, files: FileDefinition[]) {
+    public constructor(context: Context, files: IFileDefinition[]) {
         this.context = context;
         this.files = files.filter(file => {
             return !!file.path;
         });
     }
 
-    public byName(name: string): FileDefinition | null {
+    public byName(name: string): IFileDefinition | null {
         for (const file of this.files) {
             if (file.name === name) {
                 return file;
@@ -25,7 +24,7 @@ export class Files {
         return null;
     }
 
-    public byTag(tag: Tag): Files {
+    public byTag(tag: FileDefinitionTag): IFiles {
         return new Files(
             this.context,
             this.files.filter(file => {
@@ -34,8 +33,8 @@ export class Files {
         );
     }
 
-    public filter(cb: (file: FileDefinition) => boolean): Files {
-        return new Files(this.context, this.files.filter(cb));
+    public filter(cb: IFilesFilterCb): IFiles {
+        return createFiles(this.context, this.files.filter(cb));
     }
 
     /**
@@ -45,7 +44,7 @@ export class Files {
      * - is project pre-5.29?
      * - is project DDB-only or DDB+ES?
      */
-    public relevant() {
+    public relevant(): IFiles {
         const isPre529Project = getIsPre529Project(this.context);
         const isElasticsearchProject = getIsElasticsearchProject(
             this.context,
@@ -69,3 +68,7 @@ export class Files {
         return this.files.map(file => file.path);
     }
 }
+
+export const createFiles = (context: Context, files: IFileDefinition[]) => {
+    return new Files(context, files);
+};

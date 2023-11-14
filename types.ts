@@ -1,4 +1,5 @@
 import { PackageJson as BasePackageJson } from "type-fest";
+import { Project } from "ts-morph";
 
 export interface Context {
     version: string;
@@ -22,4 +23,47 @@ export interface PackageJson extends BasePackageJson {
     workspaces: {
         packages: string[];
     };
+}
+
+export type FileDefinitionTag =
+    | "fm"
+    | "pb"
+    | "cms"
+    | "gql"
+    | "ps"
+    | "ddb2es"
+    | "theme"
+    | "website"
+    | "admin"
+    | "core";
+
+export interface IFileDefinition {
+    path: string;
+    elasticsearch: boolean;
+    pre529: boolean;
+    tag: FileDefinitionTag;
+    name: string;
+}
+
+export interface IFilesFilterCb {
+    (file: IFileDefinition): boolean;
+}
+export interface IFiles {
+    byName(name: string): IFileDefinition | null;
+    byTag(tag: FileDefinitionTag): IFiles;
+    filter(cb: IFilesFilterCb): IFiles;
+    relevant: () => IFiles;
+    paths(): string[];
+}
+
+export interface IProcessorParams {
+    files: IFiles;
+    project: Project;
+    context: Context;
+}
+
+export type IProcessorResult<T> = { skipped?: boolean } & T;
+
+export interface IProcessor<T = any> {
+    (params: IProcessorParams): Promise<IProcessorResult<T> | void>;
 }

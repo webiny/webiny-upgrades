@@ -29,14 +29,10 @@ import {
 import { getIsElasticsearchProject } from "./isElasticsearchProject";
 import { upgradeCreateHandlerToPlugins } from "./upgradeCreateHandlerToPlugins";
 import { removeExtendsFromInterface } from "./removeExtendsFromInterface";
-
-export { removeFromExportDefaultArray } from "./removeFromExportDefaultArray";
-export { movePlugin } from "./movePlugin";
-
-import { getSourceFile, getExistingFiles } from "./files";
+import { getExistingFiles, getSourceFile } from "./files";
 import { addToExportDefaultArray } from "./addToExportDefaultArray";
 import { getRequireFromSourceFile } from "./getRequireFromSourceFile";
-import { isPre529Project, getIsPre529Project } from "./isPre529Project";
+import { getIsPre529Project, isPre529Project } from "./isPre529Project";
 import { findVersion } from "./findVersion";
 import {
     createFilePath,
@@ -50,7 +46,10 @@ import {
     getWebsitePath
 } from "./paths";
 
-export { Files } from "./classes/Files";
+export { removeFromExportDefaultArray } from "./removeFromExportDefaultArray";
+export { movePlugin } from "./movePlugin";
+
+export * from "./classes/Files";
 export * from "./classes/FileDefinition";
 
 export * from "./findInPath";
@@ -101,3 +100,5 @@ export {
     getIsPre529Project,
     findVersion
 };
+
+export * from "./processors";

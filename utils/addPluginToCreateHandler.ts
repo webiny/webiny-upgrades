@@ -1,4 +1,4 @@
-import { SourceFile } from "ts-morph";
+import { ArrayLiteralExpression, SourceFile } from "ts-morph";
 import { getCreateHandlerExpressions } from "./getCreateHandlerExpressions";
 
 interface Params {
@@ -7,6 +7,7 @@ interface Params {
     value: string;
     after?: string | null | RegExp;
     before?: string | null | RegExp;
+    validate?: (arrayExpression: ArrayLiteralExpression) => boolean;
 }
 
 export const addPluginToCreateHandler = (params: Params): void => {
@@ -23,6 +24,10 @@ export const addPluginToCreateHandler = (params: Params): void => {
     }
 
     const elements = arrayExpression.getElements();
+
+    if (params.validate && !params.validate(arrayExpression)) {
+        return;
+    }
     let index = elements.length;
     if (after) {
         const re = after instanceof RegExp ? after : new RegExp(after);
