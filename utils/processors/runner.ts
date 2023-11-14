@@ -2,10 +2,9 @@ import { createMorphProject } from "../createMorphProject";
 import { Context, IFiles, IProcessor } from "../../types";
 
 export const runProcessors = async (files: IFiles, processors: IProcessor[], context: Context) => {
+    const rawFiles = files.paths();
+    const project = createMorphProject(rawFiles);
     for (const processor of processors) {
-        const rawFiles = files.paths();
-        const project = createMorphProject(rawFiles);
-
         const result = await processor({
             context,
             project,
@@ -15,8 +14,7 @@ export const runProcessors = async (files: IFiles, processors: IProcessor[], con
         if (result && result?.skipped !== true) {
             console.log();
         }
-
-        // Save file changes.
-        await project.save();
     }
+    // Save file changes.
+    await project.save();
 };
