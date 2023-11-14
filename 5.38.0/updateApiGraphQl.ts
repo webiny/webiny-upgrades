@@ -9,6 +9,11 @@ import {
 export const updateApiGraphQl = createProcessor(async params => {
     const { project, files, context } = params;
 
+    const indexFile = files.byName("api/graphql/index");
+    const source = project.getSourceFile(indexFile.path);
+
+    context.log.info(`Adding new GraphQL API / Audit Logs plugins (%s)...`, indexFile.path);
+
     // Update theme package's package.json.
     const apiPackageJsonPath = path.join(
         context.project.root,
@@ -18,12 +23,13 @@ export const updateApiGraphQl = createProcessor(async params => {
         "package.json"
     );
 
-    addPackagesToDependencies(context, apiPackageJsonPath, {
-        "@webiny/api-audit-logs": context.version
-    });
-
-    const indexFile = files.byName("api/graphql/index");
-    const source = project.getSourceFile(indexFile.path);
+    const packageJson = await import(apiPackageJsonPath);
+    if (packageJson.dependencies["@webiny/api-audit-logs"]) {
+        context.log.warning(
+            "Looks like you already have the latest GraphQL API / Audit Logs plugins set up. Skipping..."
+        );
+        return;
+    }
 
     insertImportToSourceFile({
         source,
@@ -42,4 +48,10 @@ export const updateApiGraphQl = createProcessor(async params => {
             });
         }
     });
+
+    addPackagesToDependencies(context, apiPackageJsonPath, {
+        "@webiny/api-audit-logs": context.version
+    });
+
+    context.log.success("New GraphQL API / Audit Logs plugins added.");
 });
