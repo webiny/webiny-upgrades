@@ -2,12 +2,12 @@ import path from "path";
 import { ObjectLiteralExpression, SyntaxKind } from "ts-morph";
 import {
     addPackagesToDependencies,
+    createProcessor,
     insertImportToSourceFile,
     removeImportFromSourceFile
 } from "../utils";
-import { IProcessor } from "../types";
 
-export const updateApiSecurityPlugins: IProcessor = async params => {
+export const updateApiSecurityPlugins = createProcessor(async params => {
     const { project, files, context } = params;
 
     // Update theme package's package.json.
@@ -86,4 +86,4 @@ export const updateApiSecurityPlugins: IProcessor = async params => {
     });
 
     context.log.info("New Security plugins added.");
-};
+});

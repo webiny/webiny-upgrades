@@ -1,9 +1,8 @@
-import { log } from "../utils";
+import { createProcessor, log } from "../utils";
 import path from "path";
 import fs from "fs";
 import ncpBase from "ncp";
 import util from "util";
-import { IProcessor } from "../types";
 
 const ncp = util.promisify(ncpBase.ncp);
 
@@ -12,7 +11,7 @@ export type ThemeBackupResult = {
     info?: string;
 };
 
-export const backupFormLayoutsFolder: IProcessor<ThemeBackupResult> = async params => {
+export const backupFormLayoutsFolder = createProcessor<ThemeBackupResult>(async params => {
     log.info("Backing up %s folder.", "apps/theme");
 
     let isSuccessful = false;
@@ -39,4 +38,4 @@ export const backupFormLayoutsFolder: IProcessor<ThemeBackupResult> = async para
     }
 
     return { isSuccessful };
-};
+});
