@@ -45,11 +45,14 @@ export interface IFileDefinition {
     name: string;
 }
 
+export interface IFilesFilterCb {
+    (file: IFileDefinition): boolean;
+}
 export interface IFiles {
     byName(name: string): IFileDefinition | null;
     byTag(tag: FileDefinitionTag): IFiles;
-    filter(cb: (file: IFileDefinition) => boolean): IFiles;
-    relevant();
+    filter(cb: IFilesFilterCb): IFiles;
+    relevant: () => IFiles;
     paths(): string[];
 }
 
