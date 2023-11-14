@@ -37,7 +37,7 @@ export const updateApiSecurityPlugins: IProcessor = async params => {
 
     insertImportToSourceFile({
         source,
-        name: "cognitoAuthentication, { syncWithCognito }",
+        name: ["syncWithCognito"],
         moduleSpecifier: "@webiny/api-security-cognito",
         after: "@webiny/api-security-cognito"
     });
@@ -50,7 +50,9 @@ export const updateApiSecurityPlugins: IProcessor = async params => {
 
     insertImportToSourceFile({
         source,
-        name: "{ createStorageOperations as createAdminUsersStorageOperations }",
+        name: {
+            createStorageOperations: "createAdminUsersStorageOperations"
+        },
         moduleSpecifier: "@webiny/api-admin-users-so-ddb"
     });
 
