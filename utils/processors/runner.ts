@@ -12,7 +12,7 @@ export const runProcessors = async (files: IFiles, processors: IProcessor[], con
             files
         });
 
-        if (result && result?.skipped !== true) {
+        if (result?.skipped !== true) {
             console.log();
         }
 
