@@ -26,7 +26,7 @@ export const updateApiSecurityPlugins = createProcessor(async params => {
 
     const packageJson = await import(apiPackageJsonPath);
     if (packageJson.dependencies["@webiny/api-admin-users"]) {
-        context.log.info(
+        context.log.warning(
             "Looks like you already have the latest Security plugins set up. Skipping..."
         );
         return;
