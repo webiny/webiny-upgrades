@@ -85,5 +85,6 @@ export const updateApiSecurityPlugins = createProcessor(async params => {
         "@webiny/api-admin-users-so-ddb": context.version
     });
 
-    context.log.info("New Security plugins added.");
+    context.log.success("New Security plugins added.");
+
 });
