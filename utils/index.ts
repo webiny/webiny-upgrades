@@ -57,6 +57,8 @@ export * from "./replaceInPath";
 export * from "./getDocsLink";
 export * from "./usesLatestPbRenderingEngine";
 
+export * from "./variables";
+
 export {
     addPluginToCreateHandler,
     addResolutionToRootPackageJson,

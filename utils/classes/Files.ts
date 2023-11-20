@@ -25,7 +25,7 @@ export class Files implements IFiles {
     }
 
     public byTag(tag: FileDefinitionTag): IFiles {
-        return new Files(
+        return createFiles(
             this.context,
             this.files.filter(file => {
                 return file.tag === tag;
