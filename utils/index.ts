@@ -59,6 +59,8 @@ export * from "./usesLatestPbRenderingEngine";
 
 export * from "./variables";
 
+export * from "./packageJson";
+
 export {
     addPluginToCreateHandler,
     addResolutionToRootPackageJson,

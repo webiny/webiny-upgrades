@@ -3,6 +3,7 @@ import {
     addPackagesToDevDependencies,
     createProcessor,
     insertImportToSourceFile,
+    mergePackageJson,
     removeImportFromSourceFile,
     replaceVariable
 } from "../utils";
@@ -68,6 +69,12 @@ export const updateForNode18 = createProcessor(async params => {
 
     addPackagesToDevDependencies(context, packageJson.path, {
         "@types/node": "^18.0.0"
+    });
+
+    mergePackageJson(packageJson.path, {
+        engines: {
+            node: ">=18.0.0"
+        }
     });
 
     await project.save();
