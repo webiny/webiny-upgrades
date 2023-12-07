@@ -53,7 +53,14 @@ export const updateOktaAuth0 = createProcessor(async params => {
         const [returningPluginsArray] = defaultExport.getDescendantsOfKind(
             SyntaxKind.ArrayLiteralExpression
         );
-        returningPluginsArray.addElement(createAdminUsersAppPluginsCode);
+
+        // Get index of `createSecurityGraphQL` plugin.
+        const index = returningPluginsArray.getElements().findIndex(el => {
+            const [identifier] = el.getDescendantsOfKind(SyntaxKind.Identifier);
+            return identifier.getText() === "createSecurityGraphQL";
+        });
+
+        returningPluginsArray.insertElement(index + 1, createAdminUsersAppPluginsCode);
     }
 
     addPackagesToDependencies(context, apiPackageJsonPath, {
