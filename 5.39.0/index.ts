@@ -3,6 +3,7 @@ import { setupFiles } from "./setupFiles";
 import { Context } from "../types";
 import { updateForNode18 } from "./updateForNode18";
 import { updateForHandlers } from "./updateForHandlers";
+import { updateForBackgroundTasks } from "./updateForBackgroundTasks";
 
 module.exports = async (context: Context) => {
     const processors = [
@@ -13,7 +14,11 @@ module.exports = async (context: Context) => {
         /**
          * Update to always use the @webiny/handler-aws createHandler method, not specific handlers.
          */
-        updateForHandlers
+        updateForHandlers,
+        /**
+         * Add background tasks.
+         */
+        updateForBackgroundTasks
     ];
 
     const files = setupFiles(context);
