@@ -1,16 +1,16 @@
 import {
-    removeImportFromSourceFile,
-    insertImportToSourceFile,
-    getCreateHandlerExpressions,
-    createMorphProject,
-    prettierFormat,
-    yarnInstall,
-    isPre529Project,
+    addPackagesToDependencies,
     addPluginToCreateHandler,
-    addPackagesToDependencies
+    createMorphProject,
+    getCreateHandlerExpressions,
+    insertImportToSourceFile,
+    isPre529Project,
+    prettierFormat,
+    removeImportFromSourceFile,
+    yarnInstall
 } from "../utils";
 import { Context } from "../types";
-import { SourceFile, Node } from "ts-morph";
+import { Node, SourceFile } from "ts-morph";
 
 const getGraphQLPath = context => {
     if (isPre529Project(context)) {
@@ -192,7 +192,10 @@ export const upgradeProject = async (context: Context) => {
      */
     for (const file of [graphQLIndexFile, headlessCMSIndexFile]) {
         const source = project.getSourceFile(file);
-
+        if (!source) {
+            context.log.error(`Source file ${file} was not found - removing imports.`);
+            continue;
+        }
         removeImportFromSourceFile(source, "@webiny/api-headless-cms");
         removeImportFromSourceFile(
             source,
@@ -218,6 +221,10 @@ export const upgradeProject = async (context: Context) => {
     for (const file of [graphQLIndexFile, headlessCMSIndexFile]) {
         const source = project.getSourceFile(file);
 
+        if (!source) {
+            context.log.error(`Source file ${file} was not found - adding imports.`);
+            continue;
+        }
         insertImportToSourceFile({
             source,
             name: ["createHeadlessCmsGraphQL", "createHeadlessCmsContext"],
