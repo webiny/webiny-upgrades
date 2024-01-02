@@ -29,7 +29,7 @@ export const updateForBackgroundTasks = createProcessor(async params => {
     });
 
     addPluginToCreateHandler({
-        after: "createAuditLogs",
+        after: "createHeadlessCmsGraphQL",
         source,
         value: `createBackgroundTasks()`
     });

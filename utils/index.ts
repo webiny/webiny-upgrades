@@ -27,6 +27,7 @@ import {
 } from "./dependencies";
 
 import { getIsElasticsearchProject } from "./isElasticsearchProject";
+import { getIsOpensearchProject } from "./isOpensearchProject";
 import { upgradeCreateHandlerToPlugins } from "./upgradeCreateHandlerToPlugins";
 import { removeExtendsFromInterface } from "./removeExtendsFromInterface";
 import { getExistingFiles, getSourceFile } from "./files";
@@ -94,6 +95,7 @@ export {
     addPackagesToPeerDependencies,
     addPackagesToResolutions,
     getIsElasticsearchProject,
+    getIsOpensearchProject,
     upgradeCreateHandlerToPlugins,
     removeExtendsFromInterface,
     getSourceFile,
