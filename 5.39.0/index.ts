@@ -4,6 +4,7 @@ import { Context } from "../types";
 import { updateForNode18 } from "./updateForNode18";
 import { updateForHandlers } from "./updateForHandlers";
 import { updateForBackgroundTasks } from "./updateForBackgroundTasks";
+import { updateForAssetDelivery } from "./updateForAssetDelivery";
 
 module.exports = async (context: Context) => {
     const processors = [
@@ -18,7 +19,11 @@ module.exports = async (context: Context) => {
         /**
          * Add background tasks.
          */
-        updateForBackgroundTasks
+        updateForBackgroundTasks,
+        /**
+         * Add asset delivery plugins.
+         */
+        updateForAssetDelivery
     ];
 
     const files = setupFiles(context);
