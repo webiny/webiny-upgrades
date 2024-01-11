@@ -5,6 +5,7 @@ import { updateForNode18 } from "./updateForNode18";
 import { updateForHandlers } from "./updateForHandlers";
 import { updateForBackgroundTasks } from "./updateForBackgroundTasks";
 import { updateForAssetDelivery } from "./updateForAssetDelivery";
+import { updateForTsconfig } from "./updateForTsconfig";
 
 module.exports = async (context: Context) => {
     const processors = [
@@ -23,7 +24,11 @@ module.exports = async (context: Context) => {
         /**
          * Add asset delivery plugins.
          */
-        updateForAssetDelivery
+        updateForAssetDelivery,
+        /**
+         * Replace tsconfig.build.json
+         */
+        updateForTsconfig
     ];
 
     const files = setupFiles(context);
