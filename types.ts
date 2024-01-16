@@ -26,6 +26,7 @@ export interface PackageJson extends BasePackageJson {
 }
 
 export type FileDefinitionTag =
+    | "root"
     | "fm"
     | "pb"
     | "cms"
@@ -35,7 +36,9 @@ export type FileDefinitionTag =
     | "theme"
     | "website"
     | "admin"
-    | "core";
+    | "core"
+    | "security"
+    | "package.json";
 
 export interface IFileDefinition {
     path: string;

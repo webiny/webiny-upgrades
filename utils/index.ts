@@ -27,6 +27,7 @@ import {
 } from "./dependencies";
 
 import { getIsElasticsearchProject } from "./isElasticsearchProject";
+import { getIsOpensearchProject } from "./isOpensearchProject";
 import { upgradeCreateHandlerToPlugins } from "./upgradeCreateHandlerToPlugins";
 import { removeExtendsFromInterface } from "./removeExtendsFromInterface";
 import { getExistingFiles, getSourceFile } from "./files";
@@ -56,6 +57,10 @@ export * from "./findInPath";
 export * from "./replaceInPath";
 export * from "./getDocsLink";
 export * from "./usesLatestPbRenderingEngine";
+
+export * from "./variables";
+
+export * from "./packageJson";
 
 export {
     addPluginToCreateHandler,
@@ -90,6 +95,7 @@ export {
     addPackagesToPeerDependencies,
     addPackagesToResolutions,
     getIsElasticsearchProject,
+    getIsOpensearchProject,
     upgradeCreateHandlerToPlugins,
     removeExtendsFromInterface,
     getSourceFile,

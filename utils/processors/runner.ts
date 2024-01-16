@@ -5,15 +5,11 @@ export const runProcessors = async (files: IFiles, processors: IProcessor[], con
     const rawFiles = files.paths();
     const project = createMorphProject(rawFiles);
     for (const processor of processors) {
-        const result = await processor({
+        await processor({
             context,
             project,
             files
         });
-
-        if (result?.skipped !== true) {
-            console.log();
-        }
     }
     // Save file changes.
     await project.save();

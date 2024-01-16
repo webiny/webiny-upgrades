@@ -1,5 +1,5 @@
-import trim from "lodash.trim";
-import startCase from "lodash.startcase";
+import trim from "lodash/trim";
+import startCase from "lodash/startcase";
 
 import { Context } from "../../types";
 import {
@@ -400,7 +400,7 @@ export const typographyIsAlreadyMigrated = (
 
     let info = "";
     if (isPartlyMigrated) {
-        info = `Theme's typography style upgrade canceled. Typography styles are partially migrated, 
+        info = `Theme's typography style upgrade canceled. Typography styles are partially migrated,
         following properties match the new styles: ${fullMigration
             .concat(partialMigration)
             .join(", ")}`;
