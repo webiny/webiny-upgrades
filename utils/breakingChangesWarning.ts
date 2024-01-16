@@ -10,7 +10,7 @@ export const breakingChangesWarning = (params: {
         const upgradeGuideLink = getWebinyLink("/upgrade/5.39.0");
 
         const warningMessage = [
-            "Note that the %s release of Webiny introduces potentially %s %s! Before continuing,",
+            "Note that Webiny %s introduces potentially %s %s! Before continuing,",
             `please review the upgrade guide located at ${upgradeGuideLink}.\n`
         ].join(" ");
 
