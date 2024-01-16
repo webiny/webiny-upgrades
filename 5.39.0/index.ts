@@ -1,4 +1,4 @@
-import { prettierFormat, runProcessors, yarnInstall } from "../utils";
+import { prettierFormat, runProcessors, yarnInstall, breakingChangesWarning } from "../utils";
 import { setupFiles } from "./setupFiles";
 import { Context } from "../types";
 import { updateForNode18 } from "./updateForNode18";
@@ -9,6 +9,10 @@ import { updateForTsconfig } from "./updateForTsconfig";
 
 module.exports = async (context: Context) => {
     const processors = [
+        /**
+         * Display a warning about breaking changes.
+         */
+        breakingChangesWarning({ version: "5.39.0", breakingChangesCount: 2 }),
         /**
          * Node 18 Update must be first.
          */

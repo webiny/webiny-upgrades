@@ -57,6 +57,7 @@ export * from "./findInPath";
 export * from "./replaceInPath";
 export * from "./getDocsLink";
 export * from "./usesLatestPbRenderingEngine";
+export * from "./breakingChangesWarning";
 
 export * from "./variables";
 
