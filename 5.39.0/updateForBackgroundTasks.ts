@@ -2,6 +2,7 @@ import {
     addPackagesToDependencies,
     addPluginToCreateHandler,
     createProcessor,
+    extendInterface,
     getGraphQLPath,
     getIsElasticsearchProject,
     insertImportToSourceFile
@@ -20,18 +21,10 @@ const getTasksPackage = (context: Context): string => {
 export const updateForBackgroundTasks = createProcessor(async params => {
     const { files, project, context } = params;
 
-    const file = files.byName("api/graphql/index");
-    const source = project.getSourceFile(file.path);
-
     const tasksPackage = getTasksPackage(context);
-
-    insertImportToSourceFile({
-        source,
-        name: ["createBackgroundTasks"],
-        moduleSpecifier: tasksPackage,
-        after: "@webiny/api-headless-cms"
-    });
-
+    /**
+     * Common.
+     */
     const apiPackageJsonPath = path.join(
         context.project.root,
         "apps",
@@ -41,17 +34,51 @@ export const updateForBackgroundTasks = createProcessor(async params => {
     );
 
     addPackagesToDependencies(context, apiPackageJsonPath, {
-        [tasksPackage]: context.version
+        [tasksPackage]: context.version,
+        "@webiny/tasks": context.version
+    });
+
+    /**
+     * GraphQL index.ts file.
+     */
+    const graphQlIndexFile = files.byName("api/graphql/index");
+    const graphQlIndexSource = project.getSourceFile(graphQlIndexFile.path);
+
+    insertImportToSourceFile({
+        source: graphQlIndexSource,
+        name: ["createBackgroundTasks"],
+        moduleSpecifier: tasksPackage,
+        after: "@webiny/api-headless-cms"
     });
 
     addPluginToCreateHandler({
         after: "createHeadlessCmsGraphQL",
-        source,
+        source: graphQlIndexSource,
         value: `createBackgroundTasks()`,
         validate: node => {
             return node.getElements().every(element => {
                 return element.getText().match("createBackgroundTasks") === null;
             });
         }
+    });
+    /**
+     * GraphQL types.ts file.
+     */
+    const graphQlTypesFile = files.byName("api/graphql/types");
+    const graphQlTypesSource = project.getSourceFile(graphQlTypesFile.path);
+
+    insertImportToSourceFile({
+        source: graphQlTypesSource,
+        name: {
+            Context: "TaskContext"
+        },
+        moduleSpecifier: "@webiny/tasks",
+        after: tasksPackage
+    });
+
+    extendInterface({
+        source: graphQlTypesSource,
+        target: "Context",
+        add: "TaskContext"
     });
 });
