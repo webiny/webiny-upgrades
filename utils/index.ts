@@ -62,6 +62,8 @@ export * from "./variables";
 
 export * from "./packageJson";
 
+export * from "./extendInterface";
+
 export {
     addPluginToCreateHandler,
     addResolutionToRootPackageJson,
