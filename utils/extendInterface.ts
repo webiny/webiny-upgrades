@@ -14,5 +14,11 @@ export const extendInterface = (params: ExtendInterfaceParams) => {
     if (!int) {
         return;
     }
+    const alreadyExtends = int.getExtends().some(item => {
+        return items.includes(item.getText());
+    });
+    if (alreadyExtends) {
+        return;
+    }
     int.addExtends(items);
 };

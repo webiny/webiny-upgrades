@@ -1,4 +1,4 @@
-import { SourceFile } from "ts-morph";
+import { SourceFile, VariableDeclaration } from "ts-morph";
 
 export interface RemoveVariableParams {
     source: SourceFile;
@@ -16,12 +16,19 @@ export interface ReplaceVariableParams {
     source: SourceFile;
     target: string;
     newValue: string;
+    validate?: (declaration: VariableDeclaration) => boolean;
 }
 
 export const replaceVariable = (params: ReplaceVariableParams): void => {
-    const { source, target, newValue } = params;
+    const { source, target, newValue, validate } = params;
 
     const declaration = source.getVariableDeclaration(target);
+    if (!declaration) {
+        return;
+    }
+    if (validate && validate(declaration) !== true) {
+        return;
+    }
 
     declaration.replaceWithText(newValue);
 };

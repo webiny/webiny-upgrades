@@ -72,7 +72,7 @@ export const updateForBackgroundTasks = createProcessor(async params => {
         name: {
             Context: "TaskContext"
         },
-        moduleSpecifier: "@webiny/tasks",
+        moduleSpecifier: "@webiny/tasks/types",
         after: tasksPackage
     });
 

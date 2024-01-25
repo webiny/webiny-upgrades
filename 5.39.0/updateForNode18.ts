@@ -33,7 +33,10 @@ export const updateForNode18 = createProcessor(async params => {
     replaceVariable({
         source: indexSource,
         target: "documentClient",
-        newValue: "documentClient = getDocumentClient({region: process.env.AWS_REGION})"
+        newValue: "documentClient = getDocumentClient({region: process.env.AWS_REGION})",
+        validate: declaration => {
+            return declaration.getText().includes("getDocumentClient") === false;
+        }
     });
     /**
      * In the security file:
