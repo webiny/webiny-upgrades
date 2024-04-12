@@ -3,6 +3,7 @@ import { setupFiles } from "./setupFiles";
 import { Context } from "../types";
 import { updateForHcmsAco } from "./updateForHcmsAco";
 import { updateForAwsSdk } from "./updateForAwsSdk";
+import { updateForHcmsTasks } from "./updateForHcmsTasks";
 
 module.exports = async (context: Context) => {
     const processors = [
@@ -10,6 +11,10 @@ module.exports = async (context: Context) => {
          * Headless CMS - ACO.
          */
         updateForHcmsAco,
+        /**
+         * Headless CMS - Tasks.
+         */
+        updateForHcmsTasks,
         /**
          * A PR with the update of @aws-sdk was merged, and it required a change of the types.
          * https://github.com/webiny/webiny-js/pull/4063
