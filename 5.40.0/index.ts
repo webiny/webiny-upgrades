@@ -4,6 +4,7 @@ import { Context } from "../types";
 import { updateForHcmsAco } from "./updateForHcmsAco";
 import { updateForAwsSdk } from "./updateForAwsSdk";
 import { updateForHcmsTasks } from "./updateForHcmsTasks";
+import { updateForLockingMechanism } from "./updateForLockingMechanism";
 
 module.exports = async (context: Context) => {
     const processors = [
@@ -19,7 +20,11 @@ module.exports = async (context: Context) => {
          * A PR with the update of @aws-sdk was merged, and it required a change of the types.
          * https://github.com/webiny/webiny-js/pull/4063
          */
-        updateForAwsSdk
+        updateForAwsSdk,
+        /**
+         * https://github.com/webiny/webiny-js/pull/4065
+         */
+        updateForLockingMechanism
     ];
 
     const files = setupFiles(context);
