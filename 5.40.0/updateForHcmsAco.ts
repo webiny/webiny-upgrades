@@ -35,7 +35,7 @@ export const updateForHcmsAco = createProcessor(async params => {
     // Update GraphQL index.ts file adding both "createAcoHcmsContext" plugin.
     insertImportToSourceFile({
         source,
-        name: ["createHeadlessCmsAco"],
+        name: ["createAcoHcmsContext"],
         moduleSpecifier: "@webiny/api-headless-cms-aco",
         after: "@webiny/api-headless-cms"
     });
