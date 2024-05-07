@@ -22,10 +22,14 @@ export const upgradePackages = (context: Context): void => {
 
     log.success(`Upgraded 'devDependencies' into`, upgradeFiles.root);
 
-    addPackagesToResolutions(context, upgradeFiles.root, {
-        "@types/react": "17.0.39",
-        react: "17.0.2",
-        "react-dom": "17.0.2"
+    addPackagesToResolutions({
+        context,
+        targetPath: upgradeFiles.root,
+        packages: {
+            "@types/react": "17.0.39",
+            react: "17.0.2",
+            "react-dom": "17.0.2"
+        }
     });
 
     log.success(`Upgraded 'resolutions' into`, upgradeFiles.root);
