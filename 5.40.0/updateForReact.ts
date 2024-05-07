@@ -1,8 +1,8 @@
-import { addPackagesToResolutions, createProcessor, yarnUpDependency } from "../utils";
+import { addPackagesToResolutions, createProcessor, yarnUp } from "../utils";
 import path from "path";
 
 export const updateForReact = createProcessor(async params => {
-    const { context, project, files } = params;
+    const { context } = params;
     /**
      * First we need to update the main package.json file.
      */
@@ -22,7 +22,7 @@ export const updateForReact = createProcessor(async params => {
     /**
      * Next, we need to up the versions of the react, react-dom and type packages.
      */
-    await yarnUpDependency({
+    await yarnUp({
         react: "18.3.1",
         "react-dom": "18.3.1",
         "@types/react": "18.3.1",
