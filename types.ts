@@ -16,7 +16,7 @@ export interface Context {
 }
 
 export interface Packages {
-    [key: string]: string;
+    [key: string]: string | null;
 }
 
 export interface PackageJson extends BasePackageJson {
