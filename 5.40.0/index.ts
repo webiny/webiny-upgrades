@@ -4,8 +4,9 @@ import { Context } from "../types";
 import { updateForHcmsAco } from "./updateForHcmsAco";
 import { updateForAwsSdk } from "./updateForAwsSdk";
 import { updateForHcmsTasks } from "./updateForHcmsTasks";
-import { updateForLockingMechanism } from "./updateForLockingMechanism";
+import { updateForRecordLocking } from "./updateForRecordLocking";
 import { updateForReact } from "./updateForReact";
+import { updateForWebsockets } from "./updateForWebsockets";
 
 module.exports = async (context: Context) => {
     const files = setupFiles(context);
@@ -19,6 +20,10 @@ module.exports = async (context: Context) => {
          * https://github.com/webiny/webiny-js/pull/3771
          */
         updateForReact,
+        /**
+         * https://github.com/webiny/webiny-js/pull/3877
+         */
+        updateForWebsockets,
         /**
          * Headless CMS - ACO.
          */
@@ -35,7 +40,7 @@ module.exports = async (context: Context) => {
         /**
          * https://github.com/webiny/webiny-js/pull/4065
          */
-        updateForLockingMechanism
+        updateForRecordLocking
     ];
 
     await processorsRunner.execute(processors);

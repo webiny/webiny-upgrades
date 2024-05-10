@@ -12,12 +12,12 @@ export const updateForReact = createProcessor(async params => {
         context,
         targetPath: mainPackageJsonPath,
         packages: {
-            "codex-tooltip": null,
+            "@emotion/react": "11.10.8",
             "@types/react": "18.2.79",
             "@types/react-dom": "18.2.25",
+            "codex-tooltip": null,
             react: "18.2.0",
-            "react-dom": "18.2.0",
-            "@emotion/react": "11.10.8"
+            "react-dom": "18.2.0"
         }
     });
 
@@ -25,10 +25,10 @@ export const updateForReact = createProcessor(async params => {
      * Next, we need to up the versions of the react, react-dom and type packages.
      */
     await yarnUp({
-        react: "18.3.1",
-        "react-dom": "18.3.1",
-        "@types/react": "18.3.1",
-        "@types/react-dom": "18.3.0",
-        "@emotion/react": "11.10.8"
+        "@emotion/react": "11.10.8",
+        "@types/react": "18.2.79",
+        "@types/react-dom": "18.2.25",
+        react: "18.2.0",
+        "react-dom": "18.2.0"
     });
 });

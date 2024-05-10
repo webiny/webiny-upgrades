@@ -65,9 +65,7 @@ export const updateForHcmsTasks = createProcessor(async params => {
 
     insertImportToSourceFile({
         source: graphQlTypesSource,
-        name: {
-            Context: "HcmsTasksContext"
-        },
+        name: ["HcmsTasksContext"],
         moduleSpecifier: "@webiny/api-headless-cms-tasks/types",
         after: "@webiny/api-headless-cms"
     });

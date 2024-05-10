@@ -6,7 +6,7 @@ import {
 } from "../utils";
 import path from "path";
 
-export const updateForLockingMechanism = createProcessor(async params => {
+export const updateForRecordLocking = createProcessor(async params => {
     const { context, project, files } = params;
 
     const file = files.byName("api/graphql/index");
@@ -14,8 +14,8 @@ export const updateForLockingMechanism = createProcessor(async params => {
 
     insertImportToSourceFile({
         source,
-        name: ["createLockingMechanism"],
-        moduleSpecifier: "@webiny/api-locking-mechanism",
+        name: ["createRecordLocking"],
+        moduleSpecifier: "@webiny/api-record-locking",
         after: "@webiny/api-headless-cms"
     });
 
@@ -28,16 +28,16 @@ export const updateForLockingMechanism = createProcessor(async params => {
     );
 
     addPackagesToDependencies(context, apiPackageJsonPath, {
-        "@webiny/api-locking-mechanism": context.version
+        "@webiny/api-record-locking": context.version
     });
 
     addPluginToCreateHandler({
         source,
-        value: "createLockingMechanism()",
+        value: "createRecordLocking()",
         after: "createHeadlessCmsGraphQL",
         validate: node => {
             return node.getElements().every(element => {
-                return element.getText().match("createLockingMechanism") === null;
+                return element.getText().match("createRecordLocking") === null;
             });
         }
     });
