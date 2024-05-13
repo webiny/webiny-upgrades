@@ -33,6 +33,7 @@ import { removeExtendsFromInterface } from "./removeExtendsFromInterface";
 import { getExistingFiles, getSourceFile } from "./files";
 import { addToExportDefaultArray } from "./addToExportDefaultArray";
 import { getRequireFromSourceFile } from "./getRequireFromSourceFile";
+import { copyPaste } from "./copyPaste";
 import { getIsPre529Project, isPre529Project } from "./isPre529Project";
 import { findVersion } from "./findVersion";
 import {
@@ -105,6 +106,7 @@ export {
     getExistingFiles,
     addToExportDefaultArray,
     getRequireFromSourceFile,
+    copyPaste,
     isPre529Project,
     getIsPre529Project,
     findVersion

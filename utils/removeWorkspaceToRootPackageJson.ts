@@ -2,10 +2,8 @@ import loadJson from "load-json-file";
 import { PackageJson } from "../types";
 import writeJson from "write-json-file";
 
-export const removeWorkspaceToRootPackageJson = async (
-    packageJsonPath: string,
-    pathsToRemove: string[]
-): Promise<void> => {
+export const removeWorkspaceToRootPackageJson = async (pathsToRemove: string[]): Promise<void> => {
+    const packageJsonPath = "package.json";
     const rootPackageJson = await loadJson<PackageJson>(packageJsonPath);
 
     pathsToRemove.forEach(pathToRemove => {

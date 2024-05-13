@@ -5,6 +5,9 @@ import { updateForHcmsAco } from "./updateForHcmsAco";
 import { updateForAwsSdk } from "./updateForAwsSdk";
 import { updateForHcmsTasks } from "./updateForHcmsTasks";
 import { updateForLockingMechanism } from "./updateForLockingMechanism";
+import { updatesForExtensions } from "./updatesForExtensions";
+
+const EMPTY_LINE = () => console.log();
 
 module.exports = async (context: Context) => {
     const processors = [
@@ -24,7 +27,16 @@ module.exports = async (context: Context) => {
         /**
          * https://github.com/webiny/webiny-js/pull/4065
          */
-        updateForLockingMechanism
+        updateForLockingMechanism,
+
+        EMPTY_LINE,
+
+        /**
+         * https://github.com/webiny/webiny-js/pull/4111
+         */
+        updatesForExtensions,
+
+        EMPTY_LINE
     ];
 
     const files = setupFiles(context);

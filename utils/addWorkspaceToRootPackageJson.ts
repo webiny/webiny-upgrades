@@ -2,10 +2,8 @@ import loadJson from "load-json-file";
 import { PackageJson } from "../types";
 import writeJson from "write-json-file";
 
-export const addWorkspaceToRootPackageJson = async (
-    packageJsonPath: string,
-    pathsToAdd: string[]
-): Promise<void> => {
+export const addWorkspaceToRootPackageJson = async (pathsToAdd: string[]): Promise<void> => {
+    const packageJsonPath = "package.json";
     const rootPackageJson = await loadJson<PackageJson>(packageJsonPath);
 
     pathsToAdd.forEach(pathToAdd => {
