@@ -8,6 +8,8 @@ export const updateForReact = createProcessor(async params => {
      */
     const mainPackageJsonPath = path.join(context.project.root, "package.json");
 
+    context.log.info(`Updating React version...`);
+
     addPackagesToResolutions({
         context,
         targetPath: mainPackageJsonPath,
