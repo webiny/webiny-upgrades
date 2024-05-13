@@ -1,5 +1,4 @@
 import { Context, Packages } from "../types";
-
 import semverCoerce from "semver/functions/coerce";
 import loadJson from "load-json-file";
 import writeJson from "write-json-file";
@@ -14,12 +13,23 @@ const validateVersion = (version: string) => {
     return !!coerced;
 };
 
+export interface IAddPackages {
+    context: Context;
+    targetPath: string;
+    packages: Packages;
+}
+
 export const addPackagesToDependencies = (
     context: Context,
     targetPath: string,
     packages: Packages
 ) => {
-    addPackagesToDeps("dependencies", context, targetPath, packages);
+    return addPackagesToDeps({
+        type: "dependencies",
+        context,
+        targetPath,
+        packages
+    });
 };
 
 export const addPackagesToDevDependencies = (
@@ -27,7 +37,12 @@ export const addPackagesToDevDependencies = (
     targetPath: string,
     packages: Packages
 ) => {
-    addPackagesToDeps("devDependencies", context, targetPath, packages);
+    return addPackagesToDeps({
+        type: "devDependencies",
+        context,
+        targetPath,
+        packages
+    });
 };
 
 export const addPackagesToPeerDependencies = (
@@ -35,15 +50,19 @@ export const addPackagesToPeerDependencies = (
     targetPath: string,
     packages: Packages
 ) => {
-    addPackagesToDeps("peerDependencies", context, targetPath, packages);
+    return addPackagesToDeps({
+        type: "peerDependencies",
+        context,
+        targetPath,
+        packages
+    });
 };
 
-export const addPackagesToResolutions = (
-    context: Context,
-    targetPath: string,
-    packages: Packages
-) => {
-    addPackagesToDeps("resolutions", context, targetPath, packages);
+export const addPackagesToResolutions = (params: IAddPackages) => {
+    return addPackagesToDeps({
+        ...params,
+        type: "resolutions"
+    });
 };
 
 const allowedPackageDependencyTypes: string[] = [
@@ -52,12 +71,16 @@ const allowedPackageDependencyTypes: string[] = [
     "peerDependencies",
     "resolutions"
 ];
-const addPackagesToDeps = (
-    type: string,
-    context: Context,
-    targetPath: string,
-    packages: Packages
-) => {
+
+export interface IAddPackagesToDeps {
+    type: string;
+    context: Context;
+    targetPath: string;
+    packages: Packages;
+}
+
+const addPackagesToDeps = (params: IAddPackagesToDeps) => {
+    const { type, targetPath, packages } = params;
     if (!allowedPackageDependencyTypes.includes(type)) {
         log.error(`Package dependency type "${type}" is not valid.`);
         return;

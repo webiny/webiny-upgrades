@@ -62,9 +62,7 @@ export const updateForHcmsAco = createProcessor(async params => {
 
     insertImportToSourceFile({
         source: graphQlTypesSource,
-        name: {
-            Context: "HcmsAcoContext"
-        },
+        name: ["HcmsAcoContext"],
         moduleSpecifier: "@webiny/api-headless-cms-aco/types",
         after: "@webiny/api-headless-cms"
     });

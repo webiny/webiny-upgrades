@@ -1,13 +1,29 @@
-import { prettierFormat, runProcessors, yarnInstall } from "../utils";
+import { createProcessorRunner, prettierFormat, yarnInstall } from "../utils";
 import { setupFiles } from "./setupFiles";
 import { Context } from "../types";
 import { updateForHcmsAco } from "./updateForHcmsAco";
 import { updateForAwsSdk } from "./updateForAwsSdk";
 import { updateForHcmsTasks } from "./updateForHcmsTasks";
-import { updateForLockingMechanism } from "./updateForLockingMechanism";
+import { updateForRecordLocking } from "./updateForRecordLocking";
+import { updateForReact } from "./updateForReact";
+import { updateForWebsockets } from "./updateForWebsockets";
 
 module.exports = async (context: Context) => {
+    const files = setupFiles(context);
+    const processorsRunner = createProcessorRunner({
+        files,
+        context
+    });
     const processors = [
+        /**
+         * React 18 and related packages
+         * https://github.com/webiny/webiny-js/pull/3771
+         */
+        updateForReact,
+        /**
+         * https://github.com/webiny/webiny-js/pull/3877
+         */
+        updateForWebsockets,
         /**
          * Headless CMS - ACO.
          */
@@ -24,12 +40,10 @@ module.exports = async (context: Context) => {
         /**
          * https://github.com/webiny/webiny-js/pull/4065
          */
-        updateForLockingMechanism
+        updateForRecordLocking
     ];
 
-    const files = setupFiles(context);
-
-    await runProcessors(files, processors, context);
+    await processorsRunner.execute(processors);
 
     // Format files.
     await prettierFormat(files.paths());
