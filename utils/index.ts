@@ -13,7 +13,7 @@ import log from "./log";
 import { prettierFormat } from "./prettierFormat";
 import { removeImportFromSourceFile } from "./removeImportFromSourceFile";
 import { removePluginFromCreateHandler } from "./removePluginFromCreateHandler";
-import { removeWorkspaceToRootPackageJson } from "./removeWorkspaceToRootPackageJson";
+import { removeWorkspaceFromRootPackageJson } from "./removeWorkspaceFromRootPackageJson";
 import { yarnInstall } from "./yarnInstall";
 import { yarnUp } from "./yarnUp";
 import { removePulumiCache } from "./removePulumiCache";
@@ -88,7 +88,7 @@ export {
     prettierFormat,
     removePluginFromCreateHandler,
     removeImportFromSourceFile,
-    removeWorkspaceToRootPackageJson,
+    removeWorkspaceFromRootPackageJson,
     yarnInstall,
     yarnUp,
     removePulumiCache,

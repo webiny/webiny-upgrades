@@ -4,7 +4,7 @@ import {
     addPluginToCreateHandler,
     createProcessor,
     insertImportToSourceFile,
-    removeWorkspaceToRootPackageJson,
+    removeWorkspaceFromRootPackageJson,
     copyPaste,
     addWorkspaceToRootPackageJson,
     addPackagesToDependencies
@@ -133,7 +133,7 @@ export const updatesForExtensions = createProcessor(async params => {
             await copyPaste(src, dest);
             fs.rmSync(src, { recursive: true });
 
-            await removeWorkspaceToRootPackageJson(["apps/theme"]);
+            await removeWorkspaceFromRootPackageJson(["apps/theme"]);
             await addWorkspaceToRootPackageJson(["extensions/theme"]);
         }
     }
