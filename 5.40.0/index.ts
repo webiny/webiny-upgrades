@@ -9,8 +9,6 @@ import { updateForReact } from "./updateForReact";
 import { updateForWebsockets } from "./updateForWebsockets";
 import { updatesForExtensions } from "./updatesForExtensions";
 
-const EMPTY_LINE = () => console.log();
-
 module.exports = async (context: Context) => {
     const files = setupFiles(context);
     const processorsRunner = createProcessorRunner({
@@ -45,15 +43,11 @@ module.exports = async (context: Context) => {
          */
         updateForRecordLocking,
 
-
-        EMPTY_LINE,
-
         /**
          * https://github.com/webiny/webiny-js/pull/4111
          */
         updatesForExtensions,
 
-        EMPTY_LINE
     ];
 
     await processorsRunner.execute(processors);
