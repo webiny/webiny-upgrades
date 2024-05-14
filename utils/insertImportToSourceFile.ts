@@ -1,7 +1,7 @@
 import { SourceFile } from "ts-morph";
 import { createNamedImports } from "./createNamedImports";
 
-interface Params {
+interface BaseParams {
     source: SourceFile;
     /**
      * It is possible to send:
@@ -11,10 +11,21 @@ interface Params {
      */
     name: string | string[] | Record<string, string>;
     moduleSpecifier: string;
-    after?: string | null;
 }
-export const insertImportToSourceFile = (params: Params): void => {
-    const { source, name, moduleSpecifier, after = null } = params;
+
+interface ParamsBefore extends BaseParams {
+    before: string;
+    after?: never;
+}
+
+interface ParamsAfter extends BaseParams {
+    after: string;
+    before?: never;
+}
+
+export type IInsertInputToSourceFile = ParamsBefore | ParamsAfter;
+export const insertImportToSourceFile = (params: IInsertInputToSourceFile): void => {
+    const { source, name, moduleSpecifier, after = null, before = null } = params;
     const namedImports = createNamedImports(name);
     const defaultImport = namedImports === undefined ? (name as string) : undefined;
 
@@ -50,10 +61,20 @@ export const insertImportToSourceFile = (params: Params): void => {
         declaration.addNamedImports(newImports);
         return;
     }
-    /**
-     * If we want to add this import after some other import...
-     */
-    if (after) {
+    if (before) {
+        const beforeDeclaration = source.getImportDeclaration(before);
+        if (beforeDeclaration) {
+            source.insertImportDeclaration(beforeDeclaration.getChildIndex(), {
+                defaultImport,
+                namedImports,
+                moduleSpecifier
+            });
+            return;
+        }
+    } else if (after) {
+        /**
+         * If we want to add this import after some other import...
+         */
         const afterDeclaration = source.getImportDeclaration(after);
         /**
          * If there is no target import, we will just add it at the end.
