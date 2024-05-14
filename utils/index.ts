@@ -13,7 +13,7 @@ import log from "./log";
 import { prettierFormat } from "./prettierFormat";
 import { removeImportFromSourceFile } from "./removeImportFromSourceFile";
 import { removePluginFromCreateHandler } from "./removePluginFromCreateHandler";
-import { removeWorkspaceToRootPackageJson } from "./removeWorkspaceToRootPackageJson";
+import { removeWorkspaceFromRootPackageJson } from "./removeWorkspaceFromRootPackageJson";
 import { yarnInstall } from "./yarnInstall";
 export * from "./yarnUp";
 import { removePulumiCache } from "./removePulumiCache";
@@ -33,6 +33,7 @@ import { removeExtendsFromInterface } from "./removeExtendsFromInterface";
 import { getExistingFiles, getSourceFile } from "./files";
 import { addToExportDefaultArray } from "./addToExportDefaultArray";
 import { getRequireFromSourceFile } from "./getRequireFromSourceFile";
+import { copyPaste } from "./copyPaste";
 import { getIsPre529Project, isPre529Project } from "./isPre529Project";
 import { findVersion } from "./findVersion";
 import {
@@ -87,7 +88,7 @@ export {
     prettierFormat,
     removePluginFromCreateHandler,
     removeImportFromSourceFile,
-    removeWorkspaceToRootPackageJson,
+    removeWorkspaceFromRootPackageJson,
     yarnInstall,
     removePulumiCache,
     addDynamoDbDocumentClient,
@@ -104,6 +105,7 @@ export {
     getExistingFiles,
     addToExportDefaultArray,
     getRequireFromSourceFile,
+    copyPaste,
     isPre529Project,
     getIsPre529Project,
     findVersion

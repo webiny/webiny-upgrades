@@ -7,6 +7,7 @@ import { updateForHcmsTasks } from "./updateForHcmsTasks";
 import { updateForRecordLocking } from "./updateForRecordLocking";
 import { updateForReact } from "./updateForReact";
 import { updateForWebsockets } from "./updateForWebsockets";
+import { updatesForExtensions } from "./updatesForExtensions";
 
 module.exports = async (context: Context) => {
     const files = setupFiles(context);
@@ -40,7 +41,13 @@ module.exports = async (context: Context) => {
         /**
          * https://github.com/webiny/webiny-js/pull/4065
          */
-        updateForRecordLocking
+        updateForRecordLocking,
+
+        /**
+         * https://github.com/webiny/webiny-js/pull/4111
+         */
+        updatesForExtensions,
+
     ];
 
     await processorsRunner.execute(processors);

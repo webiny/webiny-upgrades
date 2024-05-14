@@ -32,6 +32,9 @@ export const createProcessorRunner = (params: ICreateProcessorRunnerParams) => {
                     project,
                     files
                 });
+
+                // Let's have an empty line between each processor.
+                console.log()
             }
             // Save file changes.
             await project.save();
