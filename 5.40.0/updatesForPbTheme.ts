@@ -16,8 +16,22 @@ import { replaceInPath } from "replace-in-path";
 export const updatesForPbTheme = createProcessor(async params => {
     const { project, files, context } = params;
 
+    if (fs.existsSync("extensions/theme/src")) {
+        context.log.warning(
+            `Skipping updating %s package's code. The update has already been done.`,
+            "extensions/theme"
+        );
+        return;
+    }
+
+    context.log.info("Updating %s package's code...", "extensions/theme");
     // 1. Move all code in `extensions/theme` into `extensions/theme/src` folder.
     {
+        context.log.info(
+            "Moving all code in %s into %s folder...",
+            "extensions/theme",
+            "extensions/theme/src"
+        );
         fs.mkdirSync("extensions/theme/src", { recursive: true });
         const filePaths = await glob([
             "extensions/theme/**/*",
@@ -39,17 +53,46 @@ export const updatesForPbTheme = createProcessor(async params => {
     {
         const globalScssPath = "extensions/theme/src/global.scss";
         const globalScssBackupPath = "extensions/theme/src/global.backup.scss";
+
+        context.log.info(
+            "Creating a backup of the existing %s file (%s)..",
+            globalScssPath,
+            globalScssBackupPath
+        );
+
         await moveFiles([{ src: globalScssPath, dest: globalScssBackupPath }]);
 
+        context.log.info("Replacing the existing %s file with the new one...", globalScssPath);
         const src = path.join(__dirname, "updatesForPbTheme", "filesToCopy", "global.scss");
         const dest = path.join("extensions", "theme", "src", "global.scss");
         await copyPasteFiles([{ src, dest }]);
     }
 
-    // 3. Update `package.json` and `tsconfig.json` files (take into consideration the new `src` folder).
+    // 3. Import `global.scss` in `extensions/theme/src/index.ts`.
+    {
+        // Had to re-add the file because initially the file does not exist. It
+        // only gets added during the project upgrade process.
+        const indexFile = files.byName("extensions/theme/index");
+        project.addSourceFileAtPath(indexFile.path);
+
+        const indexFileSource = project.getSourceFile(indexFile.path);
+
+        context.log.info("Importing the new %s file in %s...", "global.scss", indexFile.path);
+
+        insertImportToSourceFile({
+            source: indexFileSource,
+            moduleSpecifier: "./global.scss",
+            after: "@webiny/app-website"
+        });
+    }
+
+    // 4. Update `package.json` and `tsconfig.json` files (take into consideration the new `src` folder).
     {
         const packageJsonPath = path.join("extensions", "theme", "package.json");
         const packageJson = await loadJson<PackageJson>(packageJsonPath);
+
+        context.log.info("Updating %s file...", packageJsonPath);
+
         packageJson.main = "src/index.ts";
         await writeJson(packageJsonPath, packageJson);
     }
@@ -57,30 +100,28 @@ export const updatesForPbTheme = createProcessor(async params => {
     {
         const packageJsonPath = path.join("extensions", "theme", "tsconfig.json");
         const tsConfigJson = await loadJson<Record<string, any>>(packageJsonPath);
+
+        context.log.info("Updating %s file...", packageJsonPath);
+
         tsConfigJson.include = ["src"];
         await writeJson(packageJsonPath, tsConfigJson);
     }
 
-    // 4. Import `global.scss` in `extensions/theme/src/index.ts`.
-    {
-        // Had to re-add the file because initially the file does not exist. It
-        // only gets added during the project upgrade process.
-        const indexFile = files.byName("extensions/theme/index");
-        project.addSourceFileAtPath(indexFile.path);
-
-        const source = project.getSourceFile(indexFile.path);
-
-        insertImportToSourceFile({
-            source,
-            moduleSpecifier: "./global.scss",
-            after: "@webiny/app-website"
-        });
-    }
-
     {
         // 5. Also remove imports of `global.scss` from `apps/admin` and `apps/website`.
-        const adminAppFile = "apps/admin/src/App.scss";
-        replaceInPath(adminAppFile, [
+        const adminAppFilePath = "apps/admin/src/App.scss";
+
+        const websiteIndexFile = files.byName("website/index");
+        const websiteSource = project.getSourceFile(websiteIndexFile.path);
+
+        context.log.info(
+            "Removing imports of %s file from %s and %s...",
+            "global.scss",
+            adminAppFilePath,
+            websiteIndexFile.path
+        );
+
+        replaceInPath(adminAppFilePath, [
             {
                 find: `// Import theme styles`,
                 replaceWith: ""
@@ -91,19 +132,22 @@ export const updatesForPbTheme = createProcessor(async params => {
             }
         ]);
 
-        const websiteIndexFile = files.byName("website/index");
-        const source = project.getSourceFile(websiteIndexFile.path);
-
-        removeImportFromSourceFile(source, `theme/global.scss`);
+        removeImportFromSourceFile(websiteSource, `theme/global.scss`);
     }
     {
         // 6. Create new `App.scss` in `apps/website` and import it in `App.tsx`.
         const src = path.join(__dirname, "updatesForPbTheme", "filesToCopy", "App.scss");
         const dest = path.join("apps", "website", "src", "App.scss");
-        await copyPasteFiles([{ src, dest }]);
 
         const websiteAppFile = files.byName("website/App");
         const source = project.getSourceFile(websiteAppFile.path);
+
+        context.log.info("Creating the new %s file in %s...", "App.scss", "apps/website/src");
+
+        await copyPasteFiles([{ src, dest }]);
+
+        context.log.info("Importing the new %s file in %s...", "App.scss", websiteAppFile.path);
+
         insertImportToSourceFile({
             source,
             moduleSpecifier: "./App.scss",
