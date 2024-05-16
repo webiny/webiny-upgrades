@@ -1,0 +1,16 @@
+// ***** 5.40.0 Migration Note *****
+// The existing `global.scss` file has been replaced by this file.
+// Note that a backup of the existing `global.scss` file has been
+// created at `global.backup.scss`. If you need to restore the
+// some of the styles from the old file, you can do so manually.
+// The `global.backup.scss` can be deleted once you've copied
+// the styles you need from it (if any).
+
+// Styles for the rich text editor that's used with Form Builder.
+@import "@webiny/react-rich-text-renderer/styles.scss";
+
+// Font used with the default theme.
+@import url("https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,500,700|Lato:400,700");
+
+// CSS reset styles that were previously here are no longer required.
+// They are now maintained internally by the Webiny team.

@@ -1,5 +1,5 @@
 import { SourceFile } from "ts-morph";
-import { createNamedImports } from "./createNamedImports";
+import { createNamedImports, NamedImport } from "./createNamedImports";
 
 interface BaseParams {
     source: SourceFile;
@@ -9,7 +9,7 @@ interface BaseParams {
      * - string[] - will produce named imports
      * - Record<string, string> - will produce named imports with aliases
      */
-    name: string | string[] | Record<string, string>;
+    name?: string | string[] | Record<string, string>;
     moduleSpecifier: string;
 }
 
@@ -26,8 +26,14 @@ interface ParamsAfter extends BaseParams {
 export type IInsertInputToSourceFile = ParamsBefore | ParamsAfter;
 export const insertImportToSourceFile = (params: IInsertInputToSourceFile): void => {
     const { source, name, moduleSpecifier, after = null, before = null } = params;
-    const namedImports = createNamedImports(name);
-    const defaultImport = namedImports === undefined ? (name as string) : undefined;
+
+    let namedImports: NamedImport[] = [];
+    let defaultImport: string | undefined;
+
+    if (name) {
+        namedImports = createNamedImports(name);
+        defaultImport = namedImports === undefined ? (name as string) : undefined;
+    }
 
     const declaration = source.getImportDeclaration(moduleSpecifier);
 
@@ -61,6 +67,7 @@ export const insertImportToSourceFile = (params: IInsertInputToSourceFile): void
         declaration.addNamedImports(newImports);
         return;
     }
+
     if (before) {
         const beforeDeclaration = source.getImportDeclaration(before);
         if (beforeDeclaration) {

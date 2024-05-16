@@ -1,4 +1,4 @@
-interface NamedImport {
+export interface NamedImport {
     name: string;
     alias?: string;
 }

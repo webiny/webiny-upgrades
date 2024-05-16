@@ -15,6 +15,7 @@ import { removeImportFromSourceFile } from "./removeImportFromSourceFile";
 import { removePluginFromCreateHandler } from "./removePluginFromCreateHandler";
 import { removeWorkspaceFromRootPackageJson } from "./removeWorkspaceFromRootPackageJson";
 import { yarnInstall } from "./yarnInstall";
+
 export * from "./yarnUp";
 import { removePulumiCache } from "./removePulumiCache";
 import { addDynamoDbDocumentClient } from "./addDynamoDbDocumentClient";
@@ -33,7 +34,8 @@ import { removeExtendsFromInterface } from "./removeExtendsFromInterface";
 import { getExistingFiles, getSourceFile } from "./files";
 import { addToExportDefaultArray } from "./addToExportDefaultArray";
 import { getRequireFromSourceFile } from "./getRequireFromSourceFile";
-import { copyPaste } from "./copyPaste";
+import { copyPasteFiles } from "./copyPasteFiles";
+import { moveFiles } from "./moveFiles";
 import { getIsPre529Project, isPre529Project } from "./isPre529Project";
 import { findVersion } from "./findVersion";
 import {
@@ -105,7 +107,8 @@ export {
     getExistingFiles,
     addToExportDefaultArray,
     getRequireFromSourceFile,
-    copyPaste,
+    copyPasteFiles,
+    moveFiles,
     isPre529Project,
     getIsPre529Project,
     findVersion
