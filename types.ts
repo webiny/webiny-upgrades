@@ -33,6 +33,7 @@ export type FileDefinitionTag =
     | "gql"
     | "ps"
     | "ddb2es"
+    | "extensions"
     | "theme"
     | "website"
     | "admin"
@@ -51,11 +52,16 @@ export interface IFileDefinition {
 export interface IFilesFilterCb {
     (file: IFileDefinition): boolean;
 }
+
 export interface IFiles {
     byName(name: string): IFileDefinition | null;
+
     byTag(tag: FileDefinitionTag): IFiles;
+
     filter(cb: IFilesFilterCb): IFiles;
+
     relevant: () => IFiles;
+
     paths(): string[];
 }
 

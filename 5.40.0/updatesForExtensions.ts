@@ -5,7 +5,7 @@ import {
     createProcessor,
     insertImportToSourceFile,
     removeWorkspaceFromRootPackageJson,
-    copyPaste,
+    copyPasteFiles,
     addWorkspaceToRootPackageJson,
     addPackagesToDependencies
 } from "../utils";
@@ -35,7 +35,7 @@ export const updatesForExtensions = createProcessor(async params => {
                 indexFile.path
             );
 
-            await copyPaste(src, dest);
+            await copyPasteFiles([{ src, dest }]);
 
             insertImportToSourceFile({
                 source,
@@ -78,7 +78,7 @@ export const updatesForExtensions = createProcessor(async params => {
                 indexFile.path
             );
 
-            await copyPaste(src, dest);
+            await copyPasteFiles([{ src, dest }]);
 
             insertImportToSourceFile({
                 source,
@@ -117,7 +117,7 @@ export const updatesForExtensions = createProcessor(async params => {
             context.log.warning("Skipping creation of %s folder, already exists.", dest);
         } else {
             context.log.info("Creating %s folder...", dest);
-            await copyPaste(src, dest);
+            await copyPasteFiles([{ src, dest }]);
         }
     }
 
@@ -130,7 +130,7 @@ export const updatesForExtensions = createProcessor(async params => {
             context.log.warning("Skipping moving %s folder to %s, already done.", src, dest);
         } else {
             context.log.info("Moving %s folder to %s...", src, dest);
-            await copyPaste(src, dest);
+            await copyPasteFiles([{ src, dest }]);
             fs.rmSync(src, { recursive: true });
 
             await removeWorkspaceFromRootPackageJson(["apps/theme"]);

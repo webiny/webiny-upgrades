@@ -35,6 +35,21 @@ export const setupFiles = (context: Context) => {
             path: createFilePath(context, "${root}/webiny.project.ts"),
             tag: "root",
             name: "webiny.project.ts"
+        }),
+        createFileDefinition({
+            path: createFilePath(context, "${extensions}/theme/src/index.ts"),
+            tag: "extensions",
+            name: "extensions/theme/index"
+        }),
+        createFileDefinition({
+            path: createFilePath(context, "${website}/src/index.tsx"),
+            tag: "website",
+            name: "website/index"
+        }),
+        createFileDefinition({
+            path: createFilePath(context, "${website}/src/App.tsx"),
+            tag: "website",
+            name: "website/App"
         })
     ]);
 
