@@ -8,7 +8,7 @@ import { updateForRecordLocking } from "./updateForRecordLocking";
 import { updateForReact } from "./updateForReact";
 import { updateForWebsockets } from "./updateForWebsockets";
 import { updatesForExtensions } from "./updatesForExtensions";
-import {updatesForPbTheme} from "./updatesForPbTheme";
+import { updatesForPbTheme } from "./updatesForPbTheme";
 
 module.exports = async (context: Context) => {
     const files = setupFiles(context);
@@ -52,8 +52,7 @@ module.exports = async (context: Context) => {
         /**
          * https://github.com/webiny/webiny-js/pull/4138
          */
-        updatesForPbTheme,
-
+        updatesForPbTheme
     ];
 
     await processorsRunner.execute(processors);
