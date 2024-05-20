@@ -154,4 +154,17 @@ export const updatesForPbTheme = createProcessor(async params => {
             after: "@webiny/app-website"
         });
     }
+    {
+        // 7. Replace imports of "theme/*" to "theme/src/*" in all files.
+        const appsTsTsxFiles = "apps/**/*.{js,jsx,ts,tsx}";
+        const packagesTsTsxFiles = "packages/**/*.{js,jsx,ts,tsx}";
+
+        const replacements = [
+            { find: `from "theme/`, replaceWith: `from "theme/src/` },
+            { find: `from 'theme/`, replaceWith: `from 'theme/src/` }
+        ];
+
+        replaceInPath(appsTsTsxFiles, replacements);
+        replaceInPath(packagesTsTsxFiles, replacements);
+    }
 });
