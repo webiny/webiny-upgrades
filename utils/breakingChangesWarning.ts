@@ -7,7 +7,7 @@ export const breakingChangesWarning = (params: {
 }) => {
     const { version, breakingChangesCount } = params;
     return createProcessor(async params => {
-        const upgradeGuideLink = getWebinyLink("/upgrade/5.39.0");
+        const upgradeGuideLink = getWebinyLink(`/upgrade/${version}`);
 
         const warningMessage = [
             "Note that Webiny %s introduces potentially %s %s! Before continuing,",
