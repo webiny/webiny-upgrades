@@ -1,4 +1,4 @@
-import { createProcessorRunner, prettierFormat, yarnInstall } from "../utils";
+import {breakingChangesWarning, createProcessorRunner, prettierFormat, yarnInstall} from "../utils";
 import { setupFiles } from "./setupFiles";
 import { Context } from "../types";
 import { updateForHcmsAco } from "./updateForHcmsAco";
@@ -17,6 +17,10 @@ module.exports = async (context: Context) => {
         context
     });
     const processors = [
+        /**
+         * Display a warning about breaking changes.
+         */
+        breakingChangesWarning({ version: "5.40.0", breakingChangesCount: 2 }),
         /**
          * React 18 and related packages
          * https://github.com/webiny/webiny-js/pull/3771
