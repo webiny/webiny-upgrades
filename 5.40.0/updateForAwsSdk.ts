@@ -7,11 +7,11 @@ export const updateForAwsSdk = createProcessor(async params => {
     const source = project.getSourceFile(file.path);
 
     const text = source.getText();
-    if (!text || text.includes("DynamoDBDocument")) {
+    if (!text || !text.includes("DynamoDBClient")) {
         return;
     }
 
     context.log.info(`Updating DynamoDB Client...`);
 
-    source.replaceWithText(text.replace("DynamoDBClient", "DynamoDBDocument"));
+    source.replaceWithText(text.replaceAll("DynamoDBClient", "DynamoDBDocument"));
 });
