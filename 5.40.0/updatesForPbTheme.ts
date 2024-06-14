@@ -47,6 +47,25 @@ export const updatesForPbTheme = createProcessor(async params => {
                 }
             ]);
         }
+
+        // Remove leftover folders from `extensions/theme` (we've seen `layout`
+        // folder being left empty, with all the empty subfolders in it).
+        const filePathsToDelete = await glob(
+            [
+                "extensions/theme/**",
+                "!extensions/theme/src",
+                "!extensions/theme/package.json",
+                "!extensions/theme/tsconfig.json"
+            ],
+            {
+                onlyDirectories: true,
+                deep: 0
+            }
+        );
+
+        for (const filePath of filePathsToDelete) {
+            fs.rmSync(filePath, { recursive: true })
+        }
     }
 
     // 2. Create a backup of the existing `global.scss` file, and replace it with the new one.
