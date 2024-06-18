@@ -189,4 +189,56 @@ export const updatesForExtensions = createProcessor(async params => {
             }
         }
     }
+
+    // 6. Add new `cliScaffoldWorkspaces` collection of plugins into `webiny.project.ts`.
+    {
+        const file = files.byName("webiny.project.ts");
+        const source = project.getSourceFile(file.path);
+
+        const existingCliScaffoldCallExpression = source.getFirstDescendant(node => {
+            return node.getText() === "cliScaffoldWorkspaces()";
+        });
+
+        if (existingCliScaffoldCallExpression) {
+            context.log.warning(
+                "Could not add %s (imported via %s) in %s. Already exists.",
+                "cliScaffoldWorkspaces()",
+                'import cliScaffoldWorkspaces from "@webiny/cli-plugin-scaffold-workspaces";',
+                file.path
+            );
+        } else {
+            context.log.info(
+                "Adding %s (imported via %s) in %s...",
+                "cliScaffoldWorkspaces()",
+                'import cliScaffoldWorkspaces from "@webiny/cli-plugin-scaffold-workspaces";',
+                file.path
+            );
+
+            addPackagesToDependencies(context, "package.json", {
+                "@webiny/cli-plugin-scaffold-workspaces": context.version
+            });
+
+            insertImportToSourceFile({
+                source,
+                name: "cliScaffoldWorkspaces",
+                moduleSpecifier: "@webiny/cli-plugin-scaffold-workspaces",
+                after: "cliScaffold"
+            });
+
+            const cliScaffoldCallExpression = source.getFirstDescendant(node => {
+                return node.getText() === "cliScaffold()";
+            });
+
+            if (cliScaffoldCallExpression) {
+                cliScaffoldCallExpression.replaceWithText("cliScaffold(),cliScaffoldWorkspaces()");
+            } else {
+                context.log.warning(
+                    "Could not add %s (imported via %s) in %s",
+                    "cliScaffoldWorkspaces()",
+                    'import cliScaffoldWorkspaces from "@webiny/cli-plugin-scaffold-workspaces";',
+                    file.path
+                );
+            }
+        }
+    }
 });
