@@ -3,19 +3,23 @@ import yesno from "yesno";
 
 export const breakingChangesWarning = (params: {
     version: string;
-    breakingChangesCount: number;
+    breakingChangesCount?: number;
 }) => {
     const { version, breakingChangesCount } = params;
     return createProcessor(async params => {
         const upgradeGuideLink = getWebinyLink(`/upgrade/${version}`);
 
         const warningMessage = [
-            "Note that Webiny %s introduces potentially %s %s! Before continuing,",
+            "Note that Webiny %s introduces",
+            breakingChangesCount,
+            "potential %s! Before continuing,",
             `please review the upgrade guide located at ${upgradeGuideLink}.\n`
-        ].join(" ");
+        ].filter(Boolean).join(" ");
 
-        const breakingChangesCountText =
-            breakingChangesCount === 1 ? "breaking change" : "breaking changes";
+        let breakingChangesCountText = "breaking changes";
+        if (breakingChangesCount === 1) {
+            breakingChangesCountText = "breaking change";
+        }
 
         params.context.log.warning(
             warningMessage,
