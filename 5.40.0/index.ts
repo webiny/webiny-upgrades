@@ -25,7 +25,7 @@ module.exports = async (context: Context) => {
         /**
          * Display a warning about breaking changes.
          */
-        breakingChangesWarning({ version: "5.40.0", breakingChangesCount: 2 }),
+        breakingChangesWarning({ version: "5.40.0" }),
         /**
          * React 18 and related packages
          * https://github.com/webiny/webiny-js/pull/3771
