@@ -20,12 +20,6 @@ export * from "./yarnUp";
 import { removePulumiCache } from "./removePulumiCache";
 import { addDynamoDbDocumentClient } from "./addDynamoDbDocumentClient";
 import { addElasticsearchClient } from "./addElasticsearchClient";
-import {
-    addPackagesToDependencies,
-    addPackagesToDevDependencies,
-    addPackagesToPeerDependencies,
-    addPackagesToResolutions
-} from "./dependencies";
 
 import { getIsElasticsearchProject } from "./isElasticsearchProject";
 import { getIsOpensearchProject } from "./isOpensearchProject";
@@ -68,6 +62,8 @@ export * from "./packageJson";
 
 export * from "./extendInterface";
 
+export * from "./dependencies";
+
 export {
     addPluginToCreateHandler,
     addResolutionToRootPackageJson,
@@ -95,10 +91,6 @@ export {
     removePulumiCache,
     addDynamoDbDocumentClient,
     addElasticsearchClient,
-    addPackagesToDependencies,
-    addPackagesToDevDependencies,
-    addPackagesToPeerDependencies,
-    addPackagesToResolutions,
     getIsElasticsearchProject,
     getIsOpensearchProject,
     upgradeCreateHandlerToPlugins,
