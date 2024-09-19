@@ -14,9 +14,7 @@ export const updatesForTypescript = createProcessor(async params => {
         packages: ["typescript"]
     });
 
-    context.log.info(`Increasing the "typescript" version to 4.9.5...`);
     await yarnUp({
         typescript: "4.9.5"
     });
-    context.log.info(`...done.`);
 });

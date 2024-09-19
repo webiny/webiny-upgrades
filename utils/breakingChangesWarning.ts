@@ -23,12 +23,7 @@ export const breakingChangesWarning = (params: {
             breakingChangesCountText = "breaking change";
         }
 
-        params.context.log.warning(
-            warningMessage,
-            version,
-            breakingChangesCount,
-            breakingChangesCountText
-        );
+        params.context.log.warning(warningMessage, version, breakingChangesCountText);
 
         const ok = await yesno({
             question:

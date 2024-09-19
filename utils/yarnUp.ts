@@ -19,16 +19,21 @@ export interface IYarnUpDependency {
 export const yarnUp = async (packages: IYarnUpDependency): Promise<void> => {
     for (const pkg in packages) {
         const version = packages[pkg];
-        const isValid = semver.valid(version);
+
+        let isValid = semver.valid(version);
         if (!isValid) {
-            log.error(`Package "${pkg}" version ${version} is not a valid semver version.`);
+            isValid = semver.validRange(version);
+        }
+
+        if (!isValid) {
+            log.error(`Package "${pkg}" version "${version}" is not a valid semver version.`);
             continue;
         }
         try {
             log.info(`Updating package "${pkg}" version to "${version}"...`);
             await execa(`yarn`, [`up`, `${pkg}@${version}`], { cwd: process.cwd() });
             await execa("yarn", { cwd: process.cwd() });
-            log.info(`Finished updating package" ${pkg}".`);
+            log.info(`...done.`);
         } catch (ex) {
             log.error(`Updating of the package "${pkg}" to version "${version}" failed.`);
             console.log(ex);
