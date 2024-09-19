@@ -2,14 +2,8 @@ import loadJsonFile from "load-json-file";
 import writeJson from "write-json-file";
 import { PackageJson } from "../types";
 
-export interface IPackageJsonModifierModifyValues {
-    [key: string]: {
-        [key: string]: string | Record<string, string | Record<string, string>>;
-    };
-}
-
 export interface IPackageJsonModifier {
-    modify(values: IPackageJsonModifierModifyValues): PackageJson;
+    modify(values: Partial<PackageJson>): PackageJson;
 }
 
 export interface ICreatePackageJsonModifier {
@@ -25,7 +19,7 @@ export const createPackageJsonModifier: ICreatePackageJsonModifier = file => {
     };
 
     return {
-        modify: (values: IPackageJsonModifierModifyValues) => {
+        modify: values => {
             const json = load();
             for (const key in values) {
                 if (!json[key]) {
