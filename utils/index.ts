@@ -15,8 +15,6 @@ import { removeImportFromSourceFile } from "./removeImportFromSourceFile";
 import { removePluginFromCreateHandler } from "./removePluginFromCreateHandler";
 import { removeWorkspaceFromRootPackageJson } from "./removeWorkspaceFromRootPackageJson";
 import { yarnInstall } from "./yarnInstall";
-
-export * from "./yarnUp";
 import { removePulumiCache } from "./removePulumiCache";
 import { addDynamoDbDocumentClient } from "./addDynamoDbDocumentClient";
 import { addElasticsearchClient } from "./addElasticsearchClient";
@@ -44,6 +42,8 @@ import {
     getWebsitePath
 } from "./paths";
 
+export * from "./yarnUp";
+
 export { removeFromExportDefaultArray } from "./removeFromExportDefaultArray";
 export { movePlugin } from "./movePlugin";
 
@@ -63,6 +63,8 @@ export * from "./packageJson";
 export * from "./extendInterface";
 
 export * from "./dependencies";
+
+export * from "./modifyPackageJson";
 
 export {
     addPluginToCreateHandler,

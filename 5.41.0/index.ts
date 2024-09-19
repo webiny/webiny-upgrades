@@ -7,6 +7,7 @@ import {
 import { setupFiles } from "./setupFiles";
 import { Context } from "../types";
 import { updatesForTypescript } from "./updatesForTypescript";
+import { updatesForNode } from "./updatesForNode";
 
 module.exports = async (context: Context) => {
     const files = setupFiles(context);
@@ -23,7 +24,12 @@ module.exports = async (context: Context) => {
          * Update for TS 4.9.5
          * https://github.com/webiny/webiny-js/pull/4229
          */
-        updatesForTypescript
+        updatesForTypescript,
+        /**
+         * Update for Node ^20.0.0
+         * https://github.com/webiny/webiny-js/pull/4257
+         */
+        updatesForNode
     ];
 
     await processorsRunner.execute(processors);

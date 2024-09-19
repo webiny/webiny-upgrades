@@ -14,7 +14,9 @@ export const breakingChangesWarning = (params: {
             breakingChangesCount,
             "potential %s! Before continuing,",
             `please review the upgrade guide located at ${upgradeGuideLink}.\n`
-        ].filter(Boolean).join(" ");
+        ]
+            .filter(Boolean)
+            .join(" ");
 
         let breakingChangesCountText = "breaking changes";
         if (breakingChangesCount === 1) {

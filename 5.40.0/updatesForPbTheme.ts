@@ -64,7 +64,7 @@ export const updatesForPbTheme = createProcessor(async params => {
         );
 
         for (const filePath of filePathsToDelete) {
-            fs.rmSync(filePath, { recursive: true })
+            fs.rmSync(filePath, { recursive: true });
         }
     }
 
