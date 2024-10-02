@@ -8,6 +8,7 @@ import { setupFiles } from "./setupFiles";
 import { Context } from "../types";
 import { updatesForTypescript } from "./updatesForTypescript";
 import { updatesForNode } from "./updatesForNode";
+import { updateForEsHcmsTasks } from "./updateForEsHcmsTasks";
 
 module.exports = async (context: Context) => {
     const files = setupFiles(context);
@@ -29,7 +30,12 @@ module.exports = async (context: Context) => {
          * Update for Node ^20.0.0
          * https://github.com/webiny/webiny-js/pull/4257
          */
-        updatesForNode
+        updatesForNode,
+        /**
+         * Add api-headless-cms-tasks-ddb-es packages
+         * https://github.com/webiny/webiny-js/pull/4283
+         */
+        updateForEsHcmsTasks
     ];
 
     await processorsRunner.execute(processors);
