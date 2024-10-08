@@ -30,7 +30,7 @@ export const updateForEsHcmsTasks = createProcessor(async params => {
         file: apiPackageJsonPath,
         name: "@webiny/api-headless-cms-tasks-ddb-es"
     });
-    if (cmsTasksPackage.package?.name) {
+    if (cmsTasksPackage?.name) {
         context.log.warning(
             "Looks like you already have the latest GraphQL API / Headless CMS - Tasks plugins set up. Skipping..."
         );

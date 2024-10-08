@@ -16,29 +16,31 @@ const types = [
     IFindPackageInPackageJsonResultWhere.RESOLUTIONS
 ];
 
+export interface IFindPackageInPackageJsonResult {
+    version: string;
+    name: string;
+    where: IFindPackageInPackageJsonResultWhere;
+}
+
 export interface IFindPackageInPackageJsonParams {
     file: string;
     name: string;
 }
 
-export const findPackageInPackageJson = (params: IFindPackageInPackageJsonParams) => {
+export const findPackageInPackageJson = (
+    params: IFindPackageInPackageJsonParams
+): IFindPackageInPackageJsonResult => {
     const { file, name } = params;
 
     if (fs.existsSync(file) === false) {
-        return {
-            package: null,
-            error: new Error(`File ${file} does not exist.`)
-        };
+        return null;
     }
 
     let json: PackageJson;
     try {
         json = loadJsonFile.sync(file);
     } catch (ex) {
-        return {
-            package: null,
-            error: ex
-        };
+        return null;
     }
 
     for (const type of types) {
@@ -49,14 +51,10 @@ export const findPackageInPackageJson = (params: IFindPackageInPackageJsonParams
         }
 
         return {
-            package: {
-                version: json[type][name],
-                name,
-                where: type
-            }
+            version: json[type][name],
+            name,
+            where: type
         };
     }
-    return {
-        package: null
-    };
+    return null;
 };
