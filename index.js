@@ -81,14 +81,13 @@ const forcePatchVersion = version => {
                 `This is intentional, as we always want to run upgrade script for the "0" patch version.`
             );
         }
+        const { createBaseContext } = await require("./helpers/createBaseContext.ts");
 
-        const context = {
-            project: {
-                root: argv.cwd || process.cwd()
-            },
-            version: cliVersion,
-            log: log
-        };
+        const context = createBaseContext({
+            root: argv.cwd || process.cwd(),
+            version,
+            log
+        });
 
         await require(scriptsPath)(context);
 

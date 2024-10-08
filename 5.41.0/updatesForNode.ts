@@ -1,10 +1,9 @@
 import { createPackageJsonModifier, createProcessor, yarnUp } from "../utils";
-import path from "path";
 
 export const updatesForNode = createProcessor(async params => {
     const { context } = params;
 
-    const mainPackageJsonPath = path.join(context.project.root, "package.json");
+    const mainPackageJsonPath = context.project.getPackageJsonPath();
 
     const mainPackageJsonModifier = createPackageJsonModifier(mainPackageJsonPath);
 

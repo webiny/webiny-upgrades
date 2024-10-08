@@ -1,18 +1,16 @@
 import { PackageJson as BasePackageJson } from "type-fest";
 import { Project } from "ts-morph";
+import type { ConsoleLogger } from "./utils/log";
+
+export type { ConsoleLogger };
 
 export interface Context {
     version: string;
     project: {
         root: string;
+        getPackageJsonPath: () => string;
     };
-    log: {
-        info: (...args: any) => void;
-        success: (...args: any) => void;
-        debug: (...args: any) => void;
-        warning: (...args: any) => void;
-        error: (...args: any) => void;
-    };
+    log: ConsoleLogger;
 }
 
 export interface Packages {
