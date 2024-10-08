@@ -9,6 +9,7 @@ export interface Context {
     project: {
         root: string;
         getPackageJsonPath: () => string;
+        getFilePath: (target: string | string[]) => string;
     };
     log: ConsoleLogger;
 }

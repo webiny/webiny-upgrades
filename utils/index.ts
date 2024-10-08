@@ -66,6 +66,8 @@ export * from "./dependencies";
 
 export * from "./modifyPackageJson";
 
+export * from "./findPackageInPackageJson";
+
 export {
     addPluginToCreateHandler,
     addResolutionToRootPackageJson,

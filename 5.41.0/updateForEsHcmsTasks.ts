@@ -1,7 +1,7 @@
-import path from "path";
 import {
     addPackagesToDependencies,
     createProcessor,
+    findPackageInPackageJson,
     getIsElasticsearchProject,
     insertImportToSourceFile,
     removeImportFromSourceFile
@@ -25,15 +25,12 @@ export const updateForEsHcmsTasks = createProcessor(async params => {
     }
 
     // Update theme package's package.json.
-    const apiPackageJsonPath = path.join(
-        context.project.root,
-        "apps",
-        "api",
-        "graphql",
-        "package.json"
-    );
-    const packageJson = await import(apiPackageJsonPath);
-    if (packageJson.dependencies["@webiny/api-headless-cms-tasks-ddb-es"]) {
+    const apiPackageJsonPath = context.project.getFilePath("apps/api/graphql/package.json");
+    const cmsTasksPackage = findPackageInPackageJson({
+        file: apiPackageJsonPath,
+        name: "@webiny/api-headless-cms-tasks-ddb-es"
+    });
+    if (cmsTasksPackage.package?.name) {
         context.log.warning(
             "Looks like you already have the latest GraphQL API / Headless CMS - Tasks plugins set up. Skipping..."
         );

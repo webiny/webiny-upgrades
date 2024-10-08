@@ -13,6 +13,10 @@ export const createBaseContext = (params: IParams): Context => {
             root: params.root,
             getPackageJsonPath: () => {
                 return path.join(params.root, "package.json");
+            },
+            getFilePath: target => {
+                const targets = Array.isArray(target) ? target : [target];
+                return path.join(params.root, ...targets);
             }
         },
         version: params.version,
