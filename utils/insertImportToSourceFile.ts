@@ -14,12 +14,12 @@ interface BaseParams {
 }
 
 interface ParamsBefore extends BaseParams {
-    before: string;
+    before?: string;
     after?: never;
 }
 
 interface ParamsAfter extends BaseParams {
-    after: string;
+    after?: string;
     before?: never;
 }
 

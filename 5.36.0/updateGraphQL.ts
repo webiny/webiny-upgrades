@@ -1,16 +1,15 @@
 import { Project } from "ts-morph";
-import { Context } from "../types";
+import { Context, IFiles } from "../types";
 import {
     addPackagesToDependencies,
     addPluginToCreateHandler,
     createFilePath,
-    Files,
     findVersion,
     insertImportToSourceFile
 } from "../utils";
 
 interface Params {
-    files: Files;
+    files: IFiles;
     project: Project;
     context: Context;
 }
