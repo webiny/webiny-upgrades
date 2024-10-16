@@ -1,8 +1,8 @@
-import { Context } from "../types";
+import { Context, IFiles } from "../types";
 import { createFilePath, Files, FileDefinition, usesLatestPbRenderingEngine } from "../utils";
 import { themeMigrationFilesSetup } from "./themeTypographyMigration/themeMigrationFilesSetup";
 
-export const setupFiles = (context: Context): Files => {
+export const setupFiles = (context: Context): IFiles => {
     /**
      * Add files that will be used at some point in the upgrade process.
      */

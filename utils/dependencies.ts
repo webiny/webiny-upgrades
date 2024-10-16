@@ -19,6 +19,12 @@ export interface IAddPackages {
     packages: Packages;
 }
 
+export interface IRemovePackages {
+    context: Context;
+    targetPath: string;
+    packages: string[];
+}
+
 export const addPackagesToDependencies = (
     context: Context,
     targetPath: string,
@@ -62,6 +68,17 @@ export const addPackagesToResolutions = (params: IAddPackages) => {
     return addPackagesToDeps({
         ...params,
         type: "resolutions"
+    });
+};
+
+export const removePackagesFromResolutions = (params: IRemovePackages) => {
+    return addPackagesToDeps({
+        ...params,
+        type: "resolutions",
+        packages: Object.keys(params.packages).reduce((acc, pkg) => {
+            acc[pkg] = null;
+            return acc;
+        }, {})
     });
 };
 

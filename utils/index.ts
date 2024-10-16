@@ -15,17 +15,9 @@ import { removeImportFromSourceFile } from "./removeImportFromSourceFile";
 import { removePluginFromCreateHandler } from "./removePluginFromCreateHandler";
 import { removeWorkspaceFromRootPackageJson } from "./removeWorkspaceFromRootPackageJson";
 import { yarnInstall } from "./yarnInstall";
-
-export * from "./yarnUp";
 import { removePulumiCache } from "./removePulumiCache";
 import { addDynamoDbDocumentClient } from "./addDynamoDbDocumentClient";
 import { addElasticsearchClient } from "./addElasticsearchClient";
-import {
-    addPackagesToDependencies,
-    addPackagesToDevDependencies,
-    addPackagesToPeerDependencies,
-    addPackagesToResolutions
-} from "./dependencies";
 
 import { getIsElasticsearchProject } from "./isElasticsearchProject";
 import { getIsOpensearchProject } from "./isOpensearchProject";
@@ -50,6 +42,8 @@ import {
     getWebsitePath
 } from "./paths";
 
+export * from "./yarnUp";
+
 export { removeFromExportDefaultArray } from "./removeFromExportDefaultArray";
 export { movePlugin } from "./movePlugin";
 
@@ -67,6 +61,12 @@ export * from "./variables";
 export * from "./packageJson";
 
 export * from "./extendInterface";
+
+export * from "./dependencies";
+
+export * from "./modifyPackageJson";
+
+export * from "./findPackageInPackageJson";
 
 export {
     addPluginToCreateHandler,
@@ -95,10 +95,6 @@ export {
     removePulumiCache,
     addDynamoDbDocumentClient,
     addElasticsearchClient,
-    addPackagesToDependencies,
-    addPackagesToDevDependencies,
-    addPackagesToPeerDependencies,
-    addPackagesToResolutions,
     getIsElasticsearchProject,
     getIsOpensearchProject,
     upgradeCreateHandlerToPlugins,

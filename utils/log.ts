@@ -58,4 +58,6 @@ class ConsoleLogger {
     }
 }
 
+export type { ConsoleLogger };
+
 export default new ConsoleLogger();
