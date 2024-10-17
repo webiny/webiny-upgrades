@@ -10,6 +10,7 @@ import { updatesForTypescript } from "./updatesForTypescript";
 import { updatesForNode } from "./updatesForNode";
 import { updateForEsHcmsTasks } from "./updateForEsHcmsTasks";
 import { robotsTxtUpdates } from "./robotsTxtUpdates";
+import { updatesForExtensions } from "./updatesForExtensions";
 
 module.exports = async (context: Context) => {
     const files = setupFiles(context);
@@ -42,7 +43,13 @@ module.exports = async (context: Context) => {
          * Add robots.txt files for Admin and Website project applications
          * https://github.com/webiny/webiny-js/pull/4329
          */
-        robotsTxtUpdates
+        robotsTxtUpdates,
+
+        /**
+         * Preparations for PB Element Extension
+         * https://github.com/webiny/webiny-js/pull/4336
+         */
+        updatesForExtensions
     ];
 
     await processorsRunner.execute(processors);

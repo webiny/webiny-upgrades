@@ -20,6 +20,16 @@ export const setupFiles = (context: Context) => {
             path: createFilePath(context, "${graphql}/package.json"),
             tag: "package.json",
             name: "api/package.json"
+        }),
+        createFileDefinition({
+            path: createFilePath(context, "${website}/src/App.tsx"),
+            tag: "website",
+            name: "website/App"
+        }),
+        createFileDefinition({
+            path: createFilePath(context, "${root}/webiny.project.ts"),
+            tag: "root",
+            name: "webiny.project.ts"
         })
     ]);
 
