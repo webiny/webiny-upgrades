@@ -7,9 +7,9 @@ import {
 } from "../utils";
 
 export const updatesForLogger = createProcessor(async ({ context, files, project }) => {
-    const packageJson = context.project.getPackageJsonPath();
+    const packageJson = files.byName("api/package.json");
 
-    addPackagesToDependencies(context, packageJson, {
+    addPackagesToDependencies(context, packageJson.path, {
         "@webiny/api-log": context.version
     });
 
