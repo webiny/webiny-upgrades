@@ -1,25 +1,24 @@
 import { Project } from "ts-morph";
 import {
-    Files,
+    addPackagesToDependencies,
+    getCreateHandlerExpressions,
     getIsElasticsearchProject,
+    movePlugin,
     removeImportFromSourceFile,
     removePluginFromCreateHandler,
-    addPackagesToDependencies,
-    movePlugin,
-    replaceInPath,
-    getCreateHandlerExpressions
+    replaceInPath
 } from "../utils";
-import { Context } from "../types";
+import { Context, IFiles } from "../types";
 
 interface Params {
-    files: Files;
+    files: IFiles;
     project: Project;
     context: Context;
 }
 
 class UpdateApiIndex {
     private readonly project: Project;
-    private readonly files: Files;
+    private readonly files: IFiles;
     private readonly context: Context;
 
     constructor(params: Params) {
@@ -57,8 +56,8 @@ class UpdateApiIndex {
 
 class UpdateEsApiIndex {
     private project: Project;
-    private files: Files;
-    private context: Context;
+    private readonly files: IFiles;
+    private readonly context: Context;
     constructor(params: Params) {
         this.project = params.project;
         this.files = params.files;

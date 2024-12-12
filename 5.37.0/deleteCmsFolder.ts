@@ -1,12 +1,11 @@
 import { Project } from "ts-morph";
-import { Files } from "../utils";
-import { Context } from "../types";
+import { Context, IFiles } from "../types";
 
 import fs from "fs";
 import path from "path";
 
 interface Params {
-    files: Files;
+    files: IFiles;
     project: Project;
     context: Context;
 }

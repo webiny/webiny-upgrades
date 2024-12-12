@@ -1,11 +1,11 @@
 import path from "path";
 import { Project } from "ts-morph";
-import { Files, removeImportFromSourceFile, removeFromExportDefaultArray } from "../utils";
-import { Context } from "../types";
+import { removeFromExportDefaultArray, removeImportFromSourceFile } from "../utils";
+import { Context, IFiles } from "../types";
 import { backupAndReplace } from "./backupAndReplace";
 
 interface Params {
-    files: Files;
+    files: IFiles;
     project: Project;
     context: Context;
 }

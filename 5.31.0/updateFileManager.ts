@@ -1,6 +1,5 @@
-import { Files } from "./classes/Files";
 import { Project } from "ts-morph";
-import { Context } from "../types";
+import { Context, IFiles } from "../types";
 import {
     addPluginToCreateHandler,
     insertImportToSourceFile,
@@ -11,7 +10,7 @@ import {
 } from "../utils";
 
 interface Params {
-    files: Files;
+    files: IFiles;
     project: Project;
     context: Context;
 }

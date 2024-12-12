@@ -1,6 +1,6 @@
 import { Project } from "ts-morph";
-import { Context } from "../types";
-import { Files, findInPath, getWebinyLink } from "../utils";
+import { Context, IFiles } from "../types";
+import { findInPath, getWebinyLink } from "../utils";
 import {
     getAppThemeSourceFile,
     getTypographyVariableDeclaration,
@@ -13,7 +13,7 @@ import { migrateFile } from "./themeTypographyMigration/migrateFile";
 import { replaceInPath } from "replace-in-path";
 
 interface Params {
-    files: Files;
+    files: IFiles;
     project: Project;
     context: Context;
 }
