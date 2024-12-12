@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "bin": "./index.js",
   "scripts": {
+    "build": "tsc",
     "prettier": "prettier \"**/**/*.{js,jsx,ts,tsx,json}\" --config .prettierrc.js",
     "prettier:check": "yarn prettier --check",
     "prettier:fix": "yarn prettier --write",
@@ -25,10 +26,11 @@
     "semver": "^7.6.3",
     "ts-morph": "^12.2.0",
     "ts-node": "^10.8.1",
-    "typescript": "4.7.4",
+    "typescript": "4.9.5",
     "write-json-file": "^4.0.0",
     "yargs": "^17.2.1",
-    "yesno": "^0.4.0"
+    "yesno": "^0.4.0",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/prettier": "^2.7.3",
@@ -45,5 +47,8 @@
     "eslint-plugin-react": "^7.27.1",
     "eslint-plugin-standard": "^5.0.0"
   },
-  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
+  "packageManager": "yarn@4.5.3",
+  "engines": {
+    "node": ">=22.0.0 <23.0.0"
+  }
 }

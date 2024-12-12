@@ -1,6 +1,13 @@
-import { createProcessorRunner, prettierFormat, yarnInstall } from "../utils";
+import {
+    breakingChangesWarning,
+    createProcessorRunner,
+    prettierFormat,
+    yarnInstall
+} from "../utils";
 import { setupFiles } from "./setupFiles";
 import { Context } from "../types";
+import { updatesForNode } from "./updatesForNode";
+import { updatesForYarn } from "./updatesForYarn";
 import { updatesForLogger } from "./updatesForLogger";
 
 module.exports = async (context: Context) => {
@@ -10,6 +17,18 @@ module.exports = async (context: Context) => {
         context
     });
     const processors = [
+        /**
+         * Display a warning about breaking changes.
+         */
+        breakingChangesWarning({ version: "5.42.0" }),
+        /**
+         * Updates for Node v22
+         */
+        updatesForNode,
+        /**
+         * Updates for Yarn v4.5.3
+         */
+        updatesForYarn,
         /**
          * Logger
          * https://github.com/webiny/webiny-js/pull/4366

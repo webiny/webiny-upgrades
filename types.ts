@@ -59,6 +59,8 @@ export interface IFiles {
 
     filter(cb: IFilesFilterCb): IFiles;
 
+    all(): string[];
+
     relevant: () => IFiles;
 
     paths(): string[];

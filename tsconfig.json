@@ -26,7 +26,14 @@
     "exactOptionalPropertyTypes": false
   },
   "include": ["./**/*.ts"],
-  "exclude": ["node_modules"],
+  "exclude": [
+    "node_modules",
+    "5.18.0/removeAdminUploadWithPulumi",
+    "5.18.0/webinyConfigJsUpdates",
+    "5.34.0/page-elements-migration",
+    "5.34.0/replacements",
+    "5.35.0/updateToEmotion11"
+  ],
   "ts-node": {
     "files": false,
     "typeCheck": false,

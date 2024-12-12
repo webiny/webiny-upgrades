@@ -1,6 +1,7 @@
 import execa from "execa";
 import log from "./log";
 import semver from "semver";
+import { Context } from "../types";
 
 export interface IYarnUpParams {
     targetVersion: string;
@@ -42,5 +43,34 @@ export const yarnUp = async (packages: IYarnUpDependency): Promise<void> => {
                 console.log(ex.stdout);
             }
         }
+    }
+};
+
+export type YarnVersion = string | `${number}.${number}.${number}` | "berry";
+
+export interface IUpdateYarnParams {
+    context: Context;
+    version: YarnVersion;
+}
+
+export const updateYarn = async (params: IUpdateYarnParams) => {
+    const { context, version } = params;
+
+    if (version !== "berry") {
+        if (!semver.valid(version)) {
+            const message = `Version "${version}" is not a valid semver version.`;
+            context.log.error(message);
+            throw new Error(message);
+        }
+    }
+
+    try {
+        context.log.info(`Updating yarn to version ${version}.`);
+        await execa("yarn", ["set", "version", version]);
+        context.log.info("...done.");
+    } catch (ex) {
+        context.log.error(`Failed to update Yarn to version "${version}".`);
+        console.log(ex);
+        throw ex;
     }
 };
