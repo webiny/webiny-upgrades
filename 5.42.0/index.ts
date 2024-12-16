@@ -9,6 +9,7 @@ import { Context } from "../types";
 import { updatesForNode } from "./updatesForNode";
 import { updatesForYarn } from "./updatesForYarn";
 import { updatesForLogger } from "./updatesForLogger";
+import { syncDependenciesProcessor } from "../utils/syncDependencies";
 
 module.exports = async (context: Context) => {
     const files = setupFiles(context);
@@ -17,6 +18,10 @@ module.exports = async (context: Context) => {
         context
     });
     const processors = [
+        /**
+         * Sync dependencies processor. Must always be first.
+         */
+        syncDependenciesProcessor,
         /**
          * Display a warning about breaking changes.
          */

@@ -10,6 +10,7 @@ export interface Context {
         root: string;
         getPackageJsonPath: () => string;
         getFilePath: (target: string | string[]) => string;
+        getWorkspaces: () => string[];
     };
     log: ConsoleLogger;
 }

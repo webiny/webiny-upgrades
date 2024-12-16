@@ -9,12 +9,16 @@ const dependencyValidation = zod.object({
 
 const referenceVersionFileValidation = zod.object({
     file: zod.string(),
-    types: zod.enum([
-        PackageType.dependencies,
-        PackageType.devDependencies,
-        PackageType.peerDependencies,
-        PackageType.resolutions
-    ])
+    types: zod.array(
+        zod.string().refine(value => {
+            return [
+                String(PackageType.dependencies),
+                String(PackageType.devDependencies),
+                String(PackageType.peerDependencies),
+                String(PackageType.resolutions)
+            ].includes(value);
+        })
+    )
 });
 
 const referenceVersionValidation = zod.object({
@@ -32,7 +36,7 @@ export const createReferencesValidation = () => {
         dependencies: zod.array(dependencyValidation),
         devDependencies: zod.array(dependencyValidation),
         peerDependencies: zod.array(dependencyValidation),
-        resolutions: zod.array(referenceValidation),
+        resolutions: zod.array(dependencyValidation),
         references: zod.array(referenceValidation)
     });
 };

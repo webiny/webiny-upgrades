@@ -8,7 +8,7 @@ export interface ILoadReferencesFileParams {
     context: Context;
 }
 
-const referencesFile = "node_modules/@webiny/cli-plugin-sync-dependencies/files/references.json";
+const referencesFile = "node_modules/@webiny/cli/files/references.json";
 
 export const loadReferencesFile = async (
     params: ILoadReferencesFileParams
