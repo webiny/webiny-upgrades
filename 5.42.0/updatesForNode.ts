@@ -7,10 +7,10 @@ export const updatesForNode = createProcessor(async params => {
 
     const mainPackageJsonModifier = createPackageJsonModifier(mainPackageJsonPath);
 
-    context.log.info(`Setting "engines.node" ">=22 <23" in main package.json file...`);
+    context.log.info(`Setting "engines.node" ">=22" in main package.json file...`);
     mainPackageJsonModifier.modify({
         engines: {
-            node: ">=22 <23"
+            node: ">=20"
         }
     });
     context.log.info("...done.");
