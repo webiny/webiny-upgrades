@@ -71,7 +71,7 @@ export const syncDependenciesProcessor = createProcessor(async params => {
     }
 
     console.log("");
-    console.log("You can update all dependencies to the versions Webiny is using with:");
+    console.log("You can update all dependencies, to the versions Webiny is using, with:");
     console.log("");
     console.log(
         context.log.colors.info(
