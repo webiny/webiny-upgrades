@@ -4,9 +4,9 @@ import { loadReferencesFile } from "./file";
 import { listAllPackageJsonFiles } from "./listAllPackageJsonFiles";
 import { CompareDependencyTree } from "./CompareDependencyTree";
 import { createDependencyTree } from "./tree";
-import { createUpdateAllDependenciesMessage } from "./messages/update";
 import { ICompareDependencyTreeCompareItem } from "./types";
 import { ConsoleLogger } from "../log";
+import { yarnUp } from "../yarnUp";
 
 const createOutOfSyncMessage = (
     log: ConsoleLogger,
@@ -56,40 +56,57 @@ export const syncDependenciesProcessor = createProcessor(async params => {
         "Found dependencies that are out of sync. Please sync them before continuing with the upgrade process..."
     );
 
+    console.log("");
+    console.log("package.json files which have dependencies out of sync:");
+    const packageJsonFiles = results.listFiles();
+    for (const file of packageJsonFiles) {
+        console.log(` - ${file}`);
+    }
+
+    console.log("");
     console.log("Dependencies out of sync:");
     const noMatchItems = results.listNoMatch();
     for (const result of noMatchItems) {
-        console.log(createOutOfSyncMessage(context.log, result));
+        console.log(` - ` + createOutOfSyncMessage(context.log, result));
     }
 
     const partialItems = results.listMatchPartial();
     if (partialItems.length) {
-        console.log("Dependencies partially in sync:");
+        console.log("");
+        console.log("Dependencies partially out of sync:");
         for (const result of partialItems) {
-            console.log(createOutOfSyncMessage(context.log, result));
+            console.log(` - ` + createOutOfSyncMessage(context.log, result));
         }
     }
 
     console.log("");
-    console.log("You can update all dependencies, to the versions Webiny is using, with:");
-    console.log("");
-    console.log(
-        context.log.colors.info(
-            createUpdateAllDependenciesMessage({
-                noMatchItems,
-                partialItems
-            })
-        )
-    );
-
-    console.log("");
     const ok = await yesno({
-        question: "Do you want to continue with the project upgrade? (y/N):",
+        question: "Do you want us to upgrade those dependencies? (y/N):",
         defaultValue: false
     });
 
     if (!ok) {
-        params.context.log.error("Upgrade aborted.");
-        process.exit(0);
+        console.log("");
+        const upgrade = await yesno({
+            question: context.log.colors.warning(
+                "We strongly recommend you update the dependencies. Failing to do so may result in unexpected problems. Do you still want to continue with the project upgrade and skip updating dependencies? (y/N)"
+            ),
+            defaultValue: false
+        });
+        if (!upgrade) {
+            context.log.error("Upgrade aborted.");
+            process.exit(0);
+        }
     }
+
+    const packages = [...noMatchItems, ...partialItems].reduce((collection, pkg) => {
+        const version = pkg.reference.versions[0].version;
+        if (!version) {
+            return collection;
+        }
+        collection[pkg.name] = version;
+        return collection;
+    }, {});
+
+    await yarnUp(packages);
 });

@@ -19,13 +19,13 @@ module.exports = async (context: Context) => {
     });
     const processors = [
         /**
-         * Sync dependencies processor. Must always be first.
-         */
-        syncDependenciesProcessor,
-        /**
          * Display a warning about breaking changes.
          */
         breakingChangesWarning({ version: "5.42.0" }),
+        /**
+         * Sync dependencies processor.
+         */
+        syncDependenciesProcessor,
         /**
          * Updates for Node v20
          */

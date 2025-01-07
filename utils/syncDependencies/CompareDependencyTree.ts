@@ -24,7 +24,10 @@ export class CompareDependencyTree implements ICompareDependencyTree {
 
             const result = this.compareVersion({ reference, target });
 
+            const file = target.versions[0]?.files?.[0]?.file || "unknown";
+
             results.add({
+                file,
                 name: reference.name,
                 reference,
                 target: target,

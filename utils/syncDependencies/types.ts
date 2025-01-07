@@ -67,6 +67,7 @@ export interface ICompareDependencyTreeCompareParams {
 
 export interface ICompareDependencyTreeCompareItemBase {
     name: string;
+    file: string;
     reference: IReference;
     target: IReference;
 }
@@ -98,6 +99,7 @@ export interface ICompareDependencyTreeResult {
     listNoMatch(): ICompareDependencyTreeCompareItemNoMatch[];
     listMatchPartial(): ICompareDependencyTreeCompareItemMatchPartial[];
     listMatchAll(): ICompareDependencyTreeCompareItemMatchAll[];
+    listFiles(): string[];
 }
 
 export interface ICompareDependencyTree {

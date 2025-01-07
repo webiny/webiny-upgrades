@@ -14,6 +14,10 @@ export class CompareDependencyTreeResult implements ICompareDependencyTreeResult
         this.items.push(item);
     }
 
+    public listFiles(): string[] {
+        return Array.from(new Set(this.items.map(item => item.file)));
+    }
+
     public hasFaulty(): boolean {
         return this.items.some(
             item =>
