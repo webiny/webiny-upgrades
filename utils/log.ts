@@ -1,6 +1,6 @@
 import chalk from "chalk";
 
-const logColors = {
+export const colors = {
     log: v => v,
     info: chalk.blueBright,
     error: chalk.red,
@@ -11,12 +11,12 @@ const logColors = {
 
 const colorizePlaceholders = (type, string) => {
     return string.replace(/\%[a-zA-Z]/g, match => {
-        return logColors[type](match);
+        return colors[type](match);
     });
 };
 
 const log = (type, ...args) => {
-    const prefix = `webiny ${logColors[type](type)}: `;
+    const prefix = `webiny ${colors[type](type)}: `;
 
     const [first, ...rest] = args;
     if (typeof first === "string") {
@@ -27,6 +27,8 @@ const log = (type, ...args) => {
 
 class ConsoleLogger {
     private _debug = false;
+
+    public readonly colors: typeof colors = colors;
 
     setDebug(debug) {
         this._debug = debug;

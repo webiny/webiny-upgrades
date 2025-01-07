@@ -7,7 +7,7 @@ export const updatesForNode = createProcessor(async params => {
 
     const mainPackageJsonModifier = createPackageJsonModifier(mainPackageJsonPath);
 
-    context.log.info(`Setting "engines.node" ">=22" in main package.json file...`);
+    context.log.info(`Setting "engines.node" ">=20" in main package.json file...`);
     mainPackageJsonModifier.modify({
         engines: {
             node: ">=20"
@@ -16,6 +16,6 @@ export const updatesForNode = createProcessor(async params => {
     context.log.info("...done.");
 
     await yarnUp({
-        "@types/node": "^22.10.1"
+        "@types/node": "^20.17.10"
     });
 });

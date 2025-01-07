@@ -27,7 +27,7 @@ module.exports = async (context: Context) => {
          */
         breakingChangesWarning({ version: "5.42.0" }),
         /**
-         * Updates for Node v22
+         * Updates for Node v20
          */
         updatesForNode,
         /**
