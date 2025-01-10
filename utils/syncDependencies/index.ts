@@ -42,7 +42,12 @@ export const syncDependenciesProcessor = createProcessor(async params => {
         files
     });
 
-    const compareDependencyTree = new CompareDependencyTree();
+    const compareDependencyTree = new CompareDependencyTree({
+        /**
+         * We will skip some packages of our packages as we did not use the versions correctly.
+         */
+        skipPackages: ["theme"]
+    });
 
     const results = compareDependencyTree.compare({
         tree,
@@ -64,7 +69,7 @@ export const syncDependenciesProcessor = createProcessor(async params => {
     }
 
     console.log("");
-    console.log("Dependencies out of sync:");
+    console.log("Dependencies out of sync (yours (Webiny)):");
     const noMatchItems = results.listNoMatch();
     for (const result of noMatchItems) {
         console.log(` - ` + createOutOfSyncMessage(context.log, result));

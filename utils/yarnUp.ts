@@ -17,9 +17,20 @@ export interface IYarnUpDependency {
     [pkg: string]: string;
 }
 
-export const yarnUp = async (packages: IYarnUpDependency): Promise<void> => {
-    for (const pkg in packages) {
-        const version = packages[pkg];
+export interface IYarnUpOptions {
+    quiet?: boolean;
+}
+
+export const yarnUp = async (input: IYarnUpDependency, options?: IYarnUpOptions): Promise<void> => {
+    const { quiet } = options || {};
+    if (quiet) {
+        log.setQuiet(["info"]);
+    }
+
+    const packages: string[] = [];
+
+    for (const pkg in input) {
+        const version = input[pkg];
 
         let isValid = semver.valid(version);
         if (!isValid) {
@@ -30,20 +41,23 @@ export const yarnUp = async (packages: IYarnUpDependency): Promise<void> => {
             log.error(`Package "${pkg}" version "${version}" is not a valid semver version.`);
             continue;
         }
-        try {
-            log.info(`Updating package "${pkg}" version to "${version}"...`);
-            await execa(`yarn`, [`up`, `${pkg}@${version}`], { cwd: process.cwd() });
-            await execa("yarn", { cwd: process.cwd() });
-            log.info(`...done.`);
-        } catch (ex) {
-            log.error(`Updating of the package "${pkg}" to version "${version}" failed.`);
-            console.log(ex);
-            console.log(log.error(ex.message));
-            if (ex.stdout) {
-                console.log(ex.stdout);
-            }
+
+        packages.push(`${pkg}@${version}`);
+    }
+    try {
+        log.info(`Updating packages...`);
+        await execa(`yarn`, [`up`, ...packages], { cwd: process.cwd() });
+        log.info(`...done.`);
+    } catch (ex) {
+        log.setLoud();
+        log.error(`Updating of the packages failed.`);
+        console.log(ex);
+        console.log(log.error(ex.message));
+        if (ex.stdout) {
+            console.log(ex.stdout);
         }
     }
+    log.setLoud();
 };
 
 export type YarnVersion = string | `${number}.${number}.${number}` | "berry";
@@ -64,8 +78,8 @@ export const updateYarn = async (params: IUpdateYarnParams) => {
         }
     }
 
+    context.log.info(`Updating yarn to version ${version}.`);
     try {
-        context.log.info(`Updating yarn to version ${version}.`);
         await execa("yarn", ["set", "version", version]);
         context.log.info("...done.");
     } catch (ex) {

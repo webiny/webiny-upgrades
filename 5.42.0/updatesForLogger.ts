@@ -43,7 +43,7 @@ export const updatesForLogger = createProcessor(async ({ context, files, project
     insertImportToSourceFile({
         source: graphqlTypesSource,
         name: { Context: "LoggerContext" },
-        moduleSpecifier: "@webiny/api-log"
+        moduleSpecifier: "@webiny/api-log/types"
     });
 
     extendInterface({

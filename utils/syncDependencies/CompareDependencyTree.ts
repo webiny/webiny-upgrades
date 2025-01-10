@@ -12,11 +12,23 @@ interface ICompareDependencyTreeCompareVersionParams {
     target: IReference;
 }
 
+export interface ICompareDependencyTreeParams {
+    skipPackages?: string[];
+}
+
 export class CompareDependencyTree implements ICompareDependencyTree {
+    private readonly skipPackages: string[] = [];
+    public constructor(params?: ICompareDependencyTreeParams) {
+        this.skipPackages = params?.skipPackages || [];
+    }
+
     public compare(params: ICompareDependencyTreeCompareParams): ICompareDependencyTreeResult {
         const { references, tree } = params;
         const results = new CompareDependencyTreeResult();
         for (const reference of references.references) {
+            if (this.skipPackages.includes(reference.name)) {
+                continue;
+            }
             const target = tree.references.find(item => item.name === reference.name);
             if (!target) {
                 continue;

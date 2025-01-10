@@ -10,6 +10,7 @@ import { updatesForNode } from "./updatesForNode";
 import { updatesForYarn } from "./updatesForYarn";
 import { updatesForLogger } from "./updatesForLogger";
 import { syncDependenciesProcessor } from "../utils/syncDependencies";
+import { updatesForResolutions } from "./updatesForResolutions";
 
 module.exports = async (context: Context) => {
     const files = setupFiles(context);
@@ -23,17 +24,21 @@ module.exports = async (context: Context) => {
          */
         breakingChangesWarning({ version: "5.42.0" }),
         /**
+         * Yarn v4.6.0
+         */
+        updatesForYarn,
+        /**
+         * Make sure resolutions don't have some excess packages.
+         */
+        updatesForResolutions,
+        /**
          * Sync dependencies processor.
          */
         syncDependenciesProcessor,
         /**
-         * Updates for Node v20
+         * Node v20 latest types
          */
         updatesForNode,
-        /**
-         * Updates for Yarn v4.5.3
-         */
-        updatesForYarn,
         /**
          * Logger
          * https://github.com/webiny/webiny-js/pull/4366
