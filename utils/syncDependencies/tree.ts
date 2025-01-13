@@ -28,5 +28,21 @@ export const createDependencyTree = (params: ICreateDependencyTreeParams): IDepe
             console.log(`Failed to load "${file}".`);
         }
     }
+
+    const invalid = tree.invalid();
+
+    if (invalid.length === 0) {
+        return tree;
+    }
+    context.log.info(
+        "There are some invalid Semver version. They do not affect our upgrade process, but you should fix them:"
+    );
+    for (const item of invalid) {
+        const { version, file, name } = item;
+        console.log(`${version} is not a valid SemVer value in ${file}, package ${name}.`);
+    }
+
+    console.log("");
+
     return tree;
 };

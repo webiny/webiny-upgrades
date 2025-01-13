@@ -7,6 +7,7 @@ import {
     IDependency,
     IDependencyTree,
     IDependencyTreePushParams,
+    IInvalidSemverVersion,
     IReference,
     PackageType
 } from "./types";
@@ -34,6 +35,8 @@ const sortByName = (a: ISortItem, b: ISortItem) => {
 };
 
 export class DependencyTree implements IDependencyTree {
+    public readonly _invalidSemver: IInvalidSemverVersion[] = [];
+
     private readonly packages: Record<(typeof keys)[number], IDependency[]> = {
         resolutions: [],
         dependencies: [],
@@ -68,6 +71,7 @@ export class DependencyTree implements IDependencyTree {
 
     public push(params: IDependencyTreePushParams): void {
         const { file, json, ignore, ignoreVersion } = params;
+
         for (const key of keys) {
             const dependencies = json[key];
             if (!dependencies) {
@@ -86,9 +90,11 @@ export class DependencyTree implements IDependencyTree {
                 const semverVersion =
                     semver.validRange(version) || version === "beta" ? version : null;
                 if (!semverVersion) {
-                    console.log(
-                        `${version} is not a valid SemVer value in ${file}, package ${name}.`
-                    );
+                    this._invalidSemver.push({
+                        version,
+                        file,
+                        name
+                    });
                     continue;
                 }
                 version = version
@@ -124,6 +130,10 @@ export class DependencyTree implements IDependencyTree {
                 });
             }
         }
+    }
+
+    public invalid(): IInvalidSemverVersion[] {
+        return this._invalidSemver;
     }
 
     private addReference(ref: IAddReferenceParams): void {

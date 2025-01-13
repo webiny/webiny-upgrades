@@ -43,6 +43,12 @@ export interface IDependencyTreePushParams {
     ignoreVersion?: RegExp;
 }
 
+export interface IInvalidSemverVersion {
+    version: string;
+    file: string;
+    name: string;
+}
+
 export interface IDependencyTree {
     dependencies: IDependency[];
     devDependencies: IDependency[];
@@ -52,6 +58,7 @@ export interface IDependencyTree {
     duplicates: IReference[];
 
     push(params: IDependencyTreePushParams): void;
+    invalid(): IInvalidSemverVersion[];
 }
 
 export enum CompareDependencyTreeMatch {
