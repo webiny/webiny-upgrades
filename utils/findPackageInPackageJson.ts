@@ -39,7 +39,7 @@ export const findPackageInPackageJson = (
     let json: PackageJson;
     try {
         json = loadJsonFile.sync(file);
-    } catch (ex) {
+    } catch {
         return null;
     }
 

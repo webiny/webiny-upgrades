@@ -24,7 +24,7 @@ export const createDependencyTree = (params: ICreateDependencyTreeParams): IDepe
                 json,
                 ignoreVersion: /WEBINY_VERSION|latest/
             });
-        } catch (ex) {
+        } catch {
             console.log(`Failed to load "${file}".`);
         }
     }

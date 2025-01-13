@@ -33,13 +33,11 @@ const forcePatchVersion = version => {
 
     let cliVersion = version;
     try {
-        const pkgJson = require(path.join(
-            process.cwd(),
-            "node_modules",
-            "@webiny/cli/package.json"
-        ));
+        const pkgJson = require(
+            path.join(process.cwd(), "node_modules", "@webiny/cli/package.json")
+        );
         cliVersion = pkgJson.version;
-    } catch (e) {
+    } catch {
         // Use the version passed through args.
     }
 
