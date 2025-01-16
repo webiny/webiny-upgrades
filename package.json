@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "bin": "./index.js",
   "scripts": {
+    "build": "tsc",
     "prettier": "prettier \"**/**/*.{js,jsx,ts,tsx,json}\" --config .prettierrc.js",
     "prettier:check": "yarn prettier --check",
     "prettier:fix": "yarn prettier --write",
@@ -11,39 +12,44 @@
     "lint:fix": "yarn eslint --fix && yarn prettier --write"
   },
   "dependencies": {
-    "@types/node": "^14.18.21",
     "chalk": "^4.1.2",
     "execa": "^5.0.0",
     "fast-glob": "^3.2.7",
     "fs-extra": "^10.0.0",
+    "get-yarn-workspaces": "^1.0.2",
     "json5": "^2.2.3",
     "load-json-file": "^6.0.1",
     "lodash": "^4.17.21",
     "ncp": "^2.0.0",
-    "prettier": "^2.8.8",
     "replace-in-path": "^1.1.0",
     "semver": "^7.6.3",
     "ts-morph": "^12.2.0",
     "ts-node": "^10.8.1",
-    "typescript": "4.7.4",
+    "typescript": "4.9.5",
     "write-json-file": "^4.0.0",
     "yargs": "^17.2.1",
-    "yesno": "^0.4.0"
+    "yesno": "^0.4.0",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@types/prettier": "^2.7.3",
+    "@types/node": "^20.17.12",
+    "@types/prettier": "^3.0.0",
     "@types/semver": "^7.5.8",
-    "@typescript-eslint/eslint-plugin": "^5.5.0",
-    "@typescript-eslint/parser": "^5.5.0",
-    "eslint": "^8.21.0",
-    "eslint-config-standard": "^16.0.3",
-    "eslint-import-resolver-babel-module": "^5.3.1",
-    "eslint-plugin-import": "^2.25.3",
-    "eslint-plugin-jest": "^25.3.0",
+    "@typescript-eslint/eslint-plugin": "^8.19.1",
+    "@typescript-eslint/parser": "^8.19.1",
+    "eslint": "^8.57.1",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-import-resolver-babel-module": "^5.3.2",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-jest": "^28.10.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.2.0",
-    "eslint-plugin-react": "^7.27.1",
-    "eslint-plugin-standard": "^5.0.0"
+    "eslint-plugin-promise": "^6.6.0",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-standard": "^5.0.0",
+    "prettier": "^3.4.2"
   },
-  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
+  "packageManager": "yarn@4.6.0",
+  "engines": {
+    "node": ">=20.0.0"
+  }
 }

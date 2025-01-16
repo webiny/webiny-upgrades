@@ -1,11 +1,10 @@
 import { Project } from "ts-morph";
-import { Files } from "../../utils";
-import { Context } from "../../types";
+import { Context, IFiles } from "../../types";
 
 const tsMorph = require("ts-morph");
 
 interface Params {
-    files: Files;
+    files: IFiles;
     project: Project;
     context: Context;
 }

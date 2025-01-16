@@ -10,6 +10,7 @@ export interface Context {
         root: string;
         getPackageJsonPath: () => string;
         getFilePath: (target: string | string[]) => string;
+        getWorkspaces: () => string[];
     };
     log: ConsoleLogger;
 }
@@ -58,6 +59,8 @@ export interface IFiles {
     byTag(tag: FileDefinitionTag): IFiles;
 
     filter(cb: IFilesFilterCb): IFiles;
+
+    all(): string[];
 
     relevant: () => IFiles;
 

@@ -75,7 +75,7 @@ export const removePackagesFromResolutions = (params: IRemovePackages) => {
     return addPackagesToDeps({
         ...params,
         type: "resolutions",
-        packages: Object.keys(params.packages).reduce((acc, pkg) => {
+        packages: params.packages.reduce((acc, pkg) => {
             acc[pkg] = null;
             return acc;
         }, {})

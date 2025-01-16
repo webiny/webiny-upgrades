@@ -2,15 +2,14 @@ import { Project, SyntaxKind } from "ts-morph";
 import {
     addPackagesToDependencies,
     addToExportDefaultArray,
-    Files,
     insertImportToSourceFile
 } from "../utils";
-import { Context } from "../types";
+import { Context, IFiles } from "../types";
 import * as fs from "fs";
 import * as path from "path";
 
 interface Params {
-    files: Files;
+    files: IFiles;
     project: Project;
     context: Context;
 }

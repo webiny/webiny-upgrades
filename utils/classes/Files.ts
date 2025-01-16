@@ -67,6 +67,13 @@ export class Files implements IFiles {
     public paths(): string[] {
         return this.files.map(file => file.path);
     }
+    /**
+     * Backwards compatibility method.
+     * @deprecated
+     */
+    public all(): string[] {
+        return this.paths();
+    }
 }
 
 export const createFiles = (context: Context, files: IFileDefinition[]) => {

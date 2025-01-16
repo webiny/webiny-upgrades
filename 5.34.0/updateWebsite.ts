@@ -1,11 +1,11 @@
 import { Project } from "ts-morph";
 import path from "path";
-import { Files, insertImportToSourceFile } from "../utils";
-import { Context } from "../types";
+import { insertImportToSourceFile } from "../utils";
+import { Context, IFiles } from "../types";
 import { backupAndReplace } from "./backupAndReplace";
 
 interface Params {
-    files: Files;
+    files: IFiles;
     project: Project;
     context: Context;
 }

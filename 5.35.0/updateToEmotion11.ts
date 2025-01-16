@@ -1,12 +1,11 @@
 import { Project } from "ts-morph";
-import { Context } from "../types";
+import { Context, IFiles } from "../types";
 import {
     addPackagesToDependencies,
-    replaceInPath,
+    addResolutionToRootPackageJson,
     findInPath,
-    Files,
     getWebinyLink,
-    addResolutionToRootPackageJson
+    replaceInPath
 } from "../utils";
 
 import path from "path";
@@ -16,7 +15,7 @@ import ncpBase from "ncp";
 const ncp = util.promisify(ncpBase.ncp);
 
 interface Params {
-    files: Files;
+    files: IFiles;
     project: Project;
     context: Context;
 }

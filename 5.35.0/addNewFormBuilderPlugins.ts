@@ -1,9 +1,9 @@
 import { Project } from "ts-morph";
-import { Files, insertImportToSourceFile, addToExportDefaultArray } from "../utils";
-import { Context } from "../types";
+import { addToExportDefaultArray, insertImportToSourceFile } from "../utils";
+import { Context, IFiles } from "../types";
 
 interface Params {
-    files: Files;
+    files: IFiles;
     project: Project;
     context: Context;
 }

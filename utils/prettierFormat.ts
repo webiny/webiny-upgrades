@@ -30,7 +30,7 @@ const getGitChangedFiles = async (): Promise<string[]> => {
 const getPrettierOptions = async (filePath: string) => {
     try {
         return await prettier.resolveConfig(filePath);
-    } catch (ex) {
+    } catch {
         return null;
     }
 };
@@ -57,7 +57,7 @@ export const prettierFormat = async (input: string[]) => {
             }
             const fileContentRaw = fs.readFileSync(filePath).toString("utf8");
             log.debug("%s", file);
-            const fileContentFormatted = prettier.format(fileContentRaw, {
+            const fileContentFormatted = await prettier.format(fileContentRaw, {
                 ...options,
                 filepath: filePath
             });

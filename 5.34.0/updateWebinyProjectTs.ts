@@ -1,12 +1,11 @@
 import { Project } from "ts-morph";
-import { Context } from "../types";
-import { Files } from "../utils";
+import { Context, IFiles } from "../types";
 
 import { setFeatureFlags } from "./updateWebinyProjectTs/setFeatureFlags";
 import { setAppAliases } from "./updateWebinyProjectTs/setAppAliases";
 
 interface Params {
-    files: Files;
+    files: IFiles;
     project: Project;
     context: Context;
 }

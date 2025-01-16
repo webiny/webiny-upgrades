@@ -2,3 +2,6 @@
 **/node_modules/
 **/dist/
 **/*.d.ts
+5.34.0/page-elements-migration/**/*
+5.35.0/updateDefaultFormLayout/**/*
+5.38.0/updateDefaultFormLayout/**/*

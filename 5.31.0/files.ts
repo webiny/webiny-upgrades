@@ -1,10 +1,9 @@
-import { Context } from "../types";
-import { getIsElasticsearchProject, getIsPre529Project } from "../utils";
+import { Context, IFiles } from "../types";
+import { Files, getIsElasticsearchProject, getIsPre529Project } from "../utils";
 import { createFilePath, getGraphQLPath } from "./utils/paths";
-import { Files } from "./classes/Files";
 import { FileDefinition } from "./classes/FileDefinition";
 
-export const getAllFiles = (context: Context): Files => {
+export const getAllFiles = (context: Context): IFiles => {
     /**
      * Add new source file that will be changed at some point later on.
      */

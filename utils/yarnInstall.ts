@@ -1,10 +1,16 @@
 import execa from "execa";
 import log from "./log";
 
+export interface IYarnInstallOptions {
+    quiet?: boolean;
+}
 /**
  * Run to install new packages in the project.
  */
-export const yarnInstall = async (): Promise<void> => {
+export const yarnInstall = async (options?: IYarnInstallOptions): Promise<void> => {
+    if (options?.quiet === true) {
+        log.setQuiet(["info", "success"]);
+    }
     try {
         log.info("Installing new packages...");
         await execa("yarn", { cwd: process.cwd() });
@@ -17,4 +23,5 @@ export const yarnInstall = async (): Promise<void> => {
             console.log(ex.stdout);
         }
     }
+    log.setLoud();
 };

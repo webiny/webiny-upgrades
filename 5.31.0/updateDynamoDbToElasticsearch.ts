@@ -1,18 +1,17 @@
-import { Files } from "./classes/Files";
 import { Project } from "ts-morph";
-import { Context } from "../types";
+import { Context, IFiles } from "../types";
 import {
     addPluginToCreateHandler,
     getIsElasticsearchProject,
     insertImportToSourceFile,
+    isPre529Project,
     removeImportFromSourceFile,
-    removePluginFromCreateHandler,
-    isPre529Project
+    removePluginFromCreateHandler
 } from "../utils";
 import { getGraphQLPath } from "./utils/paths";
 
 interface Params {
-    files: Files;
+    files: IFiles;
     project: Project;
     context: Context;
 }

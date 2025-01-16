@@ -1,11 +1,10 @@
-import { Files } from "../utils";
 import { Project } from "ts-morph";
-import { Context } from "../types";
+import { Context, IFiles } from "../types";
 import { FeatureFlagExist } from "../utils/featureFlagExist";
 import { addFeatureFlag } from "../utils/addFeatureFlag";
 
 interface Params {
-    files: Files;
+    files: IFiles;
     project: Project;
     context: Context;
 }

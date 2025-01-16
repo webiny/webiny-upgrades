@@ -1,6 +1,6 @@
 import chalk from "chalk";
 
-const logColors = {
+export const colors = {
     log: v => v,
     info: chalk.blueBright,
     error: chalk.red,
@@ -11,12 +11,12 @@ const logColors = {
 
 const colorizePlaceholders = (type, string) => {
     return string.replace(/\%[a-zA-Z]/g, match => {
-        return logColors[type](match);
+        return colors[type](match);
     });
 };
 
-const log = (type, ...args) => {
-    const prefix = `webiny ${logColors[type](type)}: `;
+const log = (type: keyof typeof colors, ...args: any[]) => {
+    const prefix = `webiny ${colors[type](type)}: `;
 
     const [first, ...rest] = args;
     if (typeof first === "string") {
@@ -25,36 +25,72 @@ const log = (type, ...args) => {
     return console.log(prefix, first, ...rest);
 };
 
+export type QuietTypes = "log" | "info" | "error" | "warning" | "debug" | "success";
+
+const ALL = "*";
+
 class ConsoleLogger {
     private _debug = false;
+    private _quiet: QuietTypes[] | typeof ALL = [];
 
-    setDebug(debug) {
+    public readonly colors: typeof colors = colors;
+
+    public setQuiet(types?: QuietTypes[]): void {
+        this._quiet = types === undefined ? ALL : types;
+    }
+
+    public setLoud(): void {
+        this._quiet = [];
+    }
+
+    public setDebug(debug: boolean) {
         this._debug = debug;
     }
-    log(...args) {
-        log("log", ...args);
+
+    public log(...args) {
+        return this.exec("log", () => {
+            log("log", ...args);
+        });
     }
 
-    info(...args) {
-        log("info", ...args);
+    public info(...args) {
+        return this.exec("info", () => {
+            log("info", ...args);
+        });
     }
 
-    success(...args) {
-        log("success", ...args);
+    public success(...args) {
+        return this.exec("success", () => {
+            log("success", ...args);
+        });
     }
 
-    debug(...args) {
-        if (this._debug) {
-            log("debug", ...args);
+    public debug(...args) {
+        if (this._debug === false) {
+            return;
         }
+        return this.exec("debug", () => {
+            log("debug", ...args);
+        });
     }
 
-    warning(...args) {
-        log("warning", ...args);
+    public warning(...args) {
+        return this.exec("warning", () => {
+            log("warning", ...args);
+        });
     }
 
-    error(...args) {
-        log("error", ...args);
+    public error(...args) {
+        return this.exec("error", () => {
+            log("error", ...args);
+        });
+    }
+
+    private exec(type: QuietTypes, cb: () => void): void {
+        if (this._quiet === ALL || this._quiet.includes(type)) {
+            return;
+        }
+        return cb();
     }
 }
 
