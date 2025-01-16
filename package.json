@@ -21,6 +21,7 @@
     "load-json-file": "^6.0.1",
     "lodash": "^4.17.21",
     "ncp": "^2.0.0",
+    "prettier": "^3.4.2",
     "replace-in-path": "^1.1.0",
     "semver": "^7.6.3",
     "ts-morph": "^12.2.0",
@@ -45,8 +46,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.6.0",
     "eslint-plugin-react": "^7.37.4",
-    "eslint-plugin-standard": "^5.0.0",
-    "prettier": "^3.4.2"
+    "eslint-plugin-standard": "^5.0.0"
   },
   "packageManager": "yarn@4.6.0",
   "engines": {
