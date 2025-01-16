@@ -27,8 +27,9 @@ export const removeTsExpectError = createProcessor(async params => {
             text = text.replaceAll("// @ts-expect-error", "");
 
             source.replaceWithText(text);
-        } catch (ex) {
-            context.log.error(ex);
+        } catch {
+            // It is ok to ignore this error.
+            // This means that the user does not have this file in their project.
         }
     }
 });
