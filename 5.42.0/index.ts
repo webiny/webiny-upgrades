@@ -7,7 +7,6 @@ import {
 import { setupFiles } from "./setupFiles";
 import { Context } from "../types";
 import { updatesForNode } from "./updatesForNode";
-import { updatesForYarn } from "./updatesForYarn";
 import { updatesForLogger } from "./updatesForLogger";
 import { syncDependenciesProcessor } from "../utils/syncDependencies";
 import { updatesForResolutions } from "./updatesForResolutions";
@@ -23,10 +22,6 @@ module.exports = async (context: Context) => {
          * Display a warning about breaking changes.
          */
         breakingChangesWarning({ version: "5.42.0" }),
-        /**
-         * Yarn v4.6.0
-         */
-        updatesForYarn,
         /**
          * Make sure resolutions don't have some excess packages.
          */

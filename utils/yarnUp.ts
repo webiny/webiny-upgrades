@@ -67,6 +67,11 @@ export interface IUpdateYarnParams {
     version: YarnVersion;
 }
 
+/**
+ * This will not work properly as the project upgrade would continue with previous version of yarn.
+ * !!! DO NOT UPDATE YARN VIA CODE !!!
+ * @deprecated
+ */
 export const updateYarn = async (params: IUpdateYarnParams) => {
     const { context, version } = params;
 
