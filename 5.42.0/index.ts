@@ -6,10 +6,10 @@ import {
 } from "../utils";
 import { setupFiles } from "./setupFiles";
 import { Context } from "../types";
-import { updatesForNode } from "./updatesForNode";
 import { updatesForLogger } from "./updatesForLogger";
 import { syncDependenciesProcessor } from "../utils/syncDependencies";
 import { updatesForResolutions } from "./updatesForResolutions";
+import { removeTsExpectError } from "./removeTsExpectError";
 
 module.exports = async (context: Context) => {
     const files = setupFiles(context);
@@ -31,14 +31,14 @@ module.exports = async (context: Context) => {
          */
         syncDependenciesProcessor,
         /**
-         * Node v20 latest types
-         */
-        updatesForNode,
-        /**
          * Logger
          * https://github.com/webiny/webiny-js/pull/4366
          */
-        updatesForLogger
+        updatesForLogger,
+        /**
+         * Remove // @ts-expect-error from the codebase.
+         */
+        removeTsExpectError
     ];
 
     await processorsRunner.execute(processors);

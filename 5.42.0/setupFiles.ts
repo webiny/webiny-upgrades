@@ -20,6 +20,21 @@ export const setupFiles = (context: Context) => {
             path: createFilePath(context, "${graphql}/package.json"),
             tag: "package.json",
             name: "api/package.json"
+        }),
+        createFileDefinition({
+            path: createFilePath(context, "${admin}/src/plugins/formBuilder/richTextEditor.ts"),
+            tag: "admin",
+            name: "admin/fb/richTextEditor"
+        }),
+        createFileDefinition({
+            path: createFilePath(context, "${admin}/src/plugins/headlessCMS/richTextEditor.ts"),
+            tag: "admin",
+            name: "admin/cms/richTextEditor"
+        }),
+        createFileDefinition({
+            path: createFilePath(context, "${admin}/src/plugins/pageBuilder/richTextEditor.ts"),
+            tag: "admin",
+            name: "admin/pb/richTextEditor"
         })
     ]);
 
