@@ -2,7 +2,6 @@ import {
     addPackagesToDevDependencies,
     addPackagesToResolutions,
     createProcessor,
-    removePackagesFromResolutions,
     yarnInstall
 } from "../utils";
 
@@ -33,7 +32,11 @@ export const addDevDependencies = createProcessor(async ({ context, files }) => 
 
     const targetPath = context.project.getPackageJsonPath();
 
-    context.log.info("Adding resolutions...");
+    context.log.info("Adding dev dependencies...");
+    /**
+     * We want to add packages to dev dependencies.
+     */
+    addPackagesToDevDependencies(context, targetPath, packages);
     /**
      * ... And to resolutions.
      */
