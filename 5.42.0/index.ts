@@ -10,6 +10,7 @@ import { updatesForLogger } from "./updatesForLogger";
 import { syncDependenciesProcessor } from "../utils/syncDependencies";
 import { updatesForResolutions } from "./updatesForResolutions";
 import { removeTsExpectError } from "./removeTsExpectError";
+import { addDevDependencies } from "./addDevDependencies";
 
 module.exports = async (context: Context) => {
     const files = setupFiles(context);
@@ -26,6 +27,10 @@ module.exports = async (context: Context) => {
          * Make sure resolutions don't have some excess packages.
          */
         updatesForResolutions,
+        /**
+         * Make sure that we include all required dev dependencies into root package.json file.
+         */
+        addDevDependencies,
         /**
          * Sync dependencies processor.
          */
