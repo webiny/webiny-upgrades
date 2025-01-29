@@ -10,6 +10,7 @@ import { updatesForLogger } from "./updatesForLogger";
 import { syncDependenciesProcessor } from "../utils/syncDependencies";
 import { updatesForResolutions } from "./updatesForResolutions";
 import { removeTsExpectError } from "./removeTsExpectError";
+import { addBabelDependencies } from "./addBabelDependencies";
 
 module.exports = async (context: Context) => {
     const files = setupFiles(context);
@@ -26,6 +27,10 @@ module.exports = async (context: Context) => {
          * Make sure resolutions don't have some excess packages.
          */
         updatesForResolutions,
+        /**
+         * Make sure that we include all required babel dependencies into root package.json file.
+         */
+        addBabelDependencies,
         /**
          * Sync dependencies processor.
          */
