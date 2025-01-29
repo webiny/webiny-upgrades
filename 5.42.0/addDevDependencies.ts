@@ -1,6 +1,6 @@
 import { addPackagesToDevDependencies, createProcessor, yarnInstall } from "../utils";
 
-export const addDevDependencies = createProcessor(async ({ context, files }) => {
+export const addDevDependencies = createProcessor(async ({ context }) => {
     const packages = {
         "@babel/cli": "7.26.4",
         "@babel/code-frame": "7.26.2",
