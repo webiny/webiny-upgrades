@@ -1,6 +1,6 @@
 import yesno from "yesno";
 import { createProcessor } from "../processors";
-import { loadReferencesFile } from "./file";
+import { loadReferencesFile } from "./referencesFile";
 import { listAllPackageJsonFiles } from "./listAllPackageJsonFiles";
 import { CompareDependencyTree } from "./CompareDependencyTree";
 import { createDependencyTree } from "./tree";
