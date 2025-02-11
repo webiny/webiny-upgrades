@@ -1,4 +1,4 @@
-import { addPackagesToResolutions, createProcessor, yarnInstall } from "../utils";
+import { addPackagesToDevDependencies, createProcessor, yarnInstall } from "../utils";
 
 export const addBabelDependencies = createProcessor(async ({ context }) => {
     const targetPath = context.project.getPackageJsonPath();
@@ -7,12 +7,8 @@ export const addBabelDependencies = createProcessor(async ({ context }) => {
     /**
      * We want to add packages to dev dependencies.
      */
-    addPackagesToResolutions({
-        context,
-        targetPath,
-        packages: {
-            "@babel/runtime": "7.25.0"
-        }
+    addPackagesToDevDependencies(context, targetPath, {
+        "@babel/runtime": "7.25.0"
     });
 
     await yarnInstall({
