@@ -8,6 +8,7 @@ import { setupFiles } from "./setupFiles";
 import { Context } from "../types";
 import { syncDependenciesProcessor } from "../utils/syncDependencies";
 import { removeHandlerLogs } from "./removeHandlerLogs";
+import { upgradeTypescript } from "./upgradeTypescript";
 
 module.exports = async (context: Context) => {
     const files = setupFiles(context);
@@ -21,14 +22,19 @@ module.exports = async (context: Context) => {
          */
         breakingChangesWarning({ version: "5.43.0" }),
         /**
-         * Sync dependencies processor.
-         */
-        syncDependenciesProcessor,
-        /**
          * Remove handler-logs package usage.
          * https://github.com/webiny/webiny-js/pull/4523
          */
-        removeHandlerLogs
+        removeHandlerLogs,
+        /**
+         * Upgrade to Typescript 5.3.3
+         * https://github.com/webiny/webiny-js/pull/4464
+         */
+        upgradeTypescript,
+        /**
+         * Sync dependencies processor.
+         */
+        syncDependenciesProcessor
     ];
 
     await processorsRunner.execute(processors);

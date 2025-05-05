@@ -7,6 +7,11 @@ export const setupFiles = (context: Context) => {
      */
     const files = createFiles(context, [
         createFileDefinition({
+            path: createFilePath(context, "${root}/package.json"),
+            tag: "package.json",
+            name: "package.json"
+        }),
+        createFileDefinition({
             path: createFilePath(context, "${graphql}/src/index.ts"),
             tag: "gql",
             name: "api/graphql/index"
