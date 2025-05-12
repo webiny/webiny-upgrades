@@ -9,6 +9,7 @@ import { Context } from "../types";
 import { syncDependenciesProcessor } from "../utils/syncDependencies";
 import { removeHandlerLogs } from "./removeHandlerLogs";
 import { upgradeTypescript } from "./upgradeTypescript";
+import {updateCreateAco} from "./updateCreateAco";
 
 module.exports = async (context: Context) => {
     const files = setupFiles(context);
@@ -34,7 +35,12 @@ module.exports = async (context: Context) => {
         /**
          * Sync dependencies processor.
          */
-        syncDependenciesProcessor
+        syncDependenciesProcessor,
+        /**
+         * Pass DDB Document Client to createAco
+         * https://github.com/webiny/webiny-js/pull/4615
+         */
+        updateCreateAco
     ];
 
     await processorsRunner.execute(processors);
