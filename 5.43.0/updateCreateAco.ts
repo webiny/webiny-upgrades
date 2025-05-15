@@ -1,4 +1,4 @@
-import {addPluginToCreateHandler, createProcessor, removePluginFromCreateHandler} from "../utils";
+import { addPluginToCreateHandler, createProcessor, removePluginFromCreateHandler } from "../utils";
 
 export const updateCreateAco = createProcessor(async params => {
     const { context, files, project } = params;
@@ -12,17 +12,13 @@ export const updateCreateAco = createProcessor(async params => {
 
     const source = project.getSourceFile(graphQlIndex.path);
 
-    removePluginFromCreateHandler(
-        source,
-        "handler",
-        /^createAco\(\)$/
-    );
+    removePluginFromCreateHandler(source, "handler", /^createAco\(\)$/);
 
     addPluginToCreateHandler({
         source,
         value: `createAco({
                 documentClient
             })`,
-        before: "createAcoPageBuilderContext()",
+        before: "createAcoPageBuilderContext()"
     });
-})
+});

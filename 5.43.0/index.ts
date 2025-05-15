@@ -9,7 +9,8 @@ import { Context } from "../types";
 import { syncDependenciesProcessor } from "../utils/syncDependencies";
 import { removeHandlerLogs } from "./removeHandlerLogs";
 import { upgradeTypescript } from "./upgradeTypescript";
-import {updateCreateAco} from "./updateCreateAco";
+import { updateCreateAco } from "./updateCreateAco";
+import { removeGzipCompression } from "./removeGzipCompression";
 
 module.exports = async (context: Context) => {
     const files = setupFiles(context);
@@ -27,6 +28,11 @@ module.exports = async (context: Context) => {
          * https://github.com/webiny/webiny-js/pull/4523
          */
         removeHandlerLogs,
+        /**
+         * Remove gzip compression from the handler.
+         * https://github.com/webiny/webiny-js/pull/4622
+         */
+        removeGzipCompression,
         /**
          * Upgrade to Typescript 5.3.3
          * https://github.com/webiny/webiny-js/pull/4464

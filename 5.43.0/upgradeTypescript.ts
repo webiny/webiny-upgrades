@@ -1,7 +1,7 @@
 import { addPackagesToResolutions, createProcessor, yarnUp } from "../utils";
 
 export const upgradeTypescript = createProcessor(async params => {
-    const { context, files, project } = params;
+    const { context, files } = params;
 
     const rootPackageJson = files.byName("package.json");
 
