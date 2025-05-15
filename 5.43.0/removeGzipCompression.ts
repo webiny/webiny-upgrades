@@ -1,4 +1,4 @@
-import { createProcessor, removePluginFromCreateHandler } from "../utils/index.js";
+import { createProcessor, removePluginFromCreateHandler } from "../utils";
 
 export const removeGzipCompression = createProcessor(async ({ context, files, project }) => {
     const file = files.byName("api/graphql/index");
